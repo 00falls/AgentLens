@@ -1,0 +1,1242 @@
+{
+  "schema_version": 2,
+  "name": "dev10",
+  "started_at": "2026-11-01T10:36:15.244069+00:00",
+  "finished_at": "2026-11-01T10:36:22.790141+00:00",
+  "dataset_sha256": "913c65c6994772b7060f31ae1f1ef446eedec0c3838a532119b3f8b897a5f3c3",
+  "evaluator_sha256": "bc0b366ec248ee3f2ebf38498959647aa55b5170fa2e60174e8560c9096139e3",
+  "agentevals_version": "0.0.9",
+  "dataset_name": "dev.jsonl",
+  "judge_config": null,
+  "recorded_run": false,
+  "summary": {
+    "selected": 1,
+    "passed": 1,
+    "failed": 0,
+    "errors": 0,
+    "judge_errors": 0,
+    "complete": true,
+    "pass_rate": 1.0
+  },
+  "cases": [
+    {
+      "case_id": "w6-memory-pressure-01",
+      "critical": false,
+      "scenario_group": "memory-pressure",
+      "split": "dev",
+      "outcome": "passed",
+      "evaluation": {
+        "passed": true,
+        "checks": {
+          "project_scope": true,
+          "status": true,
+          "required_tools": true,
+          "query_scope": true,
+          "cause_terms": true,
+          "required_evidence": true,
+          "valid_citations": true,
+          "outside_window_excluded": true,
+          "token_usage_recorded": true,
+          "runbook_retrieved": true,
+          "runbook_cited": true,
+          "knowledge_project_scope": true,
+          "trajectory_required_tools": true,
+          "trajectory_forbidden_tools": true,
+          "trajectory_parameters": true,
+          "trajectory_order": true
+        },
+        "failure_reasons": [],
+        "dimensions": {
+          "trajectory": true,
+          "retrieval": true,
+          "root_cause": true,
+          "citations": true,
+          "task_completion": true
+        },
+        "trajectory": {
+          "checks": {
+            "trajectory_required_tools": true,
+            "trajectory_forbidden_tools": true,
+            "trajectory_parameters": true,
+            "trajectory_order": true
+          },
+          "matcher": "agentevals.trajectory.match",
+          "required_tool_match": {
+            "key": "trajectory_superset_match",
+            "score": true,
+            "comment": null,
+            "metadata": null
+          },
+          "parameter_match": {
+            "key": "trajectory_unordered_match",
+            "score": true,
+            "comment": null,
+            "metadata": null
+          },
+          "precedence": {
+            "search_logs -> search_runbooks": true,
+            "query_metrics -> search_runbooks": true
+          }
+        }
+      },
+      "error": null,
+      "run": {
+        "run_id": "bf66b52b-bd07-4362-84f6-5b2efdeea09a",
+        "thread_id": "ba03e714-bc09-4d4e-9d4b-b33a67cedc0f",
+        "source_run_id": null,
+        "execution_mode": "live",
+        "recording_id": null,
+        "scenario_id": null,
+        "failure_detail": null,
+        "checkpoint_id": "1f1d5e01-50dc-69a5-8006-7433856de4ce",
+        "trace_id": "c5c10b3dfbe39b3b607211adb7ef7b0a",
+        "span_id": "4227435cf6bdaa36",
+        "request_span_id": null,
+        "interrupt": null,
+        "project_id": "project-b",
+        "status": "diagnosed",
+        "input": "请调查 inventory-api 在 2026-11-05T08:00:00+08:00 至 2026-11-05T08:15:00+08:00（结束时间不包含）的异常，结合日志与指标，检索并引用支持建议的手册。",
+        "output": {
+          "status": "diagnosed",
+          "cause_summary": "在 2026-11-05T08:00:00+08:00 至 08:15:00+08:00 时间窗内，inventory-api 的 replica-1 容器因 OOMKilled 终止（exitCode=137，内存限制 512MiB）；同一时间窗的指标显示 memory_working_set_mb=511MB，已逼近 memory_limit_mb=512MB，且 container_restarts=4，说明工作集内存接近容器上限并伴随多次重启，支持容器内存压力导致 OOM 终止的判断。手册 memory-pressure 指出，工作集逼近容器限制并伴随重启，支持内存压力判断；但仅凭 137 退出码不能断定内存泄漏。当前证据只能确认内存压力与 OOM 终止这一层，尚不能区分是容量不足还是内存泄漏或突发大对象。",
+          "evidence_ids": [
+            "w6-memory-pressure-01-log-1",
+            "w6-memory-pressure-01-metric-1",
+            "w6-memory-pressure-01-metric-2",
+            "w6-memory-pressure-01-metric-3",
+            "memory-pressure--s01",
+            "memory-pressure--s02"
+          ],
+          "unknowns": [
+            "无法确定内存增长是持续泄漏还是突发大对象（缺少重启前增长趋势、请求体大小、缓存大小与堆转储证据）",
+            "4 次重启的具体时间分布与是否全部由 OOM 引起未证实",
+            "未确认节点剩余容量，无法判断扩容或提高内存上限是否可行",
+            "未确认 OOM 期间对上游请求成功率与延迟的实际影响范围",
+            "该服务无人工确认的历史故障经验可参考"
+          ],
+          "next_steps": [
+            "按手册 memory-pressure--s02，拉取重启前更长时间窗的 memory_working_set_mb 趋势，判断是持续增长还是阶跃式突增",
+            "检查重启前后的请求体大小、缓存占用与堆转储（如可获取），区分容量不足与内存泄漏",
+            "核对 container_restarts 的时间点与每次重启前的内存曲线，确认 4 次重启是否均由 OOMKilled 触发",
+            "评估节点剩余内存容量后再决定是否调整内存上限或扩容，避免无限扩容",
+            "如需排查下游依赖或上游调用方影响，请授权新的服务与时间范围后再查询"
+          ]
+        },
+        "versions": {
+          "prompt_sha256": "6a2ed524c13ae7580e8ea2f263a849042938b6dc8243414948269645ed2f8502",
+          "dataset_sha256": "46a32fe8ba9ef987f67732c38001ecd09abab8350f7bbd960a528beb704dc4c0",
+          "requested_model": "agentlens-agent",
+          "configured_upstream_model": "openai/deepseek-flash",
+          "tool_transport": "mcp/streamable-http",
+          "checkpointer": "AsyncPostgresSaver",
+          "graph_version": "week8-v1",
+          "actor": "local-cli",
+          "recording_sha256": null,
+          "scenario_manifest": null,
+          "tool_catalog": [
+            {
+              "name": "search_logs",
+              "description": "Query logs in the current project. Times include timezone; interval is [start, end).\n\n    Returns citeable evidence_id values. Limit is 1-200.\n    ",
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "service": {
+                    "title": "Service",
+                    "type": "string"
+                  },
+                  "start_time": {
+                    "format": "date-time",
+                    "title": "Start Time",
+                    "type": "string"
+                  },
+                  "end_time": {
+                    "format": "date-time",
+                    "title": "End Time",
+                    "type": "string"
+                  },
+                  "level": {
+                    "anyOf": [
+                      {
+                        "enum": [
+                          "INFO",
+                          "WARN",
+                          "ERROR"
+                        ],
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null,
+                    "title": "Level"
+                  },
+                  "limit": {
+                    "default": 50,
+                    "title": "Limit",
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "service",
+                  "start_time",
+                  "end_time"
+                ],
+                "title": "logsArguments"
+              }
+            },
+            {
+              "name": "query_metrics",
+              "description": "Query metrics in the current project and [start_time, end_time).\n\n    Leave metric_name unset to inspect available metrics. Returns citeable evidence. Limit is 1-300.\n    ",
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "service": {
+                    "title": "Service",
+                    "type": "string"
+                  },
+                  "start_time": {
+                    "format": "date-time",
+                    "title": "Start Time",
+                    "type": "string"
+                  },
+                  "end_time": {
+                    "format": "date-time",
+                    "title": "End Time",
+                    "type": "string"
+                  },
+                  "metric_name": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null,
+                    "title": "Metric Name"
+                  },
+                  "limit": {
+                    "default": 100,
+                    "title": "Limit",
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "service",
+                  "start_time",
+                  "end_time"
+                ],
+                "title": "metricsArguments"
+              }
+            },
+            {
+              "name": "search_runbooks",
+              "description": "Search the current project's troubleshooting handbooks using symptoms and error terms.\n\n    Use observed service/component names and error messages in query. Returns citeable chunk\n    evidence_id, source, revision and content. Handbooks guide checks; they are not live telemetry.\n    top_k is 1-10. Query is 1-2000 characters. Uses fixed BGE embeddings and pgvector cosine search.\n    ",
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "query": {
+                    "title": "Query",
+                    "type": "string"
+                  },
+                  "top_k": {
+                    "default": 3,
+                    "title": "Top K",
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "query"
+                ],
+                "title": "runbooksArguments"
+              }
+            },
+            {
+              "name": "search_experiences",
+              "description": "Find human-confirmed incident experience for a service in the current project.\n\n    Use for related past incidents and applicable investigation steps. Results are historical\n    knowledge, not live evidence for a new incident. Returns citeable IDs and original run/time.\n    Exact service match, latest confirmations first. Limit is 1-20.\n    ",
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "service": {
+                    "title": "Service",
+                    "type": "string"
+                  },
+                  "limit": {
+                    "default": 5,
+                    "title": "Limit",
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "service"
+                ],
+                "title": "experiencesArguments"
+              }
+            },
+            {
+              "name": "analyze_logs",
+              "description": "Run Python statistics on logs already retrieved in THIS run, using OpenShell only.\n\n    Use only when the user requests statistical analysis. logs is a list of authorized rows.\n    Print exactly one JSON value. No network, credentials, package installs or host files.\n    Maximum 100 log IDs, code 6000 chars, 8 seconds, 256MiB, output 64KiB.\n    Runtime absence is a tool error; never claim analysis succeeded without its result.\n    ",
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "evidence_ids": {
+                    "items": {
+                      "type": "string"
+                    },
+                    "title": "Evidence Ids",
+                    "type": "array"
+                  },
+                  "python_code": {
+                    "title": "Python Code",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "evidence_ids",
+                  "python_code"
+                ],
+                "title": "analyze_logsArguments"
+              }
+            }
+          ],
+          "tool_schemas_sha256": "d50be48bfae9c71d5645337a9cd10ff9580fc6da8f8e518898dc1ab5a0d5079b",
+          "retrieval": {
+            "corpus_sha256": "023114864f127896cfc77ae214368e69d1dcfb883b0395c7c363db162c1a03ca",
+            "chunks_sha256": "b6a49d5e1a286048cf707277fb38f796b74ab0a6bd946245fa74ee64ea24fdd7",
+            "chunking": "authored-h2-v1",
+            "embedding_model": "BAAI/bge-small-zh-v1.5",
+            "embedding_revision": "7999e1d3359715c523056ef9478215996d62a620",
+            "dimensions": 512,
+            "normalize": true,
+            "query_prefix": "为这个句子生成表示以用于检索相关文章：",
+            "max_seq_length": 512,
+            "artifacts_sha256": "f4266a5ac784113f55b6d07f5ec45559a94ab34ea2fe3464a811e6d3a7d1a925",
+            "strategy": "vector",
+            "top_k": 5,
+            "candidate_k": 10,
+            "rrf_offset": 60
+          }
+        },
+        "usage": {
+          "input_tokens": 8668,
+          "output_tokens": 851
+        },
+        "error": null,
+        "started_at": "2026-11-01T10:36:15.251801+00:00",
+        "finished_at": "2026-11-01T10:36:22.783849+00:00",
+        "steps": [
+          {
+            "sequence": 1,
+            "kind": "model",
+            "name": "agentlens-agent",
+            "input": {
+              "messages": [
+                {
+                  "content": "请调查 inventory-api 在 2026-11-05T08:00:00+08:00 至 2026-11-05T08:15:00+08:00（结束时间不包含）的异常，结合日志与指标，检索并引用支持建议的手册。",
+                  "additional_kwargs": {},
+                  "response_metadata": {},
+                  "type": "human",
+                  "name": null,
+                  "id": "4b722076-7b19-4ad5-9db5-907f74d20a31"
+                }
+              ]
+            },
+            "output": {
+              "content": "我会同时查询该时间窗内 inventory-api 的日志和指标。",
+              "tool_calls": [
+                {
+                  "name": "search_logs",
+                  "args": {
+                    "service": "inventory-api",
+                    "start_time": "2026-11-05T08:00:00+08:00",
+                    "end_time": "2026-11-05T08:15:00+08:00",
+                    "limit": 100
+                  },
+                  "id": "call_00_yokE5dphf2TJr3LkHDpP3924",
+                  "type": "tool_call"
+                },
+                {
+                  "name": "query_metrics",
+                  "args": {
+                    "service": "inventory-api",
+                    "start_time": "2026-11-05T08:00:00+08:00",
+                    "end_time": "2026-11-05T08:15:00+08:00"
+                  },
+                  "id": "call_01_wOcIEp6fiv8yFFO8wpgQ1360",
+                  "type": "tool_call"
+                }
+              ],
+              "usage": {
+                "input_tokens": 1617,
+                "output_tokens": 229,
+                "total_tokens": 1846,
+                "input_token_details": {
+                  "cache_read": 1408
+                },
+                "output_token_details": {}
+              },
+              "response_model": "agentlens-agent",
+              "billing": {
+                "currency": "USD",
+                "pricing_version": "deepseek-2026-11-01",
+                "pricing_sha256": "6a41970e9ba6f1c65aadd1eab8483e562cfa3abb7eecfe9dc78e264dc22f301d",
+                "source": "https://api-docs.deepseek.com/quick_start/pricing/",
+                "cost": "0.000172974",
+                "cache_read_tokens": 1408,
+                "reason": null,
+                "model_source": "local_gateway_configuration; response_contains_alias",
+                "gateway_config_sha256": "7defcb62e9bf9f418561063d1b4ccb9ed038bffc5c3921858278e02ec5c600de",
+                "priced_model": "deepseek-flash",
+                "rates_per_million": {
+                  "cache_hit": 0.003,
+                  "cache_miss": 0.15,
+                  "output": 0.6
+                }
+              }
+            },
+            "error": null,
+            "duration_ms": 1692.53,
+            "span_id": "bf8b786f52d717ee",
+            "source_step_sequence": null
+          },
+          {
+            "sequence": 2,
+            "kind": "tool",
+            "name": "search_logs",
+            "input": {
+              "service": "inventory-api",
+              "start_time": "2026-11-05T08:00:00+08:00",
+              "end_time": "2026-11-05T08:15:00+08:00",
+              "limit": 100
+            },
+            "output": {
+              "logs": [
+                {
+                  "evidence_id": "w6-memory-pressure-01-log-1",
+                  "timestamp": "2026-11-05T00:02:00+00:00",
+                  "service": "inventory-api",
+                  "level": "ERROR",
+                  "message": "instance=replica-1; Container terminated: OOMKilled, exitCode=137, memory limit=512MiB"
+                }
+              ]
+            },
+            "error": null,
+            "duration_ms": 10.75,
+            "span_id": "204fff4a60742f87",
+            "source_step_sequence": null
+          },
+          {
+            "sequence": 3,
+            "kind": "tool",
+            "name": "query_metrics",
+            "input": {
+              "service": "inventory-api",
+              "start_time": "2026-11-05T08:00:00+08:00",
+              "end_time": "2026-11-05T08:15:00+08:00"
+            },
+            "output": {
+              "metrics": [
+                {
+                  "evidence_id": "w6-memory-pressure-01-metric-1",
+                  "timestamp": "2026-11-05T00:03:00+00:00",
+                  "service": "inventory-api",
+                  "name": "memory_working_set_mb",
+                  "value": 511.0,
+                  "unit": "MB"
+                },
+                {
+                  "evidence_id": "w6-memory-pressure-01-metric-2",
+                  "timestamp": "2026-11-05T00:03:00+00:00",
+                  "service": "inventory-api",
+                  "name": "memory_limit_mb",
+                  "value": 512.0,
+                  "unit": "MB"
+                },
+                {
+                  "evidence_id": "w6-memory-pressure-01-metric-3",
+                  "timestamp": "2026-11-05T00:03:00+00:00",
+                  "service": "inventory-api",
+                  "name": "container_restarts",
+                  "value": 4.0,
+                  "unit": "restarts"
+                }
+              ]
+            },
+            "error": null,
+            "duration_ms": 9.74,
+            "span_id": "c84bfcf46ffcaecc",
+            "source_step_sequence": null
+          },
+          {
+            "sequence": 4,
+            "kind": "model",
+            "name": "agentlens-agent",
+            "input": {
+              "messages": [
+                {
+                  "content": "请调查 inventory-api 在 2026-11-05T08:00:00+08:00 至 2026-11-05T08:15:00+08:00（结束时间不包含）的异常，结合日志与指标，检索并引用支持建议的手册。",
+                  "additional_kwargs": {},
+                  "response_metadata": {},
+                  "type": "human",
+                  "name": null,
+                  "id": "4b722076-7b19-4ad5-9db5-907f74d20a31"
+                },
+                {
+                  "content": "我会同时查询该时间窗内 inventory-api 的日志和指标。",
+                  "additional_kwargs": {},
+                  "response_metadata": {
+                    "model_provider": "openai",
+                    "finish_reason": "tool_calls",
+                    "model_name": "agentlens-agent",
+                    "system_fingerprint": "bc19ba97cbe016479903222bb1578db6"
+                  },
+                  "type": "ai",
+                  "name": null,
+                  "id": "lc_run--01a196ae-6a3a-70fe-8389-04d6de4f1760",
+                  "tool_calls": [
+                    {
+                      "name": "search_logs",
+                      "args": {
+                        "service": "inventory-api",
+                        "start_time": "2026-11-05T08:00:00+08:00",
+                        "end_time": "2026-11-05T08:15:00+08:00",
+                        "limit": 100
+                      },
+                      "id": "call_00_yokE5dphf2TJr3LkHDpP3924",
+                      "type": "tool_call"
+                    },
+                    {
+                      "name": "query_metrics",
+                      "args": {
+                        "service": "inventory-api",
+                        "start_time": "2026-11-05T08:00:00+08:00",
+                        "end_time": "2026-11-05T08:15:00+08:00"
+                      },
+                      "id": "call_01_wOcIEp6fiv8yFFO8wpgQ1360",
+                      "type": "tool_call"
+                    }
+                  ],
+                  "invalid_tool_calls": [],
+                  "usage_metadata": {
+                    "input_tokens": 1617,
+                    "output_tokens": 229,
+                    "total_tokens": 1846,
+                    "input_token_details": {
+                      "cache_read": 1408
+                    },
+                    "output_token_details": {}
+                  }
+                },
+                {
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "{\n  \"logs\": [\n    {\n      \"evidence_id\": \"w6-memory-pressure-01-log-1\",\n      \"timestamp\": \"2026-11-05T00:02:00+00:00\",\n      \"service\": \"inventory-api\",\n      \"level\": \"ERROR\",\n      \"message\": \"instance=replica-1; Container terminated: OOMKilled, exitCode=137, memory limit=512MiB\"\n    }\n  ]\n}",
+                      "id": "lc_dc3a4981-c5b6-4f0e-b7f9-376497f77e51"
+                    }
+                  ],
+                  "additional_kwargs": {},
+                  "response_metadata": {},
+                  "type": "tool",
+                  "name": "search_logs",
+                  "id": "1e25cf68-0b5f-433a-a355-ae74c71291bd",
+                  "tool_call_id": "call_00_yokE5dphf2TJr3LkHDpP3924",
+                  "artifact": {
+                    "structured_content": {
+                      "logs": [
+                        {
+                          "evidence_id": "w6-memory-pressure-01-log-1",
+                          "timestamp": "2026-11-05T00:02:00+00:00",
+                          "service": "inventory-api",
+                          "level": "ERROR",
+                          "message": "instance=replica-1; Container terminated: OOMKilled, exitCode=137, memory limit=512MiB"
+                        }
+                      ]
+                    }
+                  },
+                  "status": "success"
+                },
+                {
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "{\n  \"metrics\": [\n    {\n      \"evidence_id\": \"w6-memory-pressure-01-metric-1\",\n      \"timestamp\": \"2026-11-05T00:03:00+00:00\",\n      \"service\": \"inventory-api\",\n      \"name\": \"memory_working_set_mb\",\n      \"value\": 511.0,\n      \"unit\": \"MB\"\n    },\n    {\n      \"evidence_id\": \"w6-memory-pressure-01-metric-2\",\n      \"timestamp\": \"2026-11-05T00:03:00+00:00\",\n      \"service\": \"inventory-api\",\n      \"name\": \"memory_limit_mb\",\n      \"value\": 512.0,\n      \"unit\": \"MB\"\n    },\n    {\n      \"evidence_id\": \"w6-memory-pressure-01-metric-3\",\n      \"timestamp\": \"2026-11-05T00:03:00+00:00\",\n      \"service\": \"inventory-api\",\n      \"name\": \"container_restarts\",\n      \"value\": 4.0,\n      \"unit\": \"restarts\"\n    }\n  ]\n}",
+                      "id": "lc_caa5386e-d427-4750-9f6b-b8ed098650ec"
+                    }
+                  ],
+                  "additional_kwargs": {},
+                  "response_metadata": {},
+                  "type": "tool",
+                  "name": "query_metrics",
+                  "id": "96a92909-2d4d-4868-ae01-cab2d509bbfa",
+                  "tool_call_id": "call_01_wOcIEp6fiv8yFFO8wpgQ1360",
+                  "artifact": {
+                    "structured_content": {
+                      "metrics": [
+                        {
+                          "evidence_id": "w6-memory-pressure-01-metric-1",
+                          "timestamp": "2026-11-05T00:03:00+00:00",
+                          "service": "inventory-api",
+                          "name": "memory_working_set_mb",
+                          "value": 511.0,
+                          "unit": "MB"
+                        },
+                        {
+                          "evidence_id": "w6-memory-pressure-01-metric-2",
+                          "timestamp": "2026-11-05T00:03:00+00:00",
+                          "service": "inventory-api",
+                          "name": "memory_limit_mb",
+                          "value": 512.0,
+                          "unit": "MB"
+                        },
+                        {
+                          "evidence_id": "w6-memory-pressure-01-metric-3",
+                          "timestamp": "2026-11-05T00:03:00+00:00",
+                          "service": "inventory-api",
+                          "name": "container_restarts",
+                          "value": 4.0,
+                          "unit": "restarts"
+                        }
+                      ]
+                    }
+                  },
+                  "status": "success"
+                }
+              ]
+            },
+            "output": {
+              "content": "",
+              "tool_calls": [
+                {
+                  "name": "search_runbooks",
+                  "args": {
+                    "query": "inventory-api OOMKilled exitCode=137 memory_working_set_mb 接近 memory_limit_mb 512MiB 容器重启",
+                    "top_k": 5
+                  },
+                  "id": "call_00_d5RL5RkPsTRT5V6p79oj4895",
+                  "type": "tool_call"
+                },
+                {
+                  "name": "search_experiences",
+                  "args": {
+                    "service": "inventory-api",
+                    "limit": 5
+                  },
+                  "id": "call_01_tQi13gKMtfUkkTb33O4P3920",
+                  "type": "tool_call"
+                }
+              ],
+              "usage": {
+                "input_tokens": 2213,
+                "output_tokens": 132,
+                "total_tokens": 2345,
+                "input_token_details": {
+                  "cache_read": 1792
+                },
+                "output_token_details": {}
+              },
+              "response_model": "agentlens-agent",
+              "billing": {
+                "currency": "USD",
+                "pricing_version": "deepseek-2026-11-01",
+                "pricing_sha256": "6a41970e9ba6f1c65aadd1eab8483e562cfa3abb7eecfe9dc78e264dc22f301d",
+                "source": "https://api-docs.deepseek.com/quick_start/pricing/",
+                "cost": "0.000147726",
+                "cache_read_tokens": 1792,
+                "reason": null,
+                "model_source": "local_gateway_configuration; response_contains_alias",
+                "gateway_config_sha256": "7defcb62e9bf9f418561063d1b4ccb9ed038bffc5c3921858278e02ec5c600de",
+                "priced_model": "deepseek-flash",
+                "rates_per_million": {
+                  "cache_hit": 0.003,
+                  "cache_miss": 0.15,
+                  "output": 0.6
+                }
+              }
+            },
+            "error": null,
+            "duration_ms": 1620.38,
+            "span_id": "5716528f356ec59d",
+            "source_step_sequence": null
+          },
+          {
+            "sequence": 5,
+            "kind": "tool",
+            "name": "search_runbooks",
+            "input": {
+              "query": "inventory-api OOMKilled exitCode=137 memory_working_set_mb 接近 memory_limit_mb 512MiB 容器重启",
+              "top_k": 5
+            },
+            "output": {
+              "chunks": [
+                {
+                  "evidence_id": "memory-pressure--s01",
+                  "document_id": "memory-pressure",
+                  "project_id": "project-b",
+                  "source": "datasets/runbooks/memory-pressure.md",
+                  "revision": "869f3c5c43a9db99a5c78b1d8e074d4479f46ad9c3ab3ae36422b58accbcfd11",
+                  "content": "inventory-api OOMKilled 与内存压力\n核对容器内存限制\n\ninventory-api 出现 OOMKilled、exitCode=137 时，对照 memory_working_set_mb、memory_limit_mb 与 container_restarts。工作集逼近容器限制并伴随重启，支持内存压力判断；137 单独出现也可能是其他 SIGKILL，不能只按退出码断定内存泄漏。",
+                  "ranks": {
+                    "vector": 1
+                  },
+                  "rrf_score": 0.01639344262295082,
+                  "retrieval_manifest": {
+                    "corpus_sha256": "023114864f127896cfc77ae214368e69d1dcfb883b0395c7c363db162c1a03ca",
+                    "chunks_sha256": "b6a49d5e1a286048cf707277fb38f796b74ab0a6bd946245fa74ee64ea24fdd7",
+                    "chunking": "authored-h2-v1",
+                    "embedding_model": "BAAI/bge-small-zh-v1.5",
+                    "embedding_revision": "7999e1d3359715c523056ef9478215996d62a620",
+                    "dimensions": 512,
+                    "normalize": true,
+                    "query_prefix": "为这个句子生成表示以用于检索相关文章：",
+                    "max_seq_length": 512,
+                    "artifacts_sha256": "f4266a5ac784113f55b6d07f5ec45559a94ab34ea2fe3464a811e6d3a7d1a925",
+                    "strategy": "vector",
+                    "top_k": 5,
+                    "candidate_k": 10,
+                    "rrf_offset": 60
+                  }
+                },
+                {
+                  "evidence_id": "disk-full--s01",
+                  "document_id": "disk-full",
+                  "project_id": "project-b",
+                  "source": "datasets/runbooks/disk-full.md",
+                  "revision": "763601e29fe5b48f8d0d9d9a61793fbb925b24a4ff2da55af63535806beaa936",
+                  "content": "inventory-api 磁盘空间不足\n识别写入失败\n\ninventory-api 出现 ENOSPC、No space left on device 时，对照磁盘使用率与 inode 数。磁盘字节未满仍可能 inode 耗尽；它与内存 OOMKilled 是不同资源问题。",
+                  "ranks": {
+                    "vector": 2
+                  },
+                  "rrf_score": 0.016129032258064516,
+                  "retrieval_manifest": {
+                    "corpus_sha256": "023114864f127896cfc77ae214368e69d1dcfb883b0395c7c363db162c1a03ca",
+                    "chunks_sha256": "b6a49d5e1a286048cf707277fb38f796b74ab0a6bd946245fa74ee64ea24fdd7",
+                    "chunking": "authored-h2-v1",
+                    "embedding_model": "BAAI/bge-small-zh-v1.5",
+                    "embedding_revision": "7999e1d3359715c523056ef9478215996d62a620",
+                    "dimensions": 512,
+                    "normalize": true,
+                    "query_prefix": "为这个句子生成表示以用于检索相关文章：",
+                    "max_seq_length": 512,
+                    "artifacts_sha256": "f4266a5ac784113f55b6d07f5ec45559a94ab34ea2fe3464a811e6d3a7d1a925",
+                    "strategy": "vector",
+                    "top_k": 5,
+                    "candidate_k": 10,
+                    "rrf_offset": 60
+                  }
+                },
+                {
+                  "evidence_id": "memory-pressure--s02",
+                  "document_id": "memory-pressure",
+                  "project_id": "project-b",
+                  "source": "datasets/runbooks/memory-pressure.md",
+                  "revision": "869f3c5c43a9db99a5c78b1d8e074d4479f46ad9c3ab3ae36422b58accbcfd11",
+                  "content": "inventory-api OOMKilled 与内存压力\n区分容量与泄漏\n\n比较重启前增长趋势、请求体大小、缓存大小和堆转储。持续增长与突发大对象是不同路径；缺少堆证据时标注未知。扩容或调整内存上限应先评估节点剩余容量，不从一次 OOM 直接推荐无限扩容。",
+                  "ranks": {
+                    "vector": 3
+                  },
+                  "rrf_score": 0.015873015873015872,
+                  "retrieval_manifest": {
+                    "corpus_sha256": "023114864f127896cfc77ae214368e69d1dcfb883b0395c7c363db162c1a03ca",
+                    "chunks_sha256": "b6a49d5e1a286048cf707277fb38f796b74ab0a6bd946245fa74ee64ea24fdd7",
+                    "chunking": "authored-h2-v1",
+                    "embedding_model": "BAAI/bge-small-zh-v1.5",
+                    "embedding_revision": "7999e1d3359715c523056ef9478215996d62a620",
+                    "dimensions": 512,
+                    "normalize": true,
+                    "query_prefix": "为这个句子生成表示以用于检索相关文章：",
+                    "max_seq_length": 512,
+                    "artifacts_sha256": "f4266a5ac784113f55b6d07f5ec45559a94ab34ea2fe3464a811e6d3a7d1a925",
+                    "strategy": "vector",
+                    "top_k": 5,
+                    "candidate_k": 10,
+                    "rrf_offset": 60
+                  }
+                },
+                {
+                  "evidence_id": "cpu-throttling--s01",
+                  "document_id": "cpu-throttling",
+                  "project_id": "project-b",
+                  "source": "datasets/runbooks/cpu-throttling.md",
+                  "revision": "0bce3a078ae992079cab02f2c1f3e6d2776b55fba9a8d04d426b179ded572d87",
+                  "content": "inventory-api CPU 配额节流\n识别 CPU throttling\n\ninventory-api 延迟升高时，对照 container_cpu_cfs_throttled_seconds_total、CPU limit 和队列。受 CPU 配额限制时，节点总体 CPU 仍可能空闲。不能只用 worker_cpu_percent 推断节点算力不足。",
+                  "ranks": {
+                    "vector": 4
+                  },
+                  "rrf_score": 0.015625,
+                  "retrieval_manifest": {
+                    "corpus_sha256": "023114864f127896cfc77ae214368e69d1dcfb883b0395c7c363db162c1a03ca",
+                    "chunks_sha256": "b6a49d5e1a286048cf707277fb38f796b74ab0a6bd946245fa74ee64ea24fdd7",
+                    "chunking": "authored-h2-v1",
+                    "embedding_model": "BAAI/bge-small-zh-v1.5",
+                    "embedding_revision": "7999e1d3359715c523056ef9478215996d62a620",
+                    "dimensions": 512,
+                    "normalize": true,
+                    "query_prefix": "为这个句子生成表示以用于检索相关文章：",
+                    "max_seq_length": 512,
+                    "artifacts_sha256": "f4266a5ac784113f55b6d07f5ec45559a94ab34ea2fe3464a811e6d3a7d1a925",
+                    "strategy": "vector",
+                    "top_k": 5,
+                    "candidate_k": 10,
+                    "rrf_offset": 60
+                  }
+                },
+                {
+                  "evidence_id": "cache-miss--s02",
+                  "document_id": "cache-miss",
+                  "project_id": "project-b",
+                  "source": "datasets/runbooks/cache-miss.md",
+                  "revision": "a9a090938d5969413eb35ffbfbe9b92bcf843d3efc541f9632cf0fbcc9169ef3",
+                  "content": "inventory-api 缓存命中率下降\n确认影响范围\n\n检查热点键、缓存错误与容量淘汰，区分批量过期和连接失败。建议预热或修改过期策略前，评估回源负载和数据一致性要求。",
+                  "ranks": {
+                    "vector": 5
+                  },
+                  "rrf_score": 0.015384615384615385,
+                  "retrieval_manifest": {
+                    "corpus_sha256": "023114864f127896cfc77ae214368e69d1dcfb883b0395c7c363db162c1a03ca",
+                    "chunks_sha256": "b6a49d5e1a286048cf707277fb38f796b74ab0a6bd946245fa74ee64ea24fdd7",
+                    "chunking": "authored-h2-v1",
+                    "embedding_model": "BAAI/bge-small-zh-v1.5",
+                    "embedding_revision": "7999e1d3359715c523056ef9478215996d62a620",
+                    "dimensions": 512,
+                    "normalize": true,
+                    "query_prefix": "为这个句子生成表示以用于检索相关文章：",
+                    "max_seq_length": 512,
+                    "artifacts_sha256": "f4266a5ac784113f55b6d07f5ec45559a94ab34ea2fe3464a811e6d3a7d1a925",
+                    "strategy": "vector",
+                    "top_k": 5,
+                    "candidate_k": 10,
+                    "rrf_offset": 60
+                  }
+                }
+              ]
+            },
+            "error": null,
+            "duration_ms": 30.66,
+            "span_id": "19ed6daaf901d2c7",
+            "source_step_sequence": null
+          },
+          {
+            "sequence": 6,
+            "kind": "tool",
+            "name": "search_experiences",
+            "input": {
+              "service": "inventory-api",
+              "limit": 5
+            },
+            "output": {
+              "experiences": []
+            },
+            "error": null,
+            "duration_ms": 9.38,
+            "span_id": "aff2172888f1beae",
+            "source_step_sequence": null
+          },
+          {
+            "sequence": 7,
+            "kind": "model",
+            "name": "agentlens-agent",
+            "input": {
+              "messages": [
+                {
+                  "content": "请调查 inventory-api 在 2026-11-05T08:00:00+08:00 至 2026-11-05T08:15:00+08:00（结束时间不包含）的异常，结合日志与指标，检索并引用支持建议的手册。",
+                  "additional_kwargs": {},
+                  "response_metadata": {},
+                  "type": "human",
+                  "name": null,
+                  "id": "4b722076-7b19-4ad5-9db5-907f74d20a31"
+                },
+                {
+                  "content": "我会同时查询该时间窗内 inventory-api 的日志和指标。",
+                  "additional_kwargs": {},
+                  "response_metadata": {
+                    "model_provider": "openai",
+                    "finish_reason": "tool_calls",
+                    "model_name": "agentlens-agent",
+                    "system_fingerprint": "bc19ba97cbe016479903222bb1578db6"
+                  },
+                  "type": "ai",
+                  "name": null,
+                  "id": "lc_run--01a196ae-6a3a-70fe-8389-04d6de4f1760",
+                  "tool_calls": [
+                    {
+                      "name": "search_logs",
+                      "args": {
+                        "service": "inventory-api",
+                        "start_time": "2026-11-05T08:00:00+08:00",
+                        "end_time": "2026-11-05T08:15:00+08:00",
+                        "limit": 100
+                      },
+                      "id": "call_00_yokE5dphf2TJr3LkHDpP3924",
+                      "type": "tool_call"
+                    },
+                    {
+                      "name": "query_metrics",
+                      "args": {
+                        "service": "inventory-api",
+                        "start_time": "2026-11-05T08:00:00+08:00",
+                        "end_time": "2026-11-05T08:15:00+08:00"
+                      },
+                      "id": "call_01_wOcIEp6fiv8yFFO8wpgQ1360",
+                      "type": "tool_call"
+                    }
+                  ],
+                  "invalid_tool_calls": [],
+                  "usage_metadata": {
+                    "input_tokens": 1617,
+                    "output_tokens": 229,
+                    "total_tokens": 1846,
+                    "input_token_details": {
+                      "cache_read": 1408
+                    },
+                    "output_token_details": {}
+                  }
+                },
+                {
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "{\n  \"logs\": [\n    {\n      \"evidence_id\": \"w6-memory-pressure-01-log-1\",\n      \"timestamp\": \"2026-11-05T00:02:00+00:00\",\n      \"service\": \"inventory-api\",\n      \"level\": \"ERROR\",\n      \"message\": \"instance=replica-1; Container terminated: OOMKilled, exitCode=137, memory limit=512MiB\"\n    }\n  ]\n}",
+                      "id": "lc_dc3a4981-c5b6-4f0e-b7f9-376497f77e51"
+                    }
+                  ],
+                  "additional_kwargs": {},
+                  "response_metadata": {},
+                  "type": "tool",
+                  "name": "search_logs",
+                  "id": "1e25cf68-0b5f-433a-a355-ae74c71291bd",
+                  "tool_call_id": "call_00_yokE5dphf2TJr3LkHDpP3924",
+                  "artifact": {
+                    "structured_content": {
+                      "logs": [
+                        {
+                          "evidence_id": "w6-memory-pressure-01-log-1",
+                          "timestamp": "2026-11-05T00:02:00+00:00",
+                          "service": "inventory-api",
+                          "level": "ERROR",
+                          "message": "instance=replica-1; Container terminated: OOMKilled, exitCode=137, memory limit=512MiB"
+                        }
+                      ]
+                    }
+                  },
+                  "status": "success"
+                },
+                {
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "{\n  \"metrics\": [\n    {\n      \"evidence_id\": \"w6-memory-pressure-01-metric-1\",\n      \"timestamp\": \"2026-11-05T00:03:00+00:00\",\n      \"service\": \"inventory-api\",\n      \"name\": \"memory_working_set_mb\",\n      \"value\": 511.0,\n      \"unit\": \"MB\"\n    },\n    {\n      \"evidence_id\": \"w6-memory-pressure-01-metric-2\",\n      \"timestamp\": \"2026-11-05T00:03:00+00:00\",\n      \"service\": \"inventory-api\",\n      \"name\": \"memory_limit_mb\",\n      \"value\": 512.0,\n      \"unit\": \"MB\"\n    },\n    {\n      \"evidence_id\": \"w6-memory-pressure-01-metric-3\",\n      \"timestamp\": \"2026-11-05T00:03:00+00:00\",\n      \"service\": \"inventory-api\",\n      \"name\": \"container_restarts\",\n      \"value\": 4.0,\n      \"unit\": \"restarts\"\n    }\n  ]\n}",
+                      "id": "lc_caa5386e-d427-4750-9f6b-b8ed098650ec"
+                    }
+                  ],
+                  "additional_kwargs": {},
+                  "response_metadata": {},
+                  "type": "tool",
+                  "name": "query_metrics",
+                  "id": "96a92909-2d4d-4868-ae01-cab2d509bbfa",
+                  "tool_call_id": "call_01_wOcIEp6fiv8yFFO8wpgQ1360",
+                  "artifact": {
+                    "structured_content": {
+                      "metrics": [
+                        {
+                          "evidence_id": "w6-memory-pressure-01-metric-1",
+                          "timestamp": "2026-11-05T00:03:00+00:00",
+                          "service": "inventory-api",
+                          "name": "memory_working_set_mb",
+                          "value": 511.0,
+                          "unit": "MB"
+                        },
+                        {
+                          "evidence_id": "w6-memory-pressure-01-metric-2",
+                          "timestamp": "2026-11-05T00:03:00+00:00",
+                          "service": "inventory-api",
+                          "name": "memory_limit_mb",
+                          "value": 512.0,
+                          "unit": "MB"
+                        },
+                        {
+                          "evidence_id": "w6-memory-pressure-01-metric-3",
+                          "timestamp": "2026-11-05T00:03:00+00:00",
+                          "service": "inventory-api",
+                          "name": "container_restarts",
+                          "value": 4.0,
+                          "unit": "restarts"
+                        }
+                      ]
+                    }
+                  },
+                  "status": "success"
+                },
+                {
+                  "content": "",
+                  "additional_kwargs": {},
+                  "response_metadata": {
+                    "model_provider": "openai",
+                    "finish_reason": "tool_calls",
+                    "model_name": "agentlens-agent",
+                    "system_fingerprint": "bc19ba97cbe016479903222bb1578db6"
+                  },
+                  "type": "ai",
+                  "name": null,
+                  "id": "lc_run--01a196ae-70f6-7445-8333-9b5daa5396df",
+                  "tool_calls": [
+                    {
+                      "name": "search_runbooks",
+                      "args": {
+                        "query": "inventory-api OOMKilled exitCode=137 memory_working_set_mb 接近 memory_limit_mb 512MiB 容器重启",
+                        "top_k": 5
+                      },
+                      "id": "call_00_d5RL5RkPsTRT5V6p79oj4895",
+                      "type": "tool_call"
+                    },
+                    {
+                      "name": "search_experiences",
+                      "args": {
+                        "service": "inventory-api",
+                        "limit": 5
+                      },
+                      "id": "call_01_tQi13gKMtfUkkTb33O4P3920",
+                      "type": "tool_call"
+                    }
+                  ],
+                  "invalid_tool_calls": [],
+                  "usage_metadata": {
+                    "input_tokens": 2213,
+                    "output_tokens": 132,
+                    "total_tokens": 2345,
+                    "input_token_details": {
+                      "cache_read": 1792
+                    },
+                    "output_token_details": {}
+                  }
+                },
+                {
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "{\n  \"chunks\": [\n    {\n      \"evidence_id\": \"memory-pressure--s01\",\n      \"document_id\": \"memory-pressure\",\n      \"project_id\": \"project-b\",\n      \"source\": \"datasets/runbooks/memory-pressure.md\",\n      \"revision\": \"869f3c5c43a9db99a5c78b1d8e074d4479f46ad9c3ab3ae36422b58accbcfd11\",\n      \"content\": \"inventory-api OOMKilled 与内存压力\\n核对容器内存限制\\n\\ninventory-api 出现 OOMKilled、exitCode=137 时，对照 memory_working_set_mb、memory_limit_mb 与 container_restarts。工作集逼近容器限制并伴随重启，支持内存压力判断；137 单独出现也可能是其他 SIGKILL，不能只按退出码断定内存泄漏。\",\n      \"ranks\": {\n        \"vector\": 1\n      },\n      \"rrf_score\": 0.01639344262295082,\n      \"retrieval_manifest\": {\n        \"corpus_sha256\": \"023114864f127896cfc77ae214368e69d1dcfb883b0395c7c363db162c1a03ca\",\n        \"chunks_sha256\": \"b6a49d5e1a286048cf707277fb38f796b74ab0a6bd946245fa74ee64ea24fdd7\",\n        \"chunking\": \"authored-h2-v1\",\n        \"embedding_model\": \"BAAI/bge-small-zh-v1.5\",\n        \"embedding_revision\": \"7999e1d3359715c523056ef9478215996d62a620\",\n        \"dimensions\": 512,\n        \"normalize\": true,\n        \"query_prefix\": \"为这个句子生成表示以用于检索相关文章：\",\n        \"max_seq_length\": 512,\n        \"artifacts_sha256\": \"f4266a5ac784113f55b6d07f5ec45559a94ab34ea2fe3464a811e6d3a7d1a925\",\n        \"strategy\": \"vector\",\n        \"top_k\": 5,\n        \"candidate_k\": 10,\n        \"rrf_offset\": 60\n      }\n    },\n    {\n      \"evidence_id\": \"disk-full--s01\",\n      \"document_id\": \"disk-full\",\n      \"project_id\": \"project-b\",\n      \"source\": \"datasets/runbooks/disk-full.md\",\n      \"revision\": \"763601e29fe5b48f8d0d9d9a61793fbb925b24a4ff2da55af63535806beaa936\",\n      \"content\": \"inventory-api 磁盘空间不足\\n识别写入失败\\n\\ninventory-api 出现 ENOSPC、No space left on device 时，对照磁盘使用率与 inode 数。磁盘字节未满仍可能 inode 耗尽；它与内存 OOMKilled 是不同资源问题。\",\n      \"ranks\": {\n        \"vector\": 2\n      },\n      \"rrf_score\": 0.016129032258064516,\n      \"retrieval_manifest\": {\n        \"corpus_sha256\": \"023114864f127896cfc77ae214368e69d1dcfb883b0395c7c363db162c1a03ca\",\n        \"chunks_sha256\": \"b6a49d5e1a286048cf707277fb38f796b74ab0a6bd946245fa74ee64ea24fdd7\",\n        \"chunking\": \"authored-h2-v1\",\n        \"embedding_model\": \"BAAI/bge-small-zh-v1.5\",\n        \"embedding_revision\": \"7999e1d3359715c523056ef9478215996d62a620\",\n        \"dimensions\": 512,\n        \"normalize\": true,\n        \"query_prefix\": \"为这个句子生成表示以用于检索相关文章：\",\n        \"max_seq_length\": 512,\n        \"artifacts_sha256\": \"f4266a5ac784113f55b6d07f5ec45559a94ab34ea2fe3464a811e6d3a7d1a925\",\n        \"strategy\": \"vector\",\n        \"top_k\": 5,\n        \"candidate_k\": 10,\n        \"rrf_offset\": 60\n      }\n    },\n    {\n      \"evidence_id\": \"memory-pressure--s02\",\n      \"document_id\": \"memory-pressure\",\n      \"project_id\": \"project-b\",\n      \"source\": \"datasets/runbooks/memory-pressure.md\",\n      \"revision\": \"869f3c5c43a9db99a5c78b1d8e074d4479f46ad9c3ab3ae36422b58accbcfd11\",\n      \"content\": \"inventory-api OOMKilled 与内存压力\\n区分容量与泄漏\\n\\n比较重启前增长趋势、请求体大小、缓存大小和堆转储。持续增长与突发大对象是不同路径；缺少堆证据时标注未知。扩容或调整内存上限应先评估节点剩余容量，不从一次 OOM 直接推荐无限扩容。\",\n      \"ranks\": {\n        \"vector\": 3\n      },\n      \"rrf_score\": 0.015873015873015872,\n      \"retrieval_manifest\": {\n        \"corpus_sha256\": \"023114864f127896cfc77ae214368e69d1dcfb883b0395c7c363db162c1a03ca\",\n        \"chunks_sha256\": \"b6a49d5e1a286048cf707277fb38f796b74ab0a6bd946245fa74ee64ea24fdd7\",\n        \"chunking\": \"authored-h2-v1\",\n        \"embedding_model\": \"BAAI/bge-small-zh-v1.5\",\n        \"embedding_revision\": \"7999e1d3359715c523056ef9478215996d62a620\",\n        \"dimensions\": 512,\n        \"normalize\": true,\n        \"query_prefix\": \"为这个句子生成表示以用于检索相关文章：\",\n        \"max_seq_length\": 512,\n        \"artifacts_sha256\": \"f4266a5ac784113f55b6d07f5ec45559a94ab34ea2fe3464a811e6d3a7d1a925\",\n        \"strategy\": \"vector\",\n        \"top_k\": 5,\n        \"candidate_k\": 10,\n        \"rrf_offset\": 60\n      }\n    },\n    {\n      \"evidence_id\": \"cpu-throttling--s01\",\n      \"document_id\": \"cpu-throttling\",\n      \"project_id\": \"project-b\",\n      \"source\": \"datasets/runbooks/cpu-throttling.md\",\n      \"revision\": \"0bce3a078ae992079cab02f2c1f3e6d2776b55fba9a8d04d426b179ded572d87\",\n      \"content\": \"inventory-api CPU 配额节流\\n识别 CPU throttling\\n\\ninventory-api 延迟升高时，对照 container_cpu_cfs_throttled_seconds_total、CPU limit 和队列。受 CPU 配额限制时，节点总体 CPU 仍可能空闲。不能只用 worker_cpu_percent 推断节点算力不足。\",\n      \"ranks\": {\n        \"vector\": 4\n      },\n      \"rrf_score\": 0.015625,\n      \"retrieval_manifest\": {\n        \"corpus_sha256\": \"023114864f127896cfc77ae214368e69d1dcfb883b0395c7c363db162c1a03ca\",\n        \"chunks_sha256\": \"b6a49d5e1a286048cf707277fb38f796b74ab0a6bd946245fa74ee64ea24fdd7\",\n        \"chunking\": \"authored-h2-v1\",\n        \"embedding_model\": \"BAAI/bge-small-zh-v1.5\",\n        \"embedding_revision\": \"7999e1d3359715c523056ef9478215996d62a620\",\n        \"dimensions\": 512,\n        \"normalize\": true,\n        \"query_prefix\": \"为这个句子生成表示以用于检索相关文章：\",\n        \"max_seq_length\": 512,\n        \"artifacts_sha256\": \"f4266a5ac784113f55b6d07f5ec45559a94ab34ea2fe3464a811e6d3a7d1a925\",\n        \"strategy\": \"vector\",\n        \"top_k\": 5,\n        \"candidate_k\": 10,\n        \"rrf_offset\": 60\n      }\n    },\n    {\n      \"evidence_id\": \"cache-miss--s02\",\n      \"document_id\": \"cache-miss\",\n      \"project_id\": \"project-b\",\n      \"source\": \"datasets/runbooks/cache-miss.md\",\n      \"revision\": \"a9a090938d5969413eb35ffbfbe9b92bcf843d3efc541f9632cf0fbcc9169ef3\",\n      \"content\": \"inventory-api 缓存命中率下降\\n确认影响范围\\n\\n检查热点键、缓存错误与容量淘汰，区分批量过期和连接失败。建议预热或修改过期策略前，评估回源负载和数据一致性要求。\",\n      \"ranks\": {\n        \"vector\": 5\n      },\n      \"rrf_score\": 0.015384615384615385,\n      \"retrieval_manifest\": {\n        \"corpus_sha256\": \"023114864f127896cfc77ae214368e69d1dcfb883b0395c7c363db162c1a03ca\",\n        \"chunks_sha256\": \"b6a49d5e1a286048cf707277fb38f796b74ab0a6bd946245fa74ee64ea24fdd7\",\n        \"chunking\": \"authored-h2-v1\",\n        \"embedding_model\": \"BAAI/bge-small-zh-v1.5\",\n        \"embedding_revision\": \"7999e1d3359715c523056ef9478215996d62a620\",\n        \"dimensions\": 512,\n        \"normalize\": true,\n        \"query_prefix\": \"为这个句子生成表示以用于检索相关文章：\",\n        \"max_seq_length\": 512,\n        \"artifacts_sha256\": \"f4266a5ac784113f55b6d07f5ec45559a94ab34ea2fe3464a811e6d3a7d1a925\",\n        \"strategy\": \"vector\",\n        \"top_k\": 5,\n        \"candidate_k\": 10,\n        \"rrf_offset\": 60\n      }\n    }\n  ]\n}",
+                      "id": "lc_ddf0c2e3-cfe1-4fd8-8d03-25c61468770c"
+                    }
+                  ],
+                  "additional_kwargs": {},
+                  "response_metadata": {},
+                  "type": "tool",
+                  "name": "search_runbooks",
+                  "id": "f117d1da-2068-4317-8304-90146afaadcc",
+                  "tool_call_id": "call_00_d5RL5RkPsTRT5V6p79oj4895",
+                  "artifact": {
+                    "structured_content": {
+                      "chunks": [
+                        {
+                          "evidence_id": "memory-pressure--s01",
+                          "document_id": "memory-pressure",
+                          "project_id": "project-b",
+                          "source": "datasets/runbooks/memory-pressure.md",
+                          "revision": "869f3c5c43a9db99a5c78b1d8e074d4479f46ad9c3ab3ae36422b58accbcfd11",
+                          "content": "inventory-api OOMKilled 与内存压力\n核对容器内存限制\n\ninventory-api 出现 OOMKilled、exitCode=137 时，对照 memory_working_set_mb、memory_limit_mb 与 container_restarts。工作集逼近容器限制并伴随重启，支持内存压力判断；137 单独出现也可能是其他 SIGKILL，不能只按退出码断定内存泄漏。",
+                          "ranks": {
+                            "vector": 1
+                          },
+                          "rrf_score": 0.01639344262295082,
+                          "retrieval_manifest": {
+                            "corpus_sha256": "023114864f127896cfc77ae214368e69d1dcfb883b0395c7c363db162c1a03ca",
+                            "chunks_sha256": "b6a49d5e1a286048cf707277fb38f796b74ab0a6bd946245fa74ee64ea24fdd7",
+                            "chunking": "authored-h2-v1",
+                            "embedding_model": "BAAI/bge-small-zh-v1.5",
+                            "embedding_revision": "7999e1d3359715c523056ef9478215996d62a620",
+                            "dimensions": 512,
+                            "normalize": true,
+                            "query_prefix": "为这个句子生成表示以用于检索相关文章：",
+                            "max_seq_length": 512,
+                            "artifacts_sha256": "f4266a5ac784113f55b6d07f5ec45559a94ab34ea2fe3464a811e6d3a7d1a925",
+                            "strategy": "vector",
+                            "top_k": 5,
+                            "candidate_k": 10,
+                            "rrf_offset": 60
+                          }
+                        },
+                        {
+                          "evidence_id": "disk-full--s01",
+                          "document_id": "disk-full",
+                          "project_id": "project-b",
+                          "source": "datasets/runbooks/disk-full.md",
+                          "revision": "763601e29fe5b48f8d0d9d9a61793fbb925b24a4ff2da55af63535806beaa936",
+                          "content": "inventory-api 磁盘空间不足\n识别写入失败\n\ninventory-api 出现 ENOSPC、No space left on device 时，对照磁盘使用率与 inode 数。磁盘字节未满仍可能 inode 耗尽；它与内存 OOMKilled 是不同资源问题。",
+                          "ranks": {
+                            "vector": 2
+                          },
+                          "rrf_score": 0.016129032258064516,
+                          "retrieval_manifest": {
+                            "corpus_sha256": "023114864f127896cfc77ae214368e69d1dcfb883b0395c7c363db162c1a03ca",
+                            "chunks_sha256": "b6a49d5e1a286048cf707277fb38f796b74ab0a6bd946245fa74ee64ea24fdd7",
+                            "chunking": "authored-h2-v1",
+                            "embedding_model": "BAAI/bge-small-zh-v1.5",
+                            "embedding_revision": "7999e1d3359715c523056ef9478215996d62a620",
+                            "dimensions": 512,
+                            "normalize": true,
+                            "query_prefix": "为这个句子生成表示以用于检索相关文章：",
+                            "max_seq_length": 512,
+                            "artifacts_sha256": "f4266a5ac784113f55b6d07f5ec45559a94ab34ea2fe3464a811e6d3a7d1a925",
+                            "strategy": "vector",
+                            "top_k": 5,
+                            "candidate_k": 10,
+                            "rrf_offset": 60
+                          }
+                        },
+                        {
+                          "evidence_id": "memory-pressure--s02",
+                          "document_id": "memory-pressure",
+                          "project_id": "project-b",
+                          "source": "datasets/runbooks/memory-pressure.md",
+                          "revision": "869f3c5c43a9db99a5c78b1d8e074d4479f46ad9c3ab3ae36422b58accbcfd11",
+                          "content": "inventory-api OOMKilled 与内存压力\n区分容量与泄漏\n\n比较重启前增长趋势、请求体大小、缓存大小和堆转储。持续增长与突发大对象是不同路径；缺少堆证据时标注未知。扩容或调整内存上限应先评估节点剩余容量，不从一次 OOM 直接推荐无限扩容。",
+                          "ranks": {
+                            "vector": 3
+                          },
+                          "rrf_score": 0.015873015873015872,
+                          "retrieval_manifest": {
+                            "corpus_sha256": "023114864f127896cfc77ae214368e69d1dcfb883b0395c7c363db162c1a03ca",
+                            "chunks_sha256": "b6a49d5e1a286048cf707277fb38f796b74ab0a6bd946245fa74ee64ea24fdd7",
+                            "chunking": "authored-h2-v1",
+                            "embedding_model": "BAAI/bge-small-zh-v1.5",
+                            "embedding_revision": "7999e1d3359715c523056ef9478215996d62a620",
+                            "dimensions": 512,
+                            "normalize": true,
+                            "query_prefix": "为这个句子生成表示以用于检索相关文章：",
+                            "max_seq_length": 512,
+                            "artifacts_sha256": "f4266a5ac784113f55b6d07f5ec45559a94ab34ea2fe3464a811e6d3a7d1a925",
+                            "strategy": "vector",
+                            "top_k": 5,
+                            "candidate_k": 10,
+                            "rrf_offset": 60
+                          }
+                        },
+                        {
+                          "evidence_id": "cpu-throttling--s01",
+                          "document_id": "cpu-throttling",
+                          "project_id": "project-b",
+                          "source": "datasets/runbooks/cpu-throttling.md",
+                          "revision": "0bce3a078ae992079cab02f2c1f3e6d2776b55fba9a8d04d426b179ded572d87",
+                          "content": "inventory-api CPU 配额节流\n识别 CPU throttling\n\ninventory-api 延迟升高时，对照 container_cpu_cfs_throttled_seconds_total、CPU limit 和队列。受 CPU 配额限制时，节点总体 CPU 仍可能空闲。不能只用 worker_cpu_percent 推断节点算力不足。",
+                          "ranks": {
+                            "vector": 4
+                          },
+                          "rrf_score": 0.015625,
+                          "retrieval_manifest": {
+                            "corpus_sha256": "023114864f127896cfc77ae214368e69d1dcfb883b0395c7c363db162c1a03ca",
+                            "chunks_sha256": "b6a49d5e1a286048cf707277fb38f796b74ab0a6bd946245fa74ee64ea24fdd7",
+                            "chunking": "authored-h2-v1",
+                            "embedding_model": "BAAI/bge-small-zh-v1.5",
+                            "embedding_revision": "7999e1d3359715c523056ef9478215996d62a620",
+                            "dimensions": 512,
+                            "normalize": true,
+                            "query_prefix": "为这个句子生成表示以用于检索相关文章：",
+                            "max_seq_length": 512,
+                            "artifacts_sha256": "f4266a5ac784113f55b6d07f5ec45559a94ab34ea2fe3464a811e6d3a7d1a925",
+                            "strategy": "vector",
+                            "top_k": 5,
+                            "candidate_k": 10,
+                            "rrf_offset": 60
+                          }
+                        },
+                        {
+                          "evidence_id": "cache-miss--s02",
+                          "document_id": "cache-miss",
+                          "project_id": "project-b",
+                          "source": "datasets/runbooks/cache-miss.md",
+                          "revision": "a9a090938d5969413eb35ffbfbe9b92bcf843d3efc541f9632cf0fbcc9169ef3",
+                          "content": "inventory-api 缓存命中率下降\n确认影响范围\n\n检查热点键、缓存错误与容量淘汰，区分批量过期和连接失败。建议预热或修改过期策略前，评估回源负载和数据一致性要求。",
+                          "ranks": {
+                            "vector": 5
+                          },
+                          "rrf_score": 0.015384615384615385,
+                          "retrieval_manifest": {
+                            "corpus_sha256": "023114864f127896cfc77ae214368e69d1dcfb883b0395c7c363db162c1a03ca",
+                            "chunks_sha256": "b6a49d5e1a286048cf707277fb38f796b74ab0a6bd946245fa74ee64ea24fdd7",
+                            "chunking": "authored-h2-v1",
+                            "embedding_model": "BAAI/bge-small-zh-v1.5",
+                            "embedding_revision": "7999e1d3359715c523056ef9478215996d62a620",
+                            "dimensions": 512,
+                            "normalize": true,
+                            "query_prefix": "为这个句子生成表示以用于检索相关文章：",
+                            "max_seq_length": 512,
+                            "artifacts_sha256": "f4266a5ac784113f55b6d07f5ec45559a94ab34ea2fe3464a811e6d3a7d1a925",
+                            "strategy": "vector",
+                            "top_k": 5,
+                            "candidate_k": 10,
+                            "rrf_offset": 60
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  "status": "success"
+                },
+                {
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "{\n  \"experiences\": []\n}",
+                      "id": "lc_83693e59-b474-4e38-9c2a-bba4f42b6d9e"
+                    }
+                  ],
+                  "additional_kwargs": {},
+                  "response_metadata": {},
+                  "type": "tool",
+                  "name": "search_experiences",
+                  "id": "bd725405-0a5b-4e45-a96b-9ff5b7b9e821",
+                  "tool_call_id": "call_01_tQi13gKMtfUkkTb33O4P3920",
+                  "artifact": {
+                    "structured_content": {
+                      "experiences": []
+                    }
+                  },
+                  "status": "success"
+                }
+              ]
+            },
+            "output": {
+              "content": "{\"status\":\"diagnosed\",\"cause_summary\":\"在 2026-11-05T08:00:00+08:00 至 08:15:00+08:00 时间窗内，inventory-api 的 replica-1 容器因 OOMKilled 终止（exitCode=137，内存限制 512MiB）；同一时间窗的指标显示 memory_working_set_mb=511MB，已逼近 memory_limit_mb=512MB，且 container_restarts=4，说明工作集内存接近容器上限并伴随多次重启，支持容器内存压力导致 OOM 终止的判断。手册 memory-pressure 指出，工作集逼近容器限制并伴随重启，支持内存压力判断；但仅凭 137 退出码不能断定内存泄漏。当前证据只能确认内存压力与 OOM 终止这一层，尚不能区分是容量不足还是内存泄漏或突发大对象。\",\"evidence_ids\":[\"w6-memory-pressure-01-log-1\",\"w6-memory-pressure-01-metric-1\",\"w6-memory-pressure-01-metric-2\",\"w6-memory-pressure-01-metric-3\",\"memory-pressure--s01\",\"memory-pressure--s02\"],\"unknowns\":[\"无法确定内存增长是持续泄漏还是突发大对象（缺少重启前增长趋势、请求体大小、缓存大小与堆转储证据）\",\"4 次重启的具体时间分布与是否全部由 OOM 引起未证实\",\"未确认节点剩余容量，无法判断扩容或提高内存上限是否可行\",\"未确认 OOM 期间对上游请求成功率与延迟的实际影响范围\",\"该服务无人工确认的历史故障经验可参考\"],\"next_steps\":[\"按手册 memory-pressure--s02，拉取重启前更长时间窗的 memory_working_set_mb 趋势，判断是持续增长还是阶跃式突增\",\"检查重启前后的请求体大小、缓存占用与堆转储（如可获取），区分容量不足与内存泄漏\",\"核对 container_restarts 的时间点与每次重启前的内存曲线，确认 4 次重启是否均由 OOMKilled 触发\",\"评估节点剩余内存容量后再决定是否调整内存上限或扩容，避免无限扩容\",\"如需排查下游依赖或上游调用方影响，请授权新的服务与时间范围后再查询\"]}",
+              "tool_calls": [],
+              "usage": {
+                "input_tokens": 4838,
+                "output_tokens": 490,
+                "total_tokens": 5328,
+                "input_token_details": {
+                  "cache_read": 2304
+                },
+                "output_token_details": {
+                  "reasoning": 0
+                }
+              },
+              "response_model": "agentlens-agent",
+              "billing": {
+                "currency": "USD",
+                "pricing_version": "deepseek-2026-11-01",
+                "pricing_sha256": "6a41970e9ba6f1c65aadd1eab8483e562cfa3abb7eecfe9dc78e264dc22f301d",
+                "source": "https://api-docs.deepseek.com/quick_start/pricing/",
+                "cost": "0.000681012",
+                "cache_read_tokens": 2304,
+                "reason": null,
+                "model_source": "local_gateway_configuration; response_contains_alias",
+                "gateway_config_sha256": "7defcb62e9bf9f418561063d1b4ccb9ed038bffc5c3921858278e02ec5c600de",
+                "priced_model": "deepseek-flash",
+                "rates_per_million": {
+                  "cache_hit": 0.003,
+                  "cache_miss": 0.15,
+                  "output": 0.6
+                }
+              }
+            },
+            "error": null,
+            "duration_ms": 4086.64,
+            "span_id": "e74af8468244f79e",
+            "source_step_sequence": null
+          }
+        ]
+      }
+    }
+  ]
+}

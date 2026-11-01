@@ -1,0 +1,1216 @@
+{
+  "schema_version": 2,
+  "name": "dev10",
+  "started_at": "2026-11-01T10:36:07.578706+00:00",
+  "finished_at": "2026-11-01T10:36:15.226752+00:00",
+  "dataset_sha256": "913c65c6994772b7060f31ae1f1ef446eedec0c3838a532119b3f8b897a5f3c3",
+  "evaluator_sha256": "bc0b366ec248ee3f2ebf38498959647aa55b5170fa2e60174e8560c9096139e3",
+  "agentevals_version": "0.0.9",
+  "dataset_name": "dev.jsonl",
+  "judge_config": null,
+  "recorded_run": false,
+  "summary": {
+    "selected": 1,
+    "passed": 1,
+    "failed": 0,
+    "errors": 0,
+    "judge_errors": 0,
+    "complete": true,
+    "pass_rate": 1.0
+  },
+  "cases": [
+    {
+      "case_id": "w6-config-regression-01",
+      "critical": false,
+      "scenario_group": "config-regression",
+      "split": "dev",
+      "outcome": "passed",
+      "evaluation": {
+        "passed": true,
+        "checks": {
+          "project_scope": true,
+          "status": true,
+          "required_tools": true,
+          "query_scope": true,
+          "cause_terms": true,
+          "required_evidence": true,
+          "valid_citations": true,
+          "outside_window_excluded": true,
+          "token_usage_recorded": true,
+          "runbook_retrieved": true,
+          "runbook_cited": true,
+          "knowledge_project_scope": true,
+          "trajectory_required_tools": true,
+          "trajectory_forbidden_tools": true,
+          "trajectory_parameters": true,
+          "trajectory_order": true
+        },
+        "failure_reasons": [],
+        "dimensions": {
+          "trajectory": true,
+          "retrieval": true,
+          "root_cause": true,
+          "citations": true,
+          "task_completion": true
+        },
+        "trajectory": {
+          "checks": {
+            "trajectory_required_tools": true,
+            "trajectory_forbidden_tools": true,
+            "trajectory_parameters": true,
+            "trajectory_order": true
+          },
+          "matcher": "agentevals.trajectory.match",
+          "required_tool_match": {
+            "key": "trajectory_superset_match",
+            "score": true,
+            "comment": null,
+            "metadata": null
+          },
+          "parameter_match": {
+            "key": "trajectory_unordered_match",
+            "score": true,
+            "comment": null,
+            "metadata": null
+          },
+          "precedence": {
+            "search_logs -> search_runbooks": true,
+            "query_metrics -> search_runbooks": true
+          }
+        }
+      },
+      "error": null,
+      "run": {
+        "run_id": "885edb50-6304-4823-8dd3-a6054832d40a",
+        "thread_id": "3a05c579-95bb-4906-87a2-be4e0a7ffcb3",
+        "source_run_id": null,
+        "execution_mode": "live",
+        "recording_id": null,
+        "scenario_id": null,
+        "failure_detail": null,
+        "checkpoint_id": "1f1d5e01-08ba-663a-8006-c90edc0156eb",
+        "trace_id": "5ed84197a6267eead82232957c410f96",
+        "span_id": "706fb1609887d0db",
+        "request_span_id": null,
+        "interrupt": null,
+        "project_id": "project-a",
+        "status": "diagnosed",
+        "input": "请调查 payment-api 在 2026-11-04T08:00:00+08:00 至 2026-11-04T08:15:00+08:00（结束时间不包含）的异常，结合日志与指标，检索并引用支持建议的手册。",
+        "output": {
+          "status": "diagnosed",
+          "cause_summary": "在 2026-11-04 08:00–08:15（+08:00）窗口内，payment-api 的 replica-1 在部署 v2.4.1 之后出现数据库主机名解析失败：日志明确报出 'database host pg-paymnt.internal cannot be resolved; NXDOMAIN'（08:02）。同一时间窗的指标显示 dns_failures=190 requests、http_5xx_ratio=0.91（08:03），说明 DNS 解析失败与大面积 5xx 同时出现，故障发生在域名解析阶段，而不是 TCP 连接被拒绝或认证失败阶段。结合手册 config-regression--s01 与 config-regression--s02 的判断，当前证据指向发布 v2.4.1 引入的数据库主机名配置回归（pg-paymnt.internal 与预期数据库域名不一致）。注意：手册只是排查方法，根因结论由本次日志与指标支持；尚未核实配置来源与上一版本配置是否可用，也未执行任何生产变更。",
+          "evidence_ids": [
+            "w6-config-regression-01-log-1",
+            "w6-config-regression-01-metric-1",
+            "w6-config-regression-01-metric-2",
+            "config-regression--s01",
+            "config-regression--s02"
+          ],
+          "unknowns": [
+            "仅看到 replica-1 的日志，其他副本是否同样失败尚未证实（无法据此区分配置回归与单实例 DNS 缓存问题）",
+            "pg-paymnt.internal 与预期数据库域名的具体差异、配置来源（deployment 环境变量/配置文件/DNS 记录）尚未核对",
+            "v2.4.1 的发布时间与变更内容未取得独立证据",
+            "上一版本配置是否可用、回滚是否安全尚未验证",
+            "窗口内日志样本仅 1 条 ERROR，未确认是否存在其他错误类型（如连接拒绝、认证失败）"
+          ],
+          "next_steps": [
+            "按 config-regression--s02 核对 deployment 环境变量、配置文件与 DNS 记录中数据库主机名的实际生效版本，确认 pg-paymnt.internal 的拼写来源",
+            "检查 payment-api 其他副本在同一时间窗是否同样报 NXDOMAIN，以区分配置回归与单实例缓存问题（需授权扩大查询范围）",
+            "确认 v2.4.1 的发布时间与配置变更记录，并与上一版本配置对比，验证回滚可行性",
+            "若需进一步定位，可授权查询 DNS 解析侧或数据库侧服务在该时间窗的日志与指标"
+          ]
+        },
+        "versions": {
+          "prompt_sha256": "6a2ed524c13ae7580e8ea2f263a849042938b6dc8243414948269645ed2f8502",
+          "dataset_sha256": "46a32fe8ba9ef987f67732c38001ecd09abab8350f7bbd960a528beb704dc4c0",
+          "requested_model": "agentlens-agent",
+          "configured_upstream_model": "openai/deepseek-flash",
+          "tool_transport": "mcp/streamable-http",
+          "checkpointer": "AsyncPostgresSaver",
+          "graph_version": "week8-v1",
+          "actor": "local-cli",
+          "recording_sha256": null,
+          "scenario_manifest": null,
+          "tool_catalog": [
+            {
+              "name": "search_logs",
+              "description": "Query logs in the current project. Times include timezone; interval is [start, end).\n\n    Returns citeable evidence_id values. Limit is 1-200.\n    ",
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "service": {
+                    "title": "Service",
+                    "type": "string"
+                  },
+                  "start_time": {
+                    "format": "date-time",
+                    "title": "Start Time",
+                    "type": "string"
+                  },
+                  "end_time": {
+                    "format": "date-time",
+                    "title": "End Time",
+                    "type": "string"
+                  },
+                  "level": {
+                    "anyOf": [
+                      {
+                        "enum": [
+                          "INFO",
+                          "WARN",
+                          "ERROR"
+                        ],
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null,
+                    "title": "Level"
+                  },
+                  "limit": {
+                    "default": 50,
+                    "title": "Limit",
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "service",
+                  "start_time",
+                  "end_time"
+                ],
+                "title": "logsArguments"
+              }
+            },
+            {
+              "name": "query_metrics",
+              "description": "Query metrics in the current project and [start_time, end_time).\n\n    Leave metric_name unset to inspect available metrics. Returns citeable evidence. Limit is 1-300.\n    ",
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "service": {
+                    "title": "Service",
+                    "type": "string"
+                  },
+                  "start_time": {
+                    "format": "date-time",
+                    "title": "Start Time",
+                    "type": "string"
+                  },
+                  "end_time": {
+                    "format": "date-time",
+                    "title": "End Time",
+                    "type": "string"
+                  },
+                  "metric_name": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null,
+                    "title": "Metric Name"
+                  },
+                  "limit": {
+                    "default": 100,
+                    "title": "Limit",
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "service",
+                  "start_time",
+                  "end_time"
+                ],
+                "title": "metricsArguments"
+              }
+            },
+            {
+              "name": "search_runbooks",
+              "description": "Search the current project's troubleshooting handbooks using symptoms and error terms.\n\n    Use observed service/component names and error messages in query. Returns citeable chunk\n    evidence_id, source, revision and content. Handbooks guide checks; they are not live telemetry.\n    top_k is 1-10. Query is 1-2000 characters. Uses fixed BGE embeddings and pgvector cosine search.\n    ",
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "query": {
+                    "title": "Query",
+                    "type": "string"
+                  },
+                  "top_k": {
+                    "default": 3,
+                    "title": "Top K",
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "query"
+                ],
+                "title": "runbooksArguments"
+              }
+            },
+            {
+              "name": "search_experiences",
+              "description": "Find human-confirmed incident experience for a service in the current project.\n\n    Use for related past incidents and applicable investigation steps. Results are historical\n    knowledge, not live evidence for a new incident. Returns citeable IDs and original run/time.\n    Exact service match, latest confirmations first. Limit is 1-20.\n    ",
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "service": {
+                    "title": "Service",
+                    "type": "string"
+                  },
+                  "limit": {
+                    "default": 5,
+                    "title": "Limit",
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "service"
+                ],
+                "title": "experiencesArguments"
+              }
+            },
+            {
+              "name": "analyze_logs",
+              "description": "Run Python statistics on logs already retrieved in THIS run, using OpenShell only.\n\n    Use only when the user requests statistical analysis. logs is a list of authorized rows.\n    Print exactly one JSON value. No network, credentials, package installs or host files.\n    Maximum 100 log IDs, code 6000 chars, 8 seconds, 256MiB, output 64KiB.\n    Runtime absence is a tool error; never claim analysis succeeded without its result.\n    ",
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "evidence_ids": {
+                    "items": {
+                      "type": "string"
+                    },
+                    "title": "Evidence Ids",
+                    "type": "array"
+                  },
+                  "python_code": {
+                    "title": "Python Code",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "evidence_ids",
+                  "python_code"
+                ],
+                "title": "analyze_logsArguments"
+              }
+            }
+          ],
+          "tool_schemas_sha256": "d50be48bfae9c71d5645337a9cd10ff9580fc6da8f8e518898dc1ab5a0d5079b",
+          "retrieval": {
+            "corpus_sha256": "023114864f127896cfc77ae214368e69d1dcfb883b0395c7c363db162c1a03ca",
+            "chunks_sha256": "b6a49d5e1a286048cf707277fb38f796b74ab0a6bd946245fa74ee64ea24fdd7",
+            "chunking": "authored-h2-v1",
+            "embedding_model": "BAAI/bge-small-zh-v1.5",
+            "embedding_revision": "7999e1d3359715c523056ef9478215996d62a620",
+            "dimensions": 512,
+            "normalize": true,
+            "query_prefix": "为这个句子生成表示以用于检索相关文章：",
+            "max_seq_length": 512,
+            "artifacts_sha256": "f4266a5ac784113f55b6d07f5ec45559a94ab34ea2fe3464a811e6d3a7d1a925",
+            "strategy": "vector",
+            "top_k": 5,
+            "candidate_k": 10,
+            "rrf_offset": 60
+          }
+        },
+        "usage": {
+          "input_tokens": 8516,
+          "output_tokens": 903
+        },
+        "error": null,
+        "started_at": "2026-11-01T10:36:07.586407+00:00",
+        "finished_at": "2026-11-01T10:36:15.220265+00:00",
+        "steps": [
+          {
+            "sequence": 1,
+            "kind": "model",
+            "name": "agentlens-agent",
+            "input": {
+              "messages": [
+                {
+                  "content": "请调查 payment-api 在 2026-11-04T08:00:00+08:00 至 2026-11-04T08:15:00+08:00（结束时间不包含）的异常，结合日志与指标，检索并引用支持建议的手册。",
+                  "additional_kwargs": {},
+                  "response_metadata": {},
+                  "type": "human",
+                  "name": null,
+                  "id": "6185ad45-6e51-4605-90ef-59d26cb6968a"
+                }
+              ]
+            },
+            "output": {
+              "content": "我会同时查询 payment-api 在该时间窗内的日志和指标。",
+              "tool_calls": [
+                {
+                  "name": "search_logs",
+                  "args": {
+                    "service": "payment-api",
+                    "start_time": "2026-11-04T08:00:00+08:00",
+                    "end_time": "2026-11-04T08:15:00+08:00",
+                    "limit": 100
+                  },
+                  "id": "call_00_PClkp2PNWdsJz0tD7bN50753",
+                  "type": "tool_call"
+                },
+                {
+                  "name": "query_metrics",
+                  "args": {
+                    "service": "payment-api",
+                    "start_time": "2026-11-04T08:00:00+08:00",
+                    "end_time": "2026-11-04T08:15:00+08:00"
+                  },
+                  "id": "call_01_a1vGcvK6x2JSJ8X6Yf8Q4970",
+                  "type": "tool_call"
+                }
+              ],
+              "usage": {
+                "input_tokens": 1617,
+                "output_tokens": 226,
+                "total_tokens": 1843,
+                "input_token_details": {
+                  "cache_read": 1408
+                },
+                "output_token_details": {}
+              },
+              "response_model": "agentlens-agent",
+              "billing": {
+                "currency": "USD",
+                "pricing_version": "deepseek-2026-11-01",
+                "pricing_sha256": "6a41970e9ba6f1c65aadd1eab8483e562cfa3abb7eecfe9dc78e264dc22f301d",
+                "source": "https://api-docs.deepseek.com/quick_start/pricing/",
+                "cost": "0.000171174",
+                "cache_read_tokens": 1408,
+                "reason": null,
+                "model_source": "local_gateway_configuration; response_contains_alias",
+                "gateway_config_sha256": "7defcb62e9bf9f418561063d1b4ccb9ed038bffc5c3921858278e02ec5c600de",
+                "priced_model": "deepseek-flash",
+                "rates_per_million": {
+                  "cache_hit": 0.003,
+                  "cache_miss": 0.15,
+                  "output": 0.6
+                }
+              }
+            },
+            "error": null,
+            "duration_ms": 1781.99,
+            "span_id": "b3ea2864b054502e",
+            "source_step_sequence": null
+          },
+          {
+            "sequence": 2,
+            "kind": "tool",
+            "name": "search_logs",
+            "input": {
+              "service": "payment-api",
+              "start_time": "2026-11-04T08:00:00+08:00",
+              "end_time": "2026-11-04T08:15:00+08:00",
+              "limit": 100
+            },
+            "output": {
+              "logs": [
+                {
+                  "evidence_id": "w6-config-regression-01-log-1",
+                  "timestamp": "2026-11-04T00:02:00+00:00",
+                  "service": "payment-api",
+                  "level": "ERROR",
+                  "message": "instance=replica-1; After deploy v2.4.1: database host pg-paymnt.internal cannot be resolved; NXDOMAIN"
+                }
+              ]
+            },
+            "error": null,
+            "duration_ms": 10.91,
+            "span_id": "9d97251d7c4b938f",
+            "source_step_sequence": null
+          },
+          {
+            "sequence": 3,
+            "kind": "tool",
+            "name": "query_metrics",
+            "input": {
+              "service": "payment-api",
+              "start_time": "2026-11-04T08:00:00+08:00",
+              "end_time": "2026-11-04T08:15:00+08:00"
+            },
+            "output": {
+              "metrics": [
+                {
+                  "evidence_id": "w6-config-regression-01-metric-1",
+                  "timestamp": "2026-11-04T00:03:00+00:00",
+                  "service": "payment-api",
+                  "name": "dns_failures",
+                  "value": 190.0,
+                  "unit": "requests"
+                },
+                {
+                  "evidence_id": "w6-config-regression-01-metric-2",
+                  "timestamp": "2026-11-04T00:03:00+00:00",
+                  "service": "payment-api",
+                  "name": "http_5xx_ratio",
+                  "value": 0.91,
+                  "unit": "ratio"
+                }
+              ]
+            },
+            "error": null,
+            "duration_ms": 9.6,
+            "span_id": "0886cb83b0b736d1",
+            "source_step_sequence": null
+          },
+          {
+            "sequence": 4,
+            "kind": "model",
+            "name": "agentlens-agent",
+            "input": {
+              "messages": [
+                {
+                  "content": "请调查 payment-api 在 2026-11-04T08:00:00+08:00 至 2026-11-04T08:15:00+08:00（结束时间不包含）的异常，结合日志与指标，检索并引用支持建议的手册。",
+                  "additional_kwargs": {},
+                  "response_metadata": {},
+                  "type": "human",
+                  "name": null,
+                  "id": "6185ad45-6e51-4605-90ef-59d26cb6968a"
+                },
+                {
+                  "content": "我会同时查询 payment-api 在该时间窗内的日志和指标。",
+                  "additional_kwargs": {},
+                  "response_metadata": {
+                    "model_provider": "openai",
+                    "finish_reason": "tool_calls",
+                    "model_name": "agentlens-agent",
+                    "system_fingerprint": "bc19ba97cbe016479903222bb1578db6"
+                  },
+                  "type": "ai",
+                  "name": null,
+                  "id": "lc_run--01a196ae-4c3a-761c-a362-51fc97d539f7",
+                  "tool_calls": [
+                    {
+                      "name": "search_logs",
+                      "args": {
+                        "service": "payment-api",
+                        "start_time": "2026-11-04T08:00:00+08:00",
+                        "end_time": "2026-11-04T08:15:00+08:00",
+                        "limit": 100
+                      },
+                      "id": "call_00_PClkp2PNWdsJz0tD7bN50753",
+                      "type": "tool_call"
+                    },
+                    {
+                      "name": "query_metrics",
+                      "args": {
+                        "service": "payment-api",
+                        "start_time": "2026-11-04T08:00:00+08:00",
+                        "end_time": "2026-11-04T08:15:00+08:00"
+                      },
+                      "id": "call_01_a1vGcvK6x2JSJ8X6Yf8Q4970",
+                      "type": "tool_call"
+                    }
+                  ],
+                  "invalid_tool_calls": [],
+                  "usage_metadata": {
+                    "input_tokens": 1617,
+                    "output_tokens": 226,
+                    "total_tokens": 1843,
+                    "input_token_details": {
+                      "cache_read": 1408
+                    },
+                    "output_token_details": {}
+                  }
+                },
+                {
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "{\n  \"logs\": [\n    {\n      \"evidence_id\": \"w6-config-regression-01-log-1\",\n      \"timestamp\": \"2026-11-04T00:02:00+00:00\",\n      \"service\": \"payment-api\",\n      \"level\": \"ERROR\",\n      \"message\": \"instance=replica-1; After deploy v2.4.1: database host pg-paymnt.internal cannot be resolved; NXDOMAIN\"\n    }\n  ]\n}",
+                      "id": "lc_028d389a-6aa4-4560-9e29-b63265665800"
+                    }
+                  ],
+                  "additional_kwargs": {},
+                  "response_metadata": {},
+                  "type": "tool",
+                  "name": "search_logs",
+                  "id": "65c0887c-e92d-44c3-86a6-02aa83f1a739",
+                  "tool_call_id": "call_00_PClkp2PNWdsJz0tD7bN50753",
+                  "artifact": {
+                    "structured_content": {
+                      "logs": [
+                        {
+                          "evidence_id": "w6-config-regression-01-log-1",
+                          "timestamp": "2026-11-04T00:02:00+00:00",
+                          "service": "payment-api",
+                          "level": "ERROR",
+                          "message": "instance=replica-1; After deploy v2.4.1: database host pg-paymnt.internal cannot be resolved; NXDOMAIN"
+                        }
+                      ]
+                    }
+                  },
+                  "status": "success"
+                },
+                {
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "{\n  \"metrics\": [\n    {\n      \"evidence_id\": \"w6-config-regression-01-metric-1\",\n      \"timestamp\": \"2026-11-04T00:03:00+00:00\",\n      \"service\": \"payment-api\",\n      \"name\": \"dns_failures\",\n      \"value\": 190.0,\n      \"unit\": \"requests\"\n    },\n    {\n      \"evidence_id\": \"w6-config-regression-01-metric-2\",\n      \"timestamp\": \"2026-11-04T00:03:00+00:00\",\n      \"service\": \"payment-api\",\n      \"name\": \"http_5xx_ratio\",\n      \"value\": 0.91,\n      \"unit\": \"ratio\"\n    }\n  ]\n}",
+                      "id": "lc_cb7a2318-baf8-47af-8861-563bbc6445a2"
+                    }
+                  ],
+                  "additional_kwargs": {},
+                  "response_metadata": {},
+                  "type": "tool",
+                  "name": "query_metrics",
+                  "id": "00a62c8b-e603-46cf-9998-f9e7bd1ed495",
+                  "tool_call_id": "call_01_a1vGcvK6x2JSJ8X6Yf8Q4970",
+                  "artifact": {
+                    "structured_content": {
+                      "metrics": [
+                        {
+                          "evidence_id": "w6-config-regression-01-metric-1",
+                          "timestamp": "2026-11-04T00:03:00+00:00",
+                          "service": "payment-api",
+                          "name": "dns_failures",
+                          "value": 190.0,
+                          "unit": "requests"
+                        },
+                        {
+                          "evidence_id": "w6-config-regression-01-metric-2",
+                          "timestamp": "2026-11-04T00:03:00+00:00",
+                          "service": "payment-api",
+                          "name": "http_5xx_ratio",
+                          "value": 0.91,
+                          "unit": "ratio"
+                        }
+                      ]
+                    }
+                  },
+                  "status": "success"
+                }
+              ]
+            },
+            "output": {
+              "content": "",
+              "tool_calls": [
+                {
+                  "name": "search_runbooks",
+                  "args": {
+                    "query": "payment-api 部署后数据库主机名无法解析 NXDOMAIN dns_failures 升高 http_5xx_ratio 0.91",
+                    "top_k": 5
+                  },
+                  "id": "call_00_ftw7CoVc6ELIevuJy6os5026",
+                  "type": "tool_call"
+                },
+                {
+                  "name": "search_experiences",
+                  "args": {
+                    "service": "payment-api",
+                    "limit": 5
+                  },
+                  "id": "call_01_lqCeYVmYlHPLiesdharD0074",
+                  "type": "tool_call"
+                }
+              ],
+              "usage": {
+                "input_tokens": 2134,
+                "output_tokens": 132,
+                "total_tokens": 2266,
+                "input_token_details": {
+                  "cache_read": 1792
+                },
+                "output_token_details": {}
+              },
+              "response_model": "agentlens-agent",
+              "billing": {
+                "currency": "USD",
+                "pricing_version": "deepseek-2026-11-01",
+                "pricing_sha256": "6a41970e9ba6f1c65aadd1eab8483e562cfa3abb7eecfe9dc78e264dc22f301d",
+                "source": "https://api-docs.deepseek.com/quick_start/pricing/",
+                "cost": "0.000135876",
+                "cache_read_tokens": 1792,
+                "reason": null,
+                "model_source": "local_gateway_configuration; response_contains_alias",
+                "gateway_config_sha256": "7defcb62e9bf9f418561063d1b4ccb9ed038bffc5c3921858278e02ec5c600de",
+                "priced_model": "deepseek-flash",
+                "rates_per_million": {
+                  "cache_hit": 0.003,
+                  "cache_miss": 0.15,
+                  "output": 0.6
+                }
+              }
+            },
+            "error": null,
+            "duration_ms": 1315.94,
+            "span_id": "c1806a05153d3371",
+            "source_step_sequence": null
+          },
+          {
+            "sequence": 5,
+            "kind": "tool",
+            "name": "search_runbooks",
+            "input": {
+              "query": "payment-api 部署后数据库主机名无法解析 NXDOMAIN dns_failures 升高 http_5xx_ratio 0.91",
+              "top_k": 5
+            },
+            "output": {
+              "chunks": [
+                {
+                  "evidence_id": "config-regression--s01",
+                  "document_id": "config-regression",
+                  "project_id": "project-a",
+                  "source": "datasets/runbooks/config-regression.md",
+                  "revision": "5c7035d56a8b67a87eafbbf3e31be40813a688118c694e31f84d00099be2e749",
+                  "content": "payment-api 发布后数据库 DNS 配置错误\n定位 NXDOMAIN\n\npayment-api 发布后出现 NXDOMAIN、cannot be resolved 时，核对数据库主机名的拼写与配置来源。pg-paymnt.internal 与预期数据库域名不一致时，保留配置差异、发布时间和解析错误作为证据。NXDOMAIN 与连接拒绝是不同阶段的故障。",
+                  "ranks": {
+                    "vector": 1
+                  },
+                  "rrf_score": 0.01639344262295082,
+                  "retrieval_manifest": {
+                    "corpus_sha256": "023114864f127896cfc77ae214368e69d1dcfb883b0395c7c363db162c1a03ca",
+                    "chunks_sha256": "b6a49d5e1a286048cf707277fb38f796b74ab0a6bd946245fa74ee64ea24fdd7",
+                    "chunking": "authored-h2-v1",
+                    "embedding_model": "BAAI/bge-small-zh-v1.5",
+                    "embedding_revision": "7999e1d3359715c523056ef9478215996d62a620",
+                    "dimensions": 512,
+                    "normalize": true,
+                    "query_prefix": "为这个句子生成表示以用于检索相关文章：",
+                    "max_seq_length": 512,
+                    "artifacts_sha256": "f4266a5ac784113f55b6d07f5ec45559a94ab34ea2fe3464a811e6d3a7d1a925",
+                    "strategy": "vector",
+                    "top_k": 5,
+                    "candidate_k": 10,
+                    "rrf_offset": 60
+                  }
+                },
+                {
+                  "evidence_id": "config-regression--s02",
+                  "document_id": "config-regression",
+                  "project_id": "project-a",
+                  "source": "datasets/runbooks/config-regression.md",
+                  "revision": "5c7035d56a8b67a87eafbbf3e31be40813a688118c694e31f84d00099be2e749",
+                  "content": "payment-api 发布后数据库 DNS 配置错误\n确认配置来源\n\n检查 deployment 环境变量、配置文件与 DNS 记录的实际生效版本。多个实例是否一起失败有助区分配置回归与单实例缓存。向操作人建议回滚前，确认上一版本配置可用；本助手不修改部署。",
+                  "ranks": {
+                    "vector": 2
+                  },
+                  "rrf_score": 0.016129032258064516,
+                  "retrieval_manifest": {
+                    "corpus_sha256": "023114864f127896cfc77ae214368e69d1dcfb883b0395c7c363db162c1a03ca",
+                    "chunks_sha256": "b6a49d5e1a286048cf707277fb38f796b74ab0a6bd946245fa74ee64ea24fdd7",
+                    "chunking": "authored-h2-v1",
+                    "embedding_model": "BAAI/bge-small-zh-v1.5",
+                    "embedding_revision": "7999e1d3359715c523056ef9478215996d62a620",
+                    "dimensions": 512,
+                    "normalize": true,
+                    "query_prefix": "为这个句子生成表示以用于检索相关文章：",
+                    "max_seq_length": 512,
+                    "artifacts_sha256": "f4266a5ac784113f55b6d07f5ec45559a94ab34ea2fe3464a811e6d3a7d1a925",
+                    "strategy": "vector",
+                    "top_k": 5,
+                    "candidate_k": 10,
+                    "rrf_offset": 60
+                  }
+                },
+                {
+                  "evidence_id": "db-connection-refused--s01",
+                  "document_id": "db-connection-refused",
+                  "project_id": "project-a",
+                  "source": "datasets/runbooks/db-connection-refused.md",
+                  "revision": "2f523ea3b4bcaf4d22715eaa047f10a196e5198e010a8558df92ee6f6d9b148c",
+                  "content": "payment-api 数据库连接被拒绝\n区分 TCP 与 DNS\n\npayment-api 报 ECONNREFUSED 或 connection refused 时，说明已尝试连接目标地址，但目标端口拒绝。核对数据库监听端口、地址与服务状态。它与 NXDOMAIN 的域名解析失败不同，也与 HikariPool 池内等待不同。",
+                  "ranks": {
+                    "vector": 3
+                  },
+                  "rrf_score": 0.015873015873015872,
+                  "retrieval_manifest": {
+                    "corpus_sha256": "023114864f127896cfc77ae214368e69d1dcfb883b0395c7c363db162c1a03ca",
+                    "chunks_sha256": "b6a49d5e1a286048cf707277fb38f796b74ab0a6bd946245fa74ee64ea24fdd7",
+                    "chunking": "authored-h2-v1",
+                    "embedding_model": "BAAI/bge-small-zh-v1.5",
+                    "embedding_revision": "7999e1d3359715c523056ef9478215996d62a620",
+                    "dimensions": 512,
+                    "normalize": true,
+                    "query_prefix": "为这个句子生成表示以用于检索相关文章：",
+                    "max_seq_length": 512,
+                    "artifacts_sha256": "f4266a5ac784113f55b6d07f5ec45559a94ab34ea2fe3464a811e6d3a7d1a925",
+                    "strategy": "vector",
+                    "top_k": 5,
+                    "candidate_k": 10,
+                    "rrf_offset": 60
+                  }
+                },
+                {
+                  "evidence_id": "db-authentication--s01",
+                  "document_id": "db-authentication",
+                  "project_id": "project-a",
+                  "source": "datasets/runbooks/db-authentication.md",
+                  "revision": "c4c33bc9e4c3974bdebe83cc9ce3ddd274fadf507cf3d9e9fd4eafc5e89dddbc",
+                  "content": "payment-api 数据库认证失败\n识别认证错误\n\npayment-api 出现 SQLSTATE 28P01 或 password authentication failed 时，数据库服务已经响应认证请求。对照凭证轮换时间和数据库用户配置，区分认证失败与 DNS、TCP 连接失败。",
+                  "ranks": {
+                    "vector": 4
+                  },
+                  "rrf_score": 0.015625,
+                  "retrieval_manifest": {
+                    "corpus_sha256": "023114864f127896cfc77ae214368e69d1dcfb883b0395c7c363db162c1a03ca",
+                    "chunks_sha256": "b6a49d5e1a286048cf707277fb38f796b74ab0a6bd946245fa74ee64ea24fdd7",
+                    "chunking": "authored-h2-v1",
+                    "embedding_model": "BAAI/bge-small-zh-v1.5",
+                    "embedding_revision": "7999e1d3359715c523056ef9478215996d62a620",
+                    "dimensions": 512,
+                    "normalize": true,
+                    "query_prefix": "为这个句子生成表示以用于检索相关文章：",
+                    "max_seq_length": 512,
+                    "artifacts_sha256": "f4266a5ac784113f55b6d07f5ec45559a94ab34ea2fe3464a811e6d3a7d1a925",
+                    "strategy": "vector",
+                    "top_k": 5,
+                    "candidate_k": 10,
+                    "rrf_offset": 60
+                  }
+                },
+                {
+                  "evidence_id": "rate-limit--s02",
+                  "document_id": "rate-limit",
+                  "project_id": "project-a",
+                  "source": "datasets/runbooks/rate-limit.md",
+                  "revision": "51a1b3ddf65e9cdce71f17e1bc6ca9943a1877e552e8530db9d399820d15c096",
+                  "content": "payment-api 请求限流 HTTP 429\n评估请求节奏\n\n核对请求峰值、批量任务与 SDK 重试。遵守服务返回的重试提示，避免立即重复请求。提高配额前需要容量与业务优先级依据，不假设服务已经宕机。",
+                  "ranks": {
+                    "vector": 5
+                  },
+                  "rrf_score": 0.015384615384615385,
+                  "retrieval_manifest": {
+                    "corpus_sha256": "023114864f127896cfc77ae214368e69d1dcfb883b0395c7c363db162c1a03ca",
+                    "chunks_sha256": "b6a49d5e1a286048cf707277fb38f796b74ab0a6bd946245fa74ee64ea24fdd7",
+                    "chunking": "authored-h2-v1",
+                    "embedding_model": "BAAI/bge-small-zh-v1.5",
+                    "embedding_revision": "7999e1d3359715c523056ef9478215996d62a620",
+                    "dimensions": 512,
+                    "normalize": true,
+                    "query_prefix": "为这个句子生成表示以用于检索相关文章：",
+                    "max_seq_length": 512,
+                    "artifacts_sha256": "f4266a5ac784113f55b6d07f5ec45559a94ab34ea2fe3464a811e6d3a7d1a925",
+                    "strategy": "vector",
+                    "top_k": 5,
+                    "candidate_k": 10,
+                    "rrf_offset": 60
+                  }
+                }
+              ]
+            },
+            "error": null,
+            "duration_ms": 31.72,
+            "span_id": "7ae014d33a596b9f",
+            "source_step_sequence": null
+          },
+          {
+            "sequence": 6,
+            "kind": "tool",
+            "name": "search_experiences",
+            "input": {
+              "service": "payment-api",
+              "limit": 5
+            },
+            "output": {
+              "experiences": []
+            },
+            "error": null,
+            "duration_ms": 10.65,
+            "span_id": "38deeece8034d524",
+            "source_step_sequence": null
+          },
+          {
+            "sequence": 7,
+            "kind": "model",
+            "name": "agentlens-agent",
+            "input": {
+              "messages": [
+                {
+                  "content": "请调查 payment-api 在 2026-11-04T08:00:00+08:00 至 2026-11-04T08:15:00+08:00（结束时间不包含）的异常，结合日志与指标，检索并引用支持建议的手册。",
+                  "additional_kwargs": {},
+                  "response_metadata": {},
+                  "type": "human",
+                  "name": null,
+                  "id": "6185ad45-6e51-4605-90ef-59d26cb6968a"
+                },
+                {
+                  "content": "我会同时查询 payment-api 在该时间窗内的日志和指标。",
+                  "additional_kwargs": {},
+                  "response_metadata": {
+                    "model_provider": "openai",
+                    "finish_reason": "tool_calls",
+                    "model_name": "agentlens-agent",
+                    "system_fingerprint": "bc19ba97cbe016479903222bb1578db6"
+                  },
+                  "type": "ai",
+                  "name": null,
+                  "id": "lc_run--01a196ae-4c3a-761c-a362-51fc97d539f7",
+                  "tool_calls": [
+                    {
+                      "name": "search_logs",
+                      "args": {
+                        "service": "payment-api",
+                        "start_time": "2026-11-04T08:00:00+08:00",
+                        "end_time": "2026-11-04T08:15:00+08:00",
+                        "limit": 100
+                      },
+                      "id": "call_00_PClkp2PNWdsJz0tD7bN50753",
+                      "type": "tool_call"
+                    },
+                    {
+                      "name": "query_metrics",
+                      "args": {
+                        "service": "payment-api",
+                        "start_time": "2026-11-04T08:00:00+08:00",
+                        "end_time": "2026-11-04T08:15:00+08:00"
+                      },
+                      "id": "call_01_a1vGcvK6x2JSJ8X6Yf8Q4970",
+                      "type": "tool_call"
+                    }
+                  ],
+                  "invalid_tool_calls": [],
+                  "usage_metadata": {
+                    "input_tokens": 1617,
+                    "output_tokens": 226,
+                    "total_tokens": 1843,
+                    "input_token_details": {
+                      "cache_read": 1408
+                    },
+                    "output_token_details": {}
+                  }
+                },
+                {
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "{\n  \"logs\": [\n    {\n      \"evidence_id\": \"w6-config-regression-01-log-1\",\n      \"timestamp\": \"2026-11-04T00:02:00+00:00\",\n      \"service\": \"payment-api\",\n      \"level\": \"ERROR\",\n      \"message\": \"instance=replica-1; After deploy v2.4.1: database host pg-paymnt.internal cannot be resolved; NXDOMAIN\"\n    }\n  ]\n}",
+                      "id": "lc_028d389a-6aa4-4560-9e29-b63265665800"
+                    }
+                  ],
+                  "additional_kwargs": {},
+                  "response_metadata": {},
+                  "type": "tool",
+                  "name": "search_logs",
+                  "id": "65c0887c-e92d-44c3-86a6-02aa83f1a739",
+                  "tool_call_id": "call_00_PClkp2PNWdsJz0tD7bN50753",
+                  "artifact": {
+                    "structured_content": {
+                      "logs": [
+                        {
+                          "evidence_id": "w6-config-regression-01-log-1",
+                          "timestamp": "2026-11-04T00:02:00+00:00",
+                          "service": "payment-api",
+                          "level": "ERROR",
+                          "message": "instance=replica-1; After deploy v2.4.1: database host pg-paymnt.internal cannot be resolved; NXDOMAIN"
+                        }
+                      ]
+                    }
+                  },
+                  "status": "success"
+                },
+                {
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "{\n  \"metrics\": [\n    {\n      \"evidence_id\": \"w6-config-regression-01-metric-1\",\n      \"timestamp\": \"2026-11-04T00:03:00+00:00\",\n      \"service\": \"payment-api\",\n      \"name\": \"dns_failures\",\n      \"value\": 190.0,\n      \"unit\": \"requests\"\n    },\n    {\n      \"evidence_id\": \"w6-config-regression-01-metric-2\",\n      \"timestamp\": \"2026-11-04T00:03:00+00:00\",\n      \"service\": \"payment-api\",\n      \"name\": \"http_5xx_ratio\",\n      \"value\": 0.91,\n      \"unit\": \"ratio\"\n    }\n  ]\n}",
+                      "id": "lc_cb7a2318-baf8-47af-8861-563bbc6445a2"
+                    }
+                  ],
+                  "additional_kwargs": {},
+                  "response_metadata": {},
+                  "type": "tool",
+                  "name": "query_metrics",
+                  "id": "00a62c8b-e603-46cf-9998-f9e7bd1ed495",
+                  "tool_call_id": "call_01_a1vGcvK6x2JSJ8X6Yf8Q4970",
+                  "artifact": {
+                    "structured_content": {
+                      "metrics": [
+                        {
+                          "evidence_id": "w6-config-regression-01-metric-1",
+                          "timestamp": "2026-11-04T00:03:00+00:00",
+                          "service": "payment-api",
+                          "name": "dns_failures",
+                          "value": 190.0,
+                          "unit": "requests"
+                        },
+                        {
+                          "evidence_id": "w6-config-regression-01-metric-2",
+                          "timestamp": "2026-11-04T00:03:00+00:00",
+                          "service": "payment-api",
+                          "name": "http_5xx_ratio",
+                          "value": 0.91,
+                          "unit": "ratio"
+                        }
+                      ]
+                    }
+                  },
+                  "status": "success"
+                },
+                {
+                  "content": "",
+                  "additional_kwargs": {},
+                  "response_metadata": {
+                    "model_provider": "openai",
+                    "finish_reason": "tool_calls",
+                    "model_name": "agentlens-agent",
+                    "system_fingerprint": "bc19ba97cbe016479903222bb1578db6"
+                  },
+                  "type": "ai",
+                  "name": null,
+                  "id": "lc_run--01a196ae-534f-779c-a9eb-2603324d29a0",
+                  "tool_calls": [
+                    {
+                      "name": "search_runbooks",
+                      "args": {
+                        "query": "payment-api 部署后数据库主机名无法解析 NXDOMAIN dns_failures 升高 http_5xx_ratio 0.91",
+                        "top_k": 5
+                      },
+                      "id": "call_00_ftw7CoVc6ELIevuJy6os5026",
+                      "type": "tool_call"
+                    },
+                    {
+                      "name": "search_experiences",
+                      "args": {
+                        "service": "payment-api",
+                        "limit": 5
+                      },
+                      "id": "call_01_lqCeYVmYlHPLiesdharD0074",
+                      "type": "tool_call"
+                    }
+                  ],
+                  "invalid_tool_calls": [],
+                  "usage_metadata": {
+                    "input_tokens": 2134,
+                    "output_tokens": 132,
+                    "total_tokens": 2266,
+                    "input_token_details": {
+                      "cache_read": 1792
+                    },
+                    "output_token_details": {}
+                  }
+                },
+                {
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "{\n  \"chunks\": [\n    {\n      \"evidence_id\": \"config-regression--s01\",\n      \"document_id\": \"config-regression\",\n      \"project_id\": \"project-a\",\n      \"source\": \"datasets/runbooks/config-regression.md\",\n      \"revision\": \"5c7035d56a8b67a87eafbbf3e31be40813a688118c694e31f84d00099be2e749\",\n      \"content\": \"payment-api 发布后数据库 DNS 配置错误\\n定位 NXDOMAIN\\n\\npayment-api 发布后出现 NXDOMAIN、cannot be resolved 时，核对数据库主机名的拼写与配置来源。pg-paymnt.internal 与预期数据库域名不一致时，保留配置差异、发布时间和解析错误作为证据。NXDOMAIN 与连接拒绝是不同阶段的故障。\",\n      \"ranks\": {\n        \"vector\": 1\n      },\n      \"rrf_score\": 0.01639344262295082,\n      \"retrieval_manifest\": {\n        \"corpus_sha256\": \"023114864f127896cfc77ae214368e69d1dcfb883b0395c7c363db162c1a03ca\",\n        \"chunks_sha256\": \"b6a49d5e1a286048cf707277fb38f796b74ab0a6bd946245fa74ee64ea24fdd7\",\n        \"chunking\": \"authored-h2-v1\",\n        \"embedding_model\": \"BAAI/bge-small-zh-v1.5\",\n        \"embedding_revision\": \"7999e1d3359715c523056ef9478215996d62a620\",\n        \"dimensions\": 512,\n        \"normalize\": true,\n        \"query_prefix\": \"为这个句子生成表示以用于检索相关文章：\",\n        \"max_seq_length\": 512,\n        \"artifacts_sha256\": \"f4266a5ac784113f55b6d07f5ec45559a94ab34ea2fe3464a811e6d3a7d1a925\",\n        \"strategy\": \"vector\",\n        \"top_k\": 5,\n        \"candidate_k\": 10,\n        \"rrf_offset\": 60\n      }\n    },\n    {\n      \"evidence_id\": \"config-regression--s02\",\n      \"document_id\": \"config-regression\",\n      \"project_id\": \"project-a\",\n      \"source\": \"datasets/runbooks/config-regression.md\",\n      \"revision\": \"5c7035d56a8b67a87eafbbf3e31be40813a688118c694e31f84d00099be2e749\",\n      \"content\": \"payment-api 发布后数据库 DNS 配置错误\\n确认配置来源\\n\\n检查 deployment 环境变量、配置文件与 DNS 记录的实际生效版本。多个实例是否一起失败有助区分配置回归与单实例缓存。向操作人建议回滚前，确认上一版本配置可用；本助手不修改部署。\",\n      \"ranks\": {\n        \"vector\": 2\n      },\n      \"rrf_score\": 0.016129032258064516,\n      \"retrieval_manifest\": {\n        \"corpus_sha256\": \"023114864f127896cfc77ae214368e69d1dcfb883b0395c7c363db162c1a03ca\",\n        \"chunks_sha256\": \"b6a49d5e1a286048cf707277fb38f796b74ab0a6bd946245fa74ee64ea24fdd7\",\n        \"chunking\": \"authored-h2-v1\",\n        \"embedding_model\": \"BAAI/bge-small-zh-v1.5\",\n        \"embedding_revision\": \"7999e1d3359715c523056ef9478215996d62a620\",\n        \"dimensions\": 512,\n        \"normalize\": true,\n        \"query_prefix\": \"为这个句子生成表示以用于检索相关文章：\",\n        \"max_seq_length\": 512,\n        \"artifacts_sha256\": \"f4266a5ac784113f55b6d07f5ec45559a94ab34ea2fe3464a811e6d3a7d1a925\",\n        \"strategy\": \"vector\",\n        \"top_k\": 5,\n        \"candidate_k\": 10,\n        \"rrf_offset\": 60\n      }\n    },\n    {\n      \"evidence_id\": \"db-connection-refused--s01\",\n      \"document_id\": \"db-connection-refused\",\n      \"project_id\": \"project-a\",\n      \"source\": \"datasets/runbooks/db-connection-refused.md\",\n      \"revision\": \"2f523ea3b4bcaf4d22715eaa047f10a196e5198e010a8558df92ee6f6d9b148c\",\n      \"content\": \"payment-api 数据库连接被拒绝\\n区分 TCP 与 DNS\\n\\npayment-api 报 ECONNREFUSED 或 connection refused 时，说明已尝试连接目标地址，但目标端口拒绝。核对数据库监听端口、地址与服务状态。它与 NXDOMAIN 的域名解析失败不同，也与 HikariPool 池内等待不同。\",\n      \"ranks\": {\n        \"vector\": 3\n      },\n      \"rrf_score\": 0.015873015873015872,\n      \"retrieval_manifest\": {\n        \"corpus_sha256\": \"023114864f127896cfc77ae214368e69d1dcfb883b0395c7c363db162c1a03ca\",\n        \"chunks_sha256\": \"b6a49d5e1a286048cf707277fb38f796b74ab0a6bd946245fa74ee64ea24fdd7\",\n        \"chunking\": \"authored-h2-v1\",\n        \"embedding_model\": \"BAAI/bge-small-zh-v1.5\",\n        \"embedding_revision\": \"7999e1d3359715c523056ef9478215996d62a620\",\n        \"dimensions\": 512,\n        \"normalize\": true,\n        \"query_prefix\": \"为这个句子生成表示以用于检索相关文章：\",\n        \"max_seq_length\": 512,\n        \"artifacts_sha256\": \"f4266a5ac784113f55b6d07f5ec45559a94ab34ea2fe3464a811e6d3a7d1a925\",\n        \"strategy\": \"vector\",\n        \"top_k\": 5,\n        \"candidate_k\": 10,\n        \"rrf_offset\": 60\n      }\n    },\n    {\n      \"evidence_id\": \"db-authentication--s01\",\n      \"document_id\": \"db-authentication\",\n      \"project_id\": \"project-a\",\n      \"source\": \"datasets/runbooks/db-authentication.md\",\n      \"revision\": \"c4c33bc9e4c3974bdebe83cc9ce3ddd274fadf507cf3d9e9fd4eafc5e89dddbc\",\n      \"content\": \"payment-api 数据库认证失败\\n识别认证错误\\n\\npayment-api 出现 SQLSTATE 28P01 或 password authentication failed 时，数据库服务已经响应认证请求。对照凭证轮换时间和数据库用户配置，区分认证失败与 DNS、TCP 连接失败。\",\n      \"ranks\": {\n        \"vector\": 4\n      },\n      \"rrf_score\": 0.015625,\n      \"retrieval_manifest\": {\n        \"corpus_sha256\": \"023114864f127896cfc77ae214368e69d1dcfb883b0395c7c363db162c1a03ca\",\n        \"chunks_sha256\": \"b6a49d5e1a286048cf707277fb38f796b74ab0a6bd946245fa74ee64ea24fdd7\",\n        \"chunking\": \"authored-h2-v1\",\n        \"embedding_model\": \"BAAI/bge-small-zh-v1.5\",\n        \"embedding_revision\": \"7999e1d3359715c523056ef9478215996d62a620\",\n        \"dimensions\": 512,\n        \"normalize\": true,\n        \"query_prefix\": \"为这个句子生成表示以用于检索相关文章：\",\n        \"max_seq_length\": 512,\n        \"artifacts_sha256\": \"f4266a5ac784113f55b6d07f5ec45559a94ab34ea2fe3464a811e6d3a7d1a925\",\n        \"strategy\": \"vector\",\n        \"top_k\": 5,\n        \"candidate_k\": 10,\n        \"rrf_offset\": 60\n      }\n    },\n    {\n      \"evidence_id\": \"rate-limit--s02\",\n      \"document_id\": \"rate-limit\",\n      \"project_id\": \"project-a\",\n      \"source\": \"datasets/runbooks/rate-limit.md\",\n      \"revision\": \"51a1b3ddf65e9cdce71f17e1bc6ca9943a1877e552e8530db9d399820d15c096\",\n      \"content\": \"payment-api 请求限流 HTTP 429\\n评估请求节奏\\n\\n核对请求峰值、批量任务与 SDK 重试。遵守服务返回的重试提示，避免立即重复请求。提高配额前需要容量与业务优先级依据，不假设服务已经宕机。\",\n      \"ranks\": {\n        \"vector\": 5\n      },\n      \"rrf_score\": 0.015384615384615385,\n      \"retrieval_manifest\": {\n        \"corpus_sha256\": \"023114864f127896cfc77ae214368e69d1dcfb883b0395c7c363db162c1a03ca\",\n        \"chunks_sha256\": \"b6a49d5e1a286048cf707277fb38f796b74ab0a6bd946245fa74ee64ea24fdd7\",\n        \"chunking\": \"authored-h2-v1\",\n        \"embedding_model\": \"BAAI/bge-small-zh-v1.5\",\n        \"embedding_revision\": \"7999e1d3359715c523056ef9478215996d62a620\",\n        \"dimensions\": 512,\n        \"normalize\": true,\n        \"query_prefix\": \"为这个句子生成表示以用于检索相关文章：\",\n        \"max_seq_length\": 512,\n        \"artifacts_sha256\": \"f4266a5ac784113f55b6d07f5ec45559a94ab34ea2fe3464a811e6d3a7d1a925\",\n        \"strategy\": \"vector\",\n        \"top_k\": 5,\n        \"candidate_k\": 10,\n        \"rrf_offset\": 60\n      }\n    }\n  ]\n}",
+                      "id": "lc_d0c865d2-32fc-4d70-bb9a-e9be2abb5b29"
+                    }
+                  ],
+                  "additional_kwargs": {},
+                  "response_metadata": {},
+                  "type": "tool",
+                  "name": "search_runbooks",
+                  "id": "f11708fa-9efa-49e3-a2a7-1b2262ffac51",
+                  "tool_call_id": "call_00_ftw7CoVc6ELIevuJy6os5026",
+                  "artifact": {
+                    "structured_content": {
+                      "chunks": [
+                        {
+                          "evidence_id": "config-regression--s01",
+                          "document_id": "config-regression",
+                          "project_id": "project-a",
+                          "source": "datasets/runbooks/config-regression.md",
+                          "revision": "5c7035d56a8b67a87eafbbf3e31be40813a688118c694e31f84d00099be2e749",
+                          "content": "payment-api 发布后数据库 DNS 配置错误\n定位 NXDOMAIN\n\npayment-api 发布后出现 NXDOMAIN、cannot be resolved 时，核对数据库主机名的拼写与配置来源。pg-paymnt.internal 与预期数据库域名不一致时，保留配置差异、发布时间和解析错误作为证据。NXDOMAIN 与连接拒绝是不同阶段的故障。",
+                          "ranks": {
+                            "vector": 1
+                          },
+                          "rrf_score": 0.01639344262295082,
+                          "retrieval_manifest": {
+                            "corpus_sha256": "023114864f127896cfc77ae214368e69d1dcfb883b0395c7c363db162c1a03ca",
+                            "chunks_sha256": "b6a49d5e1a286048cf707277fb38f796b74ab0a6bd946245fa74ee64ea24fdd7",
+                            "chunking": "authored-h2-v1",
+                            "embedding_model": "BAAI/bge-small-zh-v1.5",
+                            "embedding_revision": "7999e1d3359715c523056ef9478215996d62a620",
+                            "dimensions": 512,
+                            "normalize": true,
+                            "query_prefix": "为这个句子生成表示以用于检索相关文章：",
+                            "max_seq_length": 512,
+                            "artifacts_sha256": "f4266a5ac784113f55b6d07f5ec45559a94ab34ea2fe3464a811e6d3a7d1a925",
+                            "strategy": "vector",
+                            "top_k": 5,
+                            "candidate_k": 10,
+                            "rrf_offset": 60
+                          }
+                        },
+                        {
+                          "evidence_id": "config-regression--s02",
+                          "document_id": "config-regression",
+                          "project_id": "project-a",
+                          "source": "datasets/runbooks/config-regression.md",
+                          "revision": "5c7035d56a8b67a87eafbbf3e31be40813a688118c694e31f84d00099be2e749",
+                          "content": "payment-api 发布后数据库 DNS 配置错误\n确认配置来源\n\n检查 deployment 环境变量、配置文件与 DNS 记录的实际生效版本。多个实例是否一起失败有助区分配置回归与单实例缓存。向操作人建议回滚前，确认上一版本配置可用；本助手不修改部署。",
+                          "ranks": {
+                            "vector": 2
+                          },
+                          "rrf_score": 0.016129032258064516,
+                          "retrieval_manifest": {
+                            "corpus_sha256": "023114864f127896cfc77ae214368e69d1dcfb883b0395c7c363db162c1a03ca",
+                            "chunks_sha256": "b6a49d5e1a286048cf707277fb38f796b74ab0a6bd946245fa74ee64ea24fdd7",
+                            "chunking": "authored-h2-v1",
+                            "embedding_model": "BAAI/bge-small-zh-v1.5",
+                            "embedding_revision": "7999e1d3359715c523056ef9478215996d62a620",
+                            "dimensions": 512,
+                            "normalize": true,
+                            "query_prefix": "为这个句子生成表示以用于检索相关文章：",
+                            "max_seq_length": 512,
+                            "artifacts_sha256": "f4266a5ac784113f55b6d07f5ec45559a94ab34ea2fe3464a811e6d3a7d1a925",
+                            "strategy": "vector",
+                            "top_k": 5,
+                            "candidate_k": 10,
+                            "rrf_offset": 60
+                          }
+                        },
+                        {
+                          "evidence_id": "db-connection-refused--s01",
+                          "document_id": "db-connection-refused",
+                          "project_id": "project-a",
+                          "source": "datasets/runbooks/db-connection-refused.md",
+                          "revision": "2f523ea3b4bcaf4d22715eaa047f10a196e5198e010a8558df92ee6f6d9b148c",
+                          "content": "payment-api 数据库连接被拒绝\n区分 TCP 与 DNS\n\npayment-api 报 ECONNREFUSED 或 connection refused 时，说明已尝试连接目标地址，但目标端口拒绝。核对数据库监听端口、地址与服务状态。它与 NXDOMAIN 的域名解析失败不同，也与 HikariPool 池内等待不同。",
+                          "ranks": {
+                            "vector": 3
+                          },
+                          "rrf_score": 0.015873015873015872,
+                          "retrieval_manifest": {
+                            "corpus_sha256": "023114864f127896cfc77ae214368e69d1dcfb883b0395c7c363db162c1a03ca",
+                            "chunks_sha256": "b6a49d5e1a286048cf707277fb38f796b74ab0a6bd946245fa74ee64ea24fdd7",
+                            "chunking": "authored-h2-v1",
+                            "embedding_model": "BAAI/bge-small-zh-v1.5",
+                            "embedding_revision": "7999e1d3359715c523056ef9478215996d62a620",
+                            "dimensions": 512,
+                            "normalize": true,
+                            "query_prefix": "为这个句子生成表示以用于检索相关文章：",
+                            "max_seq_length": 512,
+                            "artifacts_sha256": "f4266a5ac784113f55b6d07f5ec45559a94ab34ea2fe3464a811e6d3a7d1a925",
+                            "strategy": "vector",
+                            "top_k": 5,
+                            "candidate_k": 10,
+                            "rrf_offset": 60
+                          }
+                        },
+                        {
+                          "evidence_id": "db-authentication--s01",
+                          "document_id": "db-authentication",
+                          "project_id": "project-a",
+                          "source": "datasets/runbooks/db-authentication.md",
+                          "revision": "c4c33bc9e4c3974bdebe83cc9ce3ddd274fadf507cf3d9e9fd4eafc5e89dddbc",
+                          "content": "payment-api 数据库认证失败\n识别认证错误\n\npayment-api 出现 SQLSTATE 28P01 或 password authentication failed 时，数据库服务已经响应认证请求。对照凭证轮换时间和数据库用户配置，区分认证失败与 DNS、TCP 连接失败。",
+                          "ranks": {
+                            "vector": 4
+                          },
+                          "rrf_score": 0.015625,
+                          "retrieval_manifest": {
+                            "corpus_sha256": "023114864f127896cfc77ae214368e69d1dcfb883b0395c7c363db162c1a03ca",
+                            "chunks_sha256": "b6a49d5e1a286048cf707277fb38f796b74ab0a6bd946245fa74ee64ea24fdd7",
+                            "chunking": "authored-h2-v1",
+                            "embedding_model": "BAAI/bge-small-zh-v1.5",
+                            "embedding_revision": "7999e1d3359715c523056ef9478215996d62a620",
+                            "dimensions": 512,
+                            "normalize": true,
+                            "query_prefix": "为这个句子生成表示以用于检索相关文章：",
+                            "max_seq_length": 512,
+                            "artifacts_sha256": "f4266a5ac784113f55b6d07f5ec45559a94ab34ea2fe3464a811e6d3a7d1a925",
+                            "strategy": "vector",
+                            "top_k": 5,
+                            "candidate_k": 10,
+                            "rrf_offset": 60
+                          }
+                        },
+                        {
+                          "evidence_id": "rate-limit--s02",
+                          "document_id": "rate-limit",
+                          "project_id": "project-a",
+                          "source": "datasets/runbooks/rate-limit.md",
+                          "revision": "51a1b3ddf65e9cdce71f17e1bc6ca9943a1877e552e8530db9d399820d15c096",
+                          "content": "payment-api 请求限流 HTTP 429\n评估请求节奏\n\n核对请求峰值、批量任务与 SDK 重试。遵守服务返回的重试提示，避免立即重复请求。提高配额前需要容量与业务优先级依据，不假设服务已经宕机。",
+                          "ranks": {
+                            "vector": 5
+                          },
+                          "rrf_score": 0.015384615384615385,
+                          "retrieval_manifest": {
+                            "corpus_sha256": "023114864f127896cfc77ae214368e69d1dcfb883b0395c7c363db162c1a03ca",
+                            "chunks_sha256": "b6a49d5e1a286048cf707277fb38f796b74ab0a6bd946245fa74ee64ea24fdd7",
+                            "chunking": "authored-h2-v1",
+                            "embedding_model": "BAAI/bge-small-zh-v1.5",
+                            "embedding_revision": "7999e1d3359715c523056ef9478215996d62a620",
+                            "dimensions": 512,
+                            "normalize": true,
+                            "query_prefix": "为这个句子生成表示以用于检索相关文章：",
+                            "max_seq_length": 512,
+                            "artifacts_sha256": "f4266a5ac784113f55b6d07f5ec45559a94ab34ea2fe3464a811e6d3a7d1a925",
+                            "strategy": "vector",
+                            "top_k": 5,
+                            "candidate_k": 10,
+                            "rrf_offset": 60
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  "status": "success"
+                },
+                {
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "{\n  \"experiences\": []\n}",
+                      "id": "lc_37811794-eea4-4f6d-9a73-166e6e524e1c"
+                    }
+                  ],
+                  "additional_kwargs": {},
+                  "response_metadata": {},
+                  "type": "tool",
+                  "name": "search_experiences",
+                  "id": "a562c5dd-6b41-4152-994b-432faded597d",
+                  "tool_call_id": "call_01_lqCeYVmYlHPLiesdharD0074",
+                  "artifact": {
+                    "structured_content": {
+                      "experiences": []
+                    }
+                  },
+                  "status": "success"
+                }
+              ]
+            },
+            "output": {
+              "content": "{\"status\":\"diagnosed\",\"cause_summary\":\"在 2026-11-04 08:00–08:15（+08:00）窗口内，payment-api 的 replica-1 在部署 v2.4.1 之后出现数据库主机名解析失败：日志明确报出 'database host pg-paymnt.internal cannot be resolved; NXDOMAIN'（08:02）。同一时间窗的指标显示 dns_failures=190 requests、http_5xx_ratio=0.91（08:03），说明 DNS 解析失败与大面积 5xx 同时出现，故障发生在域名解析阶段，而不是 TCP 连接被拒绝或认证失败阶段。结合手册 config-regression--s01 与 config-regression--s02 的判断，当前证据指向发布 v2.4.1 引入的数据库主机名配置回归（pg-paymnt.internal 与预期数据库域名不一致）。注意：手册只是排查方法，根因结论由本次日志与指标支持；尚未核实配置来源与上一版本配置是否可用，也未执行任何生产变更。\",\"evidence_ids\":[\"w6-config-regression-01-log-1\",\"w6-config-regression-01-metric-1\",\"w6-config-regression-01-metric-2\",\"config-regression--s01\",\"config-regression--s02\"],\"unknowns\":[\"仅看到 replica-1 的日志，其他副本是否同样失败尚未证实（无法据此区分配置回归与单实例 DNS 缓存问题）\",\"pg-paymnt.internal 与预期数据库域名的具体差异、配置来源（deployment 环境变量/配置文件/DNS 记录）尚未核对\",\"v2.4.1 的发布时间与变更内容未取得独立证据\",\"上一版本配置是否可用、回滚是否安全尚未验证\",\"窗口内日志样本仅 1 条 ERROR，未确认是否存在其他错误类型（如连接拒绝、认证失败）\"],\"next_steps\":[\"按 config-regression--s02 核对 deployment 环境变量、配置文件与 DNS 记录中数据库主机名的实际生效版本，确认 pg-paymnt.internal 的拼写来源\",\"检查 payment-api 其他副本在同一时间窗是否同样报 NXDOMAIN，以区分配置回归与单实例缓存问题（需授权扩大查询范围）\",\"确认 v2.4.1 的发布时间与配置变更记录，并与上一版本配置对比，验证回滚可行性\",\"若需进一步定位，可授权查询 DNS 解析侧或数据库侧服务在该时间窗的日志与指标\"]}",
+              "tool_calls": [],
+              "usage": {
+                "input_tokens": 4765,
+                "output_tokens": 545,
+                "total_tokens": 5310,
+                "input_token_details": {
+                  "cache_read": 2176
+                },
+                "output_token_details": {
+                  "reasoning": 0
+                }
+              },
+              "response_model": "agentlens-agent",
+              "billing": {
+                "currency": "USD",
+                "pricing_version": "deepseek-2026-11-01",
+                "pricing_sha256": "6a41970e9ba6f1c65aadd1eab8483e562cfa3abb7eecfe9dc78e264dc22f301d",
+                "source": "https://api-docs.deepseek.com/quick_start/pricing/",
+                "cost": "0.000721878",
+                "cache_read_tokens": 2176,
+                "reason": null,
+                "model_source": "local_gateway_configuration; response_contains_alias",
+                "gateway_config_sha256": "7defcb62e9bf9f418561063d1b4ccb9ed038bffc5c3921858278e02ec5c600de",
+                "priced_model": "deepseek-flash",
+                "rates_per_million": {
+                  "cache_hit": 0.003,
+                  "cache_miss": 0.15,
+                  "output": 0.6
+                }
+              }
+            },
+            "error": null,
+            "duration_ms": 4412.87,
+            "span_id": "b5a2cb685f923c29",
+            "source_step_sequence": null
+          }
+        ]
+      }
+    }
+  ]
+}

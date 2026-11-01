@@ -1,0 +1,366 @@
+{
+  "schema_version": 2,
+  "name": "dev10",
+  "started_at": "2026-11-01T10:41:25.274929+00:00",
+  "finished_at": "2026-11-01T10:41:26.338678+00:00",
+  "dataset_sha256": "913c65c6994772b7060f31ae1f1ef446eedec0c3838a532119b3f8b897a5f3c3",
+  "evaluator_sha256": "bc0b366ec248ee3f2ebf38498959647aa55b5170fa2e60174e8560c9096139e3",
+  "agentevals_version": "0.0.9",
+  "dataset_name": "dev.jsonl",
+  "judge_config": null,
+  "recorded_run": false,
+  "summary": {
+    "selected": 1,
+    "passed": 0,
+    "failed": 1,
+    "errors": 0,
+    "judge_errors": 0,
+    "complete": true,
+    "pass_rate": 0.0
+  },
+  "cases": [
+    {
+      "case_id": "w6-pool-exhaustion-02",
+      "critical": false,
+      "scenario_group": "pool-exhaustion",
+      "split": "dev",
+      "outcome": "failed",
+      "evaluation": {
+        "passed": false,
+        "checks": {
+          "project_scope": true,
+          "status": false,
+          "required_tools": false,
+          "query_scope": true,
+          "cause_terms": false,
+          "required_evidence": false,
+          "valid_citations": true,
+          "outside_window_excluded": true,
+          "token_usage_recorded": true,
+          "runbook_retrieved": false,
+          "runbook_cited": false,
+          "knowledge_project_scope": true,
+          "trajectory_required_tools": false,
+          "trajectory_forbidden_tools": true,
+          "trajectory_parameters": true,
+          "trajectory_order": false
+        },
+        "failure_reasons": [
+          "status",
+          "required_tools",
+          "cause_terms",
+          "required_evidence",
+          "runbook_retrieved",
+          "runbook_cited",
+          "trajectory_required_tools",
+          "trajectory_order"
+        ],
+        "dimensions": {
+          "trajectory": false,
+          "retrieval": false,
+          "root_cause": false,
+          "citations": false,
+          "task_completion": false
+        },
+        "trajectory": {
+          "checks": {
+            "trajectory_required_tools": false,
+            "trajectory_forbidden_tools": true,
+            "trajectory_parameters": true,
+            "trajectory_order": false
+          },
+          "matcher": "agentevals.trajectory.match",
+          "required_tool_match": {
+            "key": "trajectory_superset_match",
+            "score": false,
+            "comment": null,
+            "metadata": null
+          },
+          "parameter_match": {
+            "key": "trajectory_unordered_match",
+            "score": true,
+            "comment": null,
+            "metadata": null
+          },
+          "precedence": {
+            "search_logs -> search_runbooks": false,
+            "query_metrics -> search_runbooks": false
+          }
+        }
+      },
+      "error": null,
+      "run": {
+        "run_id": "fdee6ece-d98a-46a6-82b9-f7daa3b7394b",
+        "thread_id": "89dbfb60-75eb-49cf-b4fc-be884da7e0f7",
+        "source_run_id": null,
+        "execution_mode": "live",
+        "recording_id": null,
+        "scenario_id": null,
+        "failure_detail": null,
+        "checkpoint_id": "1f1d5e0c-9fb9-63ad-8002-2d2a913ca2b7",
+        "trace_id": "b32c4e459ca2adf9fa3bcbbe08252727",
+        "span_id": "66da62a289b3e9e8",
+        "request_span_id": null,
+        "interrupt": null,
+        "project_id": "project-a",
+        "status": "insufficient_evidence",
+        "input": "请调查 order-api 在 2026-11-02T09:00:00+08:00 至 2026-11-02T09:15:00+08:00（结束时间不包含）的异常，结合日志与指标，检索并引用支持建议的手册。说明尚未证实的信息。",
+        "output": {
+          "status": "insufficient_evidence",
+          "cause_summary": "证据不足，缺少日志和指标，无法判断根因。",
+          "evidence_ids": [],
+          "unknowns": [
+            "未收集现场证据"
+          ],
+          "next_steps": [
+            "补充现场证据后再调查"
+          ]
+        },
+        "versions": {
+          "prompt_sha256": "22cf5f8ee462cee365944395055479e4f121c166d2d1dea78a790d40eb6789f5",
+          "dataset_sha256": "46a32fe8ba9ef987f67732c38001ecd09abab8350f7bbd960a528beb704dc4c0",
+          "requested_model": "agentlens-agent",
+          "configured_upstream_model": "openai/deepseek-flash",
+          "tool_transport": "mcp/streamable-http",
+          "checkpointer": "AsyncPostgresSaver",
+          "graph_version": "week8-v1",
+          "actor": "local-cli",
+          "recording_sha256": null,
+          "scenario_manifest": null,
+          "tool_catalog": [
+            {
+              "name": "search_logs",
+              "description": "Query logs in the current project. Times include timezone; interval is [start, end).\n\n    Returns citeable evidence_id values. Limit is 1-200.\n    ",
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "service": {
+                    "title": "Service",
+                    "type": "string"
+                  },
+                  "start_time": {
+                    "format": "date-time",
+                    "title": "Start Time",
+                    "type": "string"
+                  },
+                  "end_time": {
+                    "format": "date-time",
+                    "title": "End Time",
+                    "type": "string"
+                  },
+                  "level": {
+                    "anyOf": [
+                      {
+                        "enum": [
+                          "INFO",
+                          "WARN",
+                          "ERROR"
+                        ],
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null,
+                    "title": "Level"
+                  },
+                  "limit": {
+                    "default": 50,
+                    "title": "Limit",
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "service",
+                  "start_time",
+                  "end_time"
+                ],
+                "title": "logsArguments"
+              }
+            },
+            {
+              "name": "query_metrics",
+              "description": "Query metrics in the current project and [start_time, end_time).\n\n    Leave metric_name unset to inspect available metrics. Returns citeable evidence. Limit is 1-300.\n    ",
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "service": {
+                    "title": "Service",
+                    "type": "string"
+                  },
+                  "start_time": {
+                    "format": "date-time",
+                    "title": "Start Time",
+                    "type": "string"
+                  },
+                  "end_time": {
+                    "format": "date-time",
+                    "title": "End Time",
+                    "type": "string"
+                  },
+                  "metric_name": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null,
+                    "title": "Metric Name"
+                  },
+                  "limit": {
+                    "default": 100,
+                    "title": "Limit",
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "service",
+                  "start_time",
+                  "end_time"
+                ],
+                "title": "metricsArguments"
+              }
+            },
+            {
+              "name": "search_runbooks",
+              "description": "Search the current project's troubleshooting handbooks using symptoms and error terms.\n\n    Use observed service/component names and error messages in query. Returns citeable chunk\n    evidence_id, source, revision and content. Handbooks guide checks; they are not live telemetry.\n    top_k is 1-10. Query is 1-2000 characters. Uses fixed BGE embeddings and pgvector cosine search.\n    ",
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "query": {
+                    "title": "Query",
+                    "type": "string"
+                  },
+                  "top_k": {
+                    "default": 3,
+                    "title": "Top K",
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "query"
+                ],
+                "title": "runbooksArguments"
+              }
+            },
+            {
+              "name": "search_experiences",
+              "description": "Find human-confirmed incident experience for a service in the current project.\n\n    Use for related past incidents and applicable investigation steps. Results are historical\n    knowledge, not live evidence for a new incident. Returns citeable IDs and original run/time.\n    Exact service match, latest confirmations first. Limit is 1-20.\n    ",
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "service": {
+                    "title": "Service",
+                    "type": "string"
+                  },
+                  "limit": {
+                    "default": 5,
+                    "title": "Limit",
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "service"
+                ],
+                "title": "experiencesArguments"
+              }
+            },
+            {
+              "name": "analyze_logs",
+              "description": "Run Python statistics on logs already retrieved in THIS run, using OpenShell only.\n\n    Use only when the user requests statistical analysis. logs is a list of authorized rows.\n    Print exactly one JSON value. No network, credentials, package installs or host files.\n    Maximum 100 log IDs, code 6000 chars, 8 seconds, 256MiB, output 64KiB.\n    Runtime absence is a tool error; never claim analysis succeeded without its result.\n    ",
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "evidence_ids": {
+                    "items": {
+                      "type": "string"
+                    },
+                    "title": "Evidence Ids",
+                    "type": "array"
+                  },
+                  "python_code": {
+                    "title": "Python Code",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "evidence_ids",
+                  "python_code"
+                ],
+                "title": "analyze_logsArguments"
+              }
+            }
+          ],
+          "tool_schemas_sha256": "d50be48bfae9c71d5645337a9cd10ff9580fc6da8f8e518898dc1ab5a0d5079b"
+        },
+        "usage": {
+          "input_tokens": 1198,
+          "output_tokens": 53
+        },
+        "error": null,
+        "started_at": "2026-11-01T10:41:25.283386+00:00",
+        "finished_at": "2026-11-01T10:41:26.332679+00:00",
+        "steps": [
+          {
+            "sequence": 1,
+            "kind": "model",
+            "name": "agentlens-agent",
+            "input": {
+              "messages": [
+                {
+                  "content": "请调查 order-api 在 2026-11-02T09:00:00+08:00 至 2026-11-02T09:15:00+08:00（结束时间不包含）的异常，结合日志与指标，检索并引用支持建议的手册。说明尚未证实的信息。",
+                  "additional_kwargs": {},
+                  "response_metadata": {},
+                  "type": "human",
+                  "name": null,
+                  "id": "49b0d146-d5ea-43d0-b1b7-d41abc94d9e1"
+                }
+              ]
+            },
+            "output": {
+              "content": "{\"status\":\"insufficient_evidence\",\"cause_summary\":\"证据不足，缺少日志和指标，无法判断根因。\",\"evidence_ids\":[],\"unknowns\":[\"未收集现场证据\"],\"next_steps\":[\"补充现场证据后再调查\"]}",
+              "tool_calls": [],
+              "usage": {
+                "input_tokens": 1198,
+                "output_tokens": 53,
+                "total_tokens": 1251,
+                "input_token_details": {
+                  "cache_read": 896
+                },
+                "output_token_details": {
+                  "reasoning": 0
+                }
+              },
+              "response_model": "agentlens-agent",
+              "billing": {
+                "currency": "USD",
+                "pricing_version": "deepseek-2026-11-01",
+                "pricing_sha256": "6a41970e9ba6f1c65aadd1eab8483e562cfa3abb7eecfe9dc78e264dc22f301d",
+                "source": "https://api-docs.deepseek.com/quick_start/pricing/",
+                "cost": "0.000079788",
+                "cache_read_tokens": 896,
+                "reason": null,
+                "model_source": "local_gateway_configuration; response_contains_alias",
+                "gateway_config_sha256": "7defcb62e9bf9f418561063d1b4ccb9ed038bffc5c3921858278e02ec5c600de",
+                "priced_model": "deepseek-flash",
+                "rates_per_million": {
+                  "cache_hit": 0.003,
+                  "cache_miss": 0.15,
+                  "output": 0.6
+                }
+              }
+            },
+            "error": null,
+            "duration_ms": 1008.77,
+            "span_id": "ea56a40ee3121acc",
+            "source_step_sequence": null
+          }
+        ]
+      }
+    }
+  ]
+}
