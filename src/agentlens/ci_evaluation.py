@@ -112,7 +112,12 @@ def summarize(report, planned):
     passed = sum(c["outcome"] == "passed" for c in cases)
     failed = sum(c["outcome"] == "failed" for c in cases)
     errors = sum(c["outcome"] == "execution_error" for c in cases)
-    complete = len(cases) == planned and not errors and not report.get("batch_error")
+    complete = (
+        len(cases) == planned
+        and not errors
+        and not report.get("batch_error")
+        and not report.get("in_progress_case_id")
+    )
     report["summary"] = {
         "selected": planned,
         "attempted": len(cases),
@@ -232,6 +237,7 @@ async def run_ci_evaluation(settings, target, name="dev10", selection=SELECTION)
             for p in ["graph.py", "agent.py", "mcp_server.py", "ci_evaluation.py", "eval_budget.py"]
         },
         "batch_error": None,
+        "in_progress_case_id": None,
     }
     token = active_budget.set(budget)
 
@@ -255,6 +261,8 @@ async def run_ci_evaluation(settings, target, name="dev10", selection=SELECTION)
             if budget.spent >= budget.limit or budget.unknown_usage:
                 report["batch_error"] = "Budget exhausted or previous call's usage is unknown"
                 break
+            report["in_progress_case_id"] = case["case_id"]
+            persist()
             result = await run_evaluation(
                 settings,
                 dataset,
@@ -265,6 +273,7 @@ async def run_ci_evaluation(settings, target, name="dev10", selection=SELECTION)
             item = result["cases"][0]
             item["failure_analysis"] = classify_failures(case, item["run"], item["evaluation"])
             report["cases"].append(item)
+            report["in_progress_case_id"] = None
             print(
                 json.dumps(
                     {

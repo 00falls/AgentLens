@@ -23,6 +23,10 @@ def main():
         .decode("utf-8")
         .splitlines()
     )
+    previous = os.environ.get("PREVIOUS_SHA", "")
+    # A restore commit can equal the PR base; the prior head still changed the Prompt.
+    if previous and set(previous) != {"0"}:
+        paths += git("diff", "--name-only", previous, head).decode("utf-8").splitlines()
     prefixes = ("src/", "prompts/", "datasets/", "configs/", "scripts/", "migrations/", ".github/")
     relevant = any(
         path.startswith(prefixes) or path in {"pyproject.toml", "uv.lock", ".gitattributes"}

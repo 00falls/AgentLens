@@ -9,6 +9,7 @@ __pycache__/
 .env
 data/
 reports/local/
+reports/ci/**/local/
 web/node_modules/
 web/dist/
 

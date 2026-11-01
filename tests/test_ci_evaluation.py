@@ -1,21 +1,23 @@
 """Provider-free checks of frozen selection, quality gating, failure facts and budgets."""
 
+import asyncio
 import copy
 import json
 from datetime import UTC, datetime
 from decimal import Decimal
+from unittest.mock import MagicMock
 
 import pytest
 from langchain_core.messages import HumanMessage
 
-from agentlens import eval_budget
+from agentlens import ci_evaluation, eval_budget
 from agentlens.ci_evaluation import (
     classify_failures,
     evaluate_ci_gate,
     selected_cases,
     summarize,
 )
-from agentlens.config import ROOT
+from agentlens.config import ROOT, Settings
 from agentlens.eval_budget import BudgetStop, EvaluationBudget
 
 
@@ -37,8 +39,9 @@ def batches(tmp_path):
                 "case_id": c["case_id"],
                 "scenario_group": c["scenario_group"],
                 "outcome": "passed",
+                "error": None,
                 "run": copy.deepcopy(reference),
-                "evaluation": {"checks": {"status": True}, "dimensions": {}},
+                "evaluation": {"checks": {"status": True}, "dimensions": {}, "failure_reasons": []},
                 "failure_analysis": {"tags": []},
             }
             for c in cases
@@ -68,6 +71,7 @@ def test_selection_is_exactly_ten_development_cases_across_eight_families():
         "budget_stop",
         "contract",
         "evaluator",
+        "in_progress",
     ],
 )
 def test_gate_rejects_bad_candidates(batches, change):
@@ -86,6 +90,8 @@ def test_gate_rejects_bad_candidates(batches, change):
         data["batch_error"] = "BudgetStop: no further calls"
     elif change == "contract":
         data["contract"] = {"selection": "different"}
+    elif change == "in_progress":
+        data["in_progress_case_id"] = data["cases"][-1]["case_id"]
     else:
         data["evaluator_sha256"] = "different-evaluator"
     summarize(data, 10)
@@ -111,6 +117,42 @@ def test_partial_report_does_not_publish_full_pass_rate(batches):
     assert data["summary"]["coverage"] == 0.3
     assert data["summary"]["not_executed"] == 7
     assert data["summary"]["confirmed_passed_of_planned"] == "3/10"
+
+
+def test_interrupted_batch_preserves_completed_and_in_progress_evidence(
+    batches, monkeypatch, tmp_path
+):
+    _, _, fixture = batches
+    session = MagicMock()
+    session.__enter__.return_value.scalar.return_value = 0
+    monkeypatch.setattr(ci_evaluation, "create_session", lambda _: session)
+    (tmp_path / "artifacts.json").write_text("{}")
+    count = 0
+
+    async def external_run(*args):
+        nonlocal count
+        count += 1
+        if count == 2:
+            raise BudgetStop("controlled interruption of an external call")
+        eval_budget.active_budget.get().observe({"cost": "0.01"})
+        return {"cases": [copy.deepcopy(fixture["cases"][0])]}
+
+    monkeypatch.setattr(ci_evaluation, "run_evaluation", external_run)
+    target = tmp_path / "partial.json"
+    with pytest.raises(BudgetStop, match="controlled interruption"):
+        asyncio.run(
+            ci_evaluation.run_ci_evaluation(
+                Settings(embedding_path=tmp_path), target, name="software interruption fixture"
+            )
+        )
+    saved = json.loads(target.read_text(encoding="utf-8"))
+    assert saved["summary"]["confirmed_passed_of_planned"] == "1/10"
+    assert saved["summary"]["pass_rate"] is None
+    assert saved["summary"]["not_executed"] == 9
+    assert saved["in_progress_case_id"] == "w6-pool-exhaustion-02"
+    assert saved["budget"]["known_spent_usd"] == "0.01"
+    assert saved["finished_at"] and saved["batch_error"].startswith("BudgetStop:")
+    assert target.with_suffix(".md").exists()
 
 
 def test_failure_classification_is_evidence_not_hallucination_claim(batches):
