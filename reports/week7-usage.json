@@ -1,0 +1,31 @@
+{
+  "date": "2026-11-01",
+  "selected_business_cases": 1,
+  "model_driven_executions": 2,
+  "replay_model_calls": 2,
+  "frozen_model_calls": 3,
+  "judge_requests": 0,
+  "replay_usage": {
+    "input_tokens": 3597,
+    "output_tokens": 387
+  },
+  "frozen_usage": {
+    "input_tokens": 9001,
+    "output_tokens": 1102
+  },
+  "total_usage": {
+    "input_tokens": 12598,
+    "output_tokens": 1489
+  },
+  "monetary_cost": null,
+  "note": "Replay mismatch is an expected boundary stop, not a completed successful diagnosis.",
+  "controlled_model_probe_ids": [
+    "c57de848-7021-4360-9007-163013269933",
+    "8682bfb3-fb21-4fa1-b16a-ad5f71ba66c2"
+  ],
+  "total_runs_after": 47,
+  "migrations": [
+    "0004_vectors",
+    "0006_execution_modes"
+  ]
+}

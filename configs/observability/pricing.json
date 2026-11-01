@@ -1,0 +1,13 @@
+{
+  "version": "deepseek-2026-11-01",
+  "currency": "USD",
+  "source": "https://api-docs.deepseek.com/quick_start/pricing/",
+  "verified_on": "2026-11-01",
+  "valid_from": "2026-11-01T00:00:00Z",
+  "valid_until": "2026-11-02T00:00:00Z",
+  "models": {
+    "deepseek-flash": {"cache_hit": 0.003, "cache_miss": 0.15, "output": 0.6},
+    "deepseek-v4-pro": {"cache_hit": 0.022, "cache_miss": 0.66, "output": 1.98}
+  },
+  "note": "Verified Sunday off-peak rates per million tokens. Extend validity only after checking current provider tariff and time band. Historical runs remain unknown."
+}

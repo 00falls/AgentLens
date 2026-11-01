@@ -1,0 +1,1705 @@
+{
+  "schema_version": 2,
+  "name": "dev10",
+  "started_at": "2026-11-01T10:17:48.153123+00:00",
+  "finished_at": "2026-11-01T10:17:57.161919+00:00",
+  "dataset_sha256": "913c65c6994772b7060f31ae1f1ef446eedec0c3838a532119b3f8b897a5f3c3",
+  "evaluator_sha256": "bc0b366ec248ee3f2ebf38498959647aa55b5170fa2e60174e8560c9096139e3",
+  "agentevals_version": "0.0.9",
+  "dataset_name": "dev.jsonl",
+  "judge_config": null,
+  "recorded_run": false,
+  "summary": {
+    "selected": 1,
+    "passed": 1,
+    "failed": 0,
+    "errors": 0,
+    "judge_errors": 0,
+    "complete": true,
+    "pass_rate": 1.0
+  },
+  "cases": [
+    {
+      "case_id": "w6-traffic-spike-01",
+      "critical": false,
+      "scenario_group": "traffic-spike",
+      "split": "dev",
+      "outcome": "passed",
+      "evaluation": {
+        "passed": true,
+        "checks": {
+          "project_scope": true,
+          "status": true,
+          "required_tools": true,
+          "query_scope": true,
+          "cause_terms": true,
+          "required_evidence": true,
+          "valid_citations": true,
+          "outside_window_excluded": true,
+          "token_usage_recorded": true,
+          "runbook_retrieved": true,
+          "runbook_cited": true,
+          "knowledge_project_scope": true,
+          "trajectory_required_tools": true,
+          "trajectory_forbidden_tools": true,
+          "trajectory_parameters": true,
+          "trajectory_order": true
+        },
+        "failure_reasons": [],
+        "dimensions": {
+          "trajectory": true,
+          "retrieval": true,
+          "root_cause": true,
+          "citations": true,
+          "task_completion": true
+        },
+        "trajectory": {
+          "checks": {
+            "trajectory_required_tools": true,
+            "trajectory_forbidden_tools": true,
+            "trajectory_parameters": true,
+            "trajectory_order": true
+          },
+          "matcher": "agentevals.trajectory.match",
+          "required_tool_match": {
+            "key": "trajectory_superset_match",
+            "score": true,
+            "comment": null,
+            "metadata": null
+          },
+          "parameter_match": {
+            "key": "trajectory_unordered_match",
+            "score": true,
+            "comment": null,
+            "metadata": null
+          },
+          "precedence": {
+            "search_logs -> search_runbooks": true,
+            "query_metrics -> search_runbooks": true
+          }
+        }
+      },
+      "error": null,
+      "run": {
+        "run_id": "301cb8c4-0c82-4a22-ba03-fc302a3071e8",
+        "thread_id": "efad6878-a63c-493c-a792-65f2be43325a",
+        "source_run_id": null,
+        "execution_mode": "live",
+        "recording_id": null,
+        "scenario_id": null,
+        "failure_detail": null,
+        "checkpoint_id": "1f1d5dd8-20be-646e-8008-ec7ed3bf05cb",
+        "trace_id": "4329e3aa6a2613ffd14ca5714309364c",
+        "span_id": "c48e346f4b6bde66",
+        "request_span_id": null,
+        "interrupt": null,
+        "project_id": "project-b",
+        "status": "diagnosed",
+        "input": "请调查 inventory-api 在 2026-11-06T08:00:00+08:00 至 2026-11-06T08:15:00+08:00（结束时间不包含）的异常，结合日志与指标，检索并引用支持建议的手册。",
+        "output": {
+          "status": "diagnosed",
+          "cause_summary": "2026-11-06 08:00–08:15（+08:00）窗口内，inventory-api 出现请求量突增导致的处理能力不足：08:03 的 request_rate 为 1900 req/s，而 baseline_request_rate 仅为 120 req/s，约为基线的 15.8 倍；同时 worker_cpu_percent 达到 99%，queue_length 达到 2400。08:02 的 replica-1 日志显示“Worker queue full: pending=2400; requests rejected with HTTP 503”，说明工作队列已满，请求被拒绝并返回 503。日志与指标相互印证，支持“流量显著超过基线，且队列与 CPU 同时饱和，导致过载拒绝”的判断（手册 traffic-spike--s01 的识别条件与现场一致）。目前没有证据表明存在 CPU 配额节流或缓存命中率下降；cpu-throttling 手册也提示不能仅凭 worker_cpu_percent 推断节点算力不足，因此根因仍应归为流量过载，而非资源配额或代码回归。",
+          "evidence_ids": [
+            "w6-traffic-spike-01-log-1",
+            "w6-traffic-spike-01-metric-1",
+            "w6-traffic-spike-01-metric-2",
+            "w6-traffic-spike-01-metric-3",
+            "w6-traffic-spike-01-metric-4",
+            "traffic-spike--s01",
+            "cpu-throttling--s01"
+          ],
+          "unknowns": [
+            "流量突增的来源尚未证实：是外部真实业务峰值、上游重试放大，还是压测或爬虫流量",
+            "窗口内只有 08:02 一条 ERROR 日志和 08:03 一个指标采样点，无法判断过载的持续时长与恢复时间",
+            "未取得 container_cpu_cfs_throttled_seconds_total 与 CPU limit，无法排除容器 CPU 配额节流叠加影响",
+            "未取得 cache_hit_ratio、db_query_rate，无法排除缓存失效放大回源负载",
+            "未取得发布变更记录，无法排除代码回归导致单位请求 CPU 上升",
+            "该服务无人工确认的历史故障经验可参考（search_experiences 返回空）"
+          ],
+          "next_steps": [
+            "按 traffic-spike--s01：继续对比 request_rate、baseline_request_rate 与 queue_length 的时间序列，确认突增起止时间与峰值形态",
+            "按 cpu-throttling--s01：查询 container_cpu_cfs_throttled_seconds_total 与容器 CPU limit，判断是否同时存在配额节流",
+            "按 cpu-throttling--s02：比较发布前后单位请求 CPU 与请求量，区分纯流量增长与代码回归",
+            "按 cache-miss--s01：查询 cache_hit_ratio 与 db_query_rate，确认缓存是否失效并放大下游压力",
+            "核查上游调用方与网关侧流量来源（重试策略、限流配置、异常客户端），定位突增来源",
+            "评估短期缓解手段（限流、扩容副本、队列上限与快速失败策略），并在变更前评估对下游的影响"
+          ]
+        },
+        "versions": {
+          "prompt_sha256": "b607124299c8683f22704cd8a32a2dd92c06469887a1aa89d10676128091bdbb",
+          "dataset_sha256": "46a32fe8ba9ef987f67732c38001ecd09abab8350f7bbd960a528beb704dc4c0",
+          "requested_model": "agentlens-agent",
+          "configured_upstream_model": "openai/deepseek-flash",
+          "tool_transport": "mcp/streamable-http",
+          "checkpointer": "AsyncPostgresSaver",
+          "graph_version": "week8-v1",
+          "actor": "local-cli",
+          "recording_sha256": null,
+          "scenario_manifest": null,
+          "tool_catalog": [
+            {
+              "name": "search_logs",
+              "description": "Query logs in the current project. Times include timezone; interval is [start, end).\n\n    Returns citeable evidence_id values. Limit is 1-200.\n    ",
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "service": {
+                    "title": "Service",
+                    "type": "string"
+                  },
+                  "start_time": {
+                    "format": "date-time",
+                    "title": "Start Time",
+                    "type": "string"
+                  },
+                  "end_time": {
+                    "format": "date-time",
+                    "title": "End Time",
+                    "type": "string"
+                  },
+                  "level": {
+                    "anyOf": [
+                      {
+                        "enum": [
+                          "INFO",
+                          "WARN",
+                          "ERROR"
+                        ],
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null,
+                    "title": "Level"
+                  },
+                  "limit": {
+                    "default": 50,
+                    "title": "Limit",
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "service",
+                  "start_time",
+                  "end_time"
+                ],
+                "title": "logsArguments"
+              }
+            },
+            {
+              "name": "query_metrics",
+              "description": "Query metrics in the current project and [start_time, end_time).\n\n    Leave metric_name unset to inspect available metrics. Returns citeable evidence. Limit is 1-300.\n    ",
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "service": {
+                    "title": "Service",
+                    "type": "string"
+                  },
+                  "start_time": {
+                    "format": "date-time",
+                    "title": "Start Time",
+                    "type": "string"
+                  },
+                  "end_time": {
+                    "format": "date-time",
+                    "title": "End Time",
+                    "type": "string"
+                  },
+                  "metric_name": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null,
+                    "title": "Metric Name"
+                  },
+                  "limit": {
+                    "default": 100,
+                    "title": "Limit",
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "service",
+                  "start_time",
+                  "end_time"
+                ],
+                "title": "metricsArguments"
+              }
+            },
+            {
+              "name": "search_runbooks",
+              "description": "Search the current project's troubleshooting handbooks using symptoms and error terms.\n\n    Use observed service/component names and error messages in query. Returns citeable chunk\n    evidence_id, source, revision and content. Handbooks guide checks; they are not live telemetry.\n    top_k is 1-10. Query is 1-2000 characters. Uses fixed BGE embeddings and pgvector cosine search.\n    ",
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "query": {
+                    "title": "Query",
+                    "type": "string"
+                  },
+                  "top_k": {
+                    "default": 3,
+                    "title": "Top K",
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "query"
+                ],
+                "title": "runbooksArguments"
+              }
+            },
+            {
+              "name": "search_experiences",
+              "description": "Find human-confirmed incident experience for a service in the current project.\n\n    Use for related past incidents and applicable investigation steps. Results are historical\n    knowledge, not live evidence for a new incident. Returns citeable IDs and original run/time.\n    Exact service match, latest confirmations first. Limit is 1-20.\n    ",
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "service": {
+                    "title": "Service",
+                    "type": "string"
+                  },
+                  "limit": {
+                    "default": 5,
+                    "title": "Limit",
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "service"
+                ],
+                "title": "experiencesArguments"
+              }
+            },
+            {
+              "name": "analyze_logs",
+              "description": "Run Python statistics on logs already retrieved in THIS run, using OpenShell only.\n\n    Use only when the user requests statistical analysis. logs is a list of authorized rows.\n    Print exactly one JSON value. No network, credentials, package installs or host files.\n    Maximum 100 log IDs, code 6000 chars, 8 seconds, 256MiB, output 64KiB.\n    Runtime absence is a tool error; never claim analysis succeeded without its result.\n    ",
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "evidence_ids": {
+                    "items": {
+                      "type": "string"
+                    },
+                    "title": "Evidence Ids",
+                    "type": "array"
+                  },
+                  "python_code": {
+                    "title": "Python Code",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "evidence_ids",
+                  "python_code"
+                ],
+                "title": "analyze_logsArguments"
+              }
+            }
+          ],
+          "tool_schemas_sha256": "d50be48bfae9c71d5645337a9cd10ff9580fc6da8f8e518898dc1ab5a0d5079b",
+          "retrieval": {
+            "corpus_sha256": "023114864f127896cfc77ae214368e69d1dcfb883b0395c7c363db162c1a03ca",
+            "chunks_sha256": "b6a49d5e1a286048cf707277fb38f796b74ab0a6bd946245fa74ee64ea24fdd7",
+            "chunking": "authored-h2-v1",
+            "embedding_model": "BAAI/bge-small-zh-v1.5",
+            "embedding_revision": "7999e1d3359715c523056ef9478215996d62a620",
+            "dimensions": 512,
+            "normalize": true,
+            "query_prefix": "为这个句子生成表示以用于检索相关文章：",
+            "max_seq_length": 512,
+            "artifacts_sha256": "9e8d41feee144813910c7db23ca5505bcf66139811f6f1521db1265e1bed016d",
+            "strategy": "vector",
+            "top_k": 5,
+            "candidate_k": 10,
+            "rrf_offset": 60
+          }
+        },
+        "usage": {
+          "input_tokens": 11473,
+          "output_tokens": 1363
+        },
+        "error": null,
+        "started_at": "2026-11-01T18:17:48.296907+08:00",
+        "finished_at": "2026-11-01T18:17:57.153771+08:00",
+        "steps": [
+          {
+            "sequence": 1,
+            "kind": "model",
+            "name": "agentlens-agent",
+            "input": {
+              "messages": [
+                {
+                  "content": "请调查 inventory-api 在 2026-11-06T08:00:00+08:00 至 2026-11-06T08:15:00+08:00（结束时间不包含）的异常，结合日志与指标，检索并引用支持建议的手册。",
+                  "additional_kwargs": {},
+                  "response_metadata": {},
+                  "type": "human",
+                  "name": null,
+                  "id": "9cf113a0-5f2f-48c6-be0c-340a87bb2e63"
+                }
+              ]
+            },
+            "output": {
+              "content": "我先查询 inventory-api 在该时间窗内的日志和指标。",
+              "tool_calls": [
+                {
+                  "name": "search_logs",
+                  "args": {
+                    "service": "inventory-api",
+                    "start_time": "2026-11-06T08:00:00+08:00",
+                    "end_time": "2026-11-06T08:15:00+08:00",
+                    "level": "ERROR",
+                    "limit": 100
+                  },
+                  "id": "call_00_lVDIh76tzGzghpqTeD4y3790",
+                  "type": "tool_call"
+                },
+                {
+                  "name": "query_metrics",
+                  "args": {
+                    "service": "inventory-api",
+                    "start_time": "2026-11-06T08:00:00+08:00",
+                    "end_time": "2026-11-06T08:15:00+08:00",
+                    "limit": 100
+                  },
+                  "id": "call_01_9h7EDshRzveJ5DqqXPvf5530",
+                  "type": "tool_call"
+                }
+              ],
+              "usage": {
+                "input_tokens": 1533,
+                "output_tokens": 259,
+                "total_tokens": 1792,
+                "input_token_details": {
+                  "cache_read": 1280
+                },
+                "output_token_details": {}
+              },
+              "response_model": "agentlens-agent",
+              "billing": {
+                "currency": "USD",
+                "pricing_version": "deepseek-2026-11-01",
+                "pricing_sha256": "6a41970e9ba6f1c65aadd1eab8483e562cfa3abb7eecfe9dc78e264dc22f301d",
+                "source": "https://api-docs.deepseek.com/quick_start/pricing/",
+                "cost": "0.00019719",
+                "cache_read_tokens": 1280,
+                "reason": null,
+                "model_source": "local_gateway_configuration; response_contains_alias",
+                "gateway_config_sha256": "7defcb62e9bf9f418561063d1b4ccb9ed038bffc5c3921858278e02ec5c600de",
+                "priced_model": "deepseek-flash",
+                "rates_per_million": {
+                  "cache_hit": 0.003,
+                  "cache_miss": 0.15,
+                  "output": 0.6
+                }
+              }
+            },
+            "error": null,
+            "duration_ms": 1238.39,
+            "span_id": "ca6b41918e38d3ac",
+            "source_step_sequence": null
+          },
+          {
+            "sequence": 2,
+            "kind": "tool",
+            "name": "search_logs",
+            "input": {
+              "service": "inventory-api",
+              "start_time": "2026-11-06T08:00:00+08:00",
+              "end_time": "2026-11-06T08:15:00+08:00",
+              "level": "ERROR",
+              "limit": 100
+            },
+            "output": {
+              "logs": [
+                {
+                  "evidence_id": "w6-traffic-spike-01-log-1",
+                  "timestamp": "2026-11-06T08:02:00+08:00",
+                  "service": "inventory-api",
+                  "level": "ERROR",
+                  "message": "instance=replica-1; Worker queue full: pending=2400; requests rejected with HTTP 503"
+                }
+              ]
+            },
+            "error": null,
+            "duration_ms": 16.3,
+            "span_id": "9cd94f90b739f9f3",
+            "source_step_sequence": null
+          },
+          {
+            "sequence": 3,
+            "kind": "tool",
+            "name": "query_metrics",
+            "input": {
+              "service": "inventory-api",
+              "start_time": "2026-11-06T08:00:00+08:00",
+              "end_time": "2026-11-06T08:15:00+08:00",
+              "limit": 100
+            },
+            "output": {
+              "metrics": [
+                {
+                  "evidence_id": "w6-traffic-spike-01-metric-1",
+                  "timestamp": "2026-11-06T08:03:00+08:00",
+                  "service": "inventory-api",
+                  "name": "request_rate",
+                  "value": 1900.0,
+                  "unit": "requests/s"
+                },
+                {
+                  "evidence_id": "w6-traffic-spike-01-metric-2",
+                  "timestamp": "2026-11-06T08:03:00+08:00",
+                  "service": "inventory-api",
+                  "name": "baseline_request_rate",
+                  "value": 120.0,
+                  "unit": "requests/s"
+                },
+                {
+                  "evidence_id": "w6-traffic-spike-01-metric-3",
+                  "timestamp": "2026-11-06T08:03:00+08:00",
+                  "service": "inventory-api",
+                  "name": "worker_cpu_percent",
+                  "value": 99.0,
+                  "unit": "percent"
+                },
+                {
+                  "evidence_id": "w6-traffic-spike-01-metric-4",
+                  "timestamp": "2026-11-06T08:03:00+08:00",
+                  "service": "inventory-api",
+                  "name": "queue_length",
+                  "value": 2400.0,
+                  "unit": "requests"
+                }
+              ]
+            },
+            "error": null,
+            "duration_ms": 15.81,
+            "span_id": "5a615668dbdb6029",
+            "source_step_sequence": null
+          },
+          {
+            "sequence": 4,
+            "kind": "model",
+            "name": "agentlens-agent",
+            "input": {
+              "messages": [
+                {
+                  "content": "请调查 inventory-api 在 2026-11-06T08:00:00+08:00 至 2026-11-06T08:15:00+08:00（结束时间不包含）的异常，结合日志与指标，检索并引用支持建议的手册。",
+                  "additional_kwargs": {},
+                  "response_metadata": {},
+                  "type": "human",
+                  "name": null,
+                  "id": "9cf113a0-5f2f-48c6-be0c-340a87bb2e63"
+                },
+                {
+                  "content": "我先查询 inventory-api 在该时间窗内的日志和指标。",
+                  "additional_kwargs": {},
+                  "response_metadata": {
+                    "model_provider": "openai",
+                    "finish_reason": "tool_calls",
+                    "model_name": "agentlens-agent",
+                    "system_fingerprint": "bc19ba97cbe016479903222bb1578db6"
+                  },
+                  "type": "ai",
+                  "name": null,
+                  "id": "lc_run--01a1969d-862f-74be-a094-be8083b74bbb",
+                  "tool_calls": [
+                    {
+                      "name": "search_logs",
+                      "args": {
+                        "service": "inventory-api",
+                        "start_time": "2026-11-06T08:00:00+08:00",
+                        "end_time": "2026-11-06T08:15:00+08:00",
+                        "level": "ERROR",
+                        "limit": 100
+                      },
+                      "id": "call_00_lVDIh76tzGzghpqTeD4y3790",
+                      "type": "tool_call"
+                    },
+                    {
+                      "name": "query_metrics",
+                      "args": {
+                        "service": "inventory-api",
+                        "start_time": "2026-11-06T08:00:00+08:00",
+                        "end_time": "2026-11-06T08:15:00+08:00",
+                        "limit": 100
+                      },
+                      "id": "call_01_9h7EDshRzveJ5DqqXPvf5530",
+                      "type": "tool_call"
+                    }
+                  ],
+                  "invalid_tool_calls": [],
+                  "usage_metadata": {
+                    "input_tokens": 1533,
+                    "output_tokens": 259,
+                    "total_tokens": 1792,
+                    "input_token_details": {
+                      "cache_read": 1280
+                    },
+                    "output_token_details": {}
+                  }
+                },
+                {
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "{\n  \"logs\": [\n    {\n      \"evidence_id\": \"w6-traffic-spike-01-log-1\",\n      \"timestamp\": \"2026-11-06T08:02:00+08:00\",\n      \"service\": \"inventory-api\",\n      \"level\": \"ERROR\",\n      \"message\": \"instance=replica-1; Worker queue full: pending=2400; requests rejected with HTTP 503\"\n    }\n  ]\n}",
+                      "id": "lc_78487046-13ec-462e-b2cc-6423c9f29598"
+                    }
+                  ],
+                  "additional_kwargs": {},
+                  "response_metadata": {},
+                  "type": "tool",
+                  "name": "search_logs",
+                  "id": "d74de27a-c069-400f-9b06-12fd284b3f08",
+                  "tool_call_id": "call_00_lVDIh76tzGzghpqTeD4y3790",
+                  "artifact": {
+                    "structured_content": {
+                      "logs": [
+                        {
+                          "evidence_id": "w6-traffic-spike-01-log-1",
+                          "timestamp": "2026-11-06T08:02:00+08:00",
+                          "service": "inventory-api",
+                          "level": "ERROR",
+                          "message": "instance=replica-1; Worker queue full: pending=2400; requests rejected with HTTP 503"
+                        }
+                      ]
+                    }
+                  },
+                  "status": "success"
+                },
+                {
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "{\n  \"metrics\": [\n    {\n      \"evidence_id\": \"w6-traffic-spike-01-metric-1\",\n      \"timestamp\": \"2026-11-06T08:03:00+08:00\",\n      \"service\": \"inventory-api\",\n      \"name\": \"request_rate\",\n      \"value\": 1900.0,\n      \"unit\": \"requests/s\"\n    },\n    {\n      \"evidence_id\": \"w6-traffic-spike-01-metric-2\",\n      \"timestamp\": \"2026-11-06T08:03:00+08:00\",\n      \"service\": \"inventory-api\",\n      \"name\": \"baseline_request_rate\",\n      \"value\": 120.0,\n      \"unit\": \"requests/s\"\n    },\n    {\n      \"evidence_id\": \"w6-traffic-spike-01-metric-3\",\n      \"timestamp\": \"2026-11-06T08:03:00+08:00\",\n      \"service\": \"inventory-api\",\n      \"name\": \"worker_cpu_percent\",\n      \"value\": 99.0,\n      \"unit\": \"percent\"\n    },\n    {\n      \"evidence_id\": \"w6-traffic-spike-01-metric-4\",\n      \"timestamp\": \"2026-11-06T08:03:00+08:00\",\n      \"service\": \"inventory-api\",\n      \"name\": \"queue_length\",\n      \"value\": 2400.0,\n      \"unit\": \"requests\"\n    }\n  ]\n}",
+                      "id": "lc_6fdc472f-bd31-49b6-aa46-f449fbdc5bd4"
+                    }
+                  ],
+                  "additional_kwargs": {},
+                  "response_metadata": {},
+                  "type": "tool",
+                  "name": "query_metrics",
+                  "id": "0a200967-61c7-45f5-926a-829342b691c2",
+                  "tool_call_id": "call_01_9h7EDshRzveJ5DqqXPvf5530",
+                  "artifact": {
+                    "structured_content": {
+                      "metrics": [
+                        {
+                          "evidence_id": "w6-traffic-spike-01-metric-1",
+                          "timestamp": "2026-11-06T08:03:00+08:00",
+                          "service": "inventory-api",
+                          "name": "request_rate",
+                          "value": 1900.0,
+                          "unit": "requests/s"
+                        },
+                        {
+                          "evidence_id": "w6-traffic-spike-01-metric-2",
+                          "timestamp": "2026-11-06T08:03:00+08:00",
+                          "service": "inventory-api",
+                          "name": "baseline_request_rate",
+                          "value": 120.0,
+                          "unit": "requests/s"
+                        },
+                        {
+                          "evidence_id": "w6-traffic-spike-01-metric-3",
+                          "timestamp": "2026-11-06T08:03:00+08:00",
+                          "service": "inventory-api",
+                          "name": "worker_cpu_percent",
+                          "value": 99.0,
+                          "unit": "percent"
+                        },
+                        {
+                          "evidence_id": "w6-traffic-spike-01-metric-4",
+                          "timestamp": "2026-11-06T08:03:00+08:00",
+                          "service": "inventory-api",
+                          "name": "queue_length",
+                          "value": 2400.0,
+                          "unit": "requests"
+                        }
+                      ]
+                    }
+                  },
+                  "status": "success"
+                }
+              ]
+            },
+            "output": {
+              "content": "日志和指标都指向请求量激增。我再查看 WARN 日志和可用指标列表，以补充上下文。",
+              "tool_calls": [
+                {
+                  "name": "search_logs",
+                  "args": {
+                    "end_time": "2026-11-06T08:15:00+08:00",
+                    "level": "WARN",
+                    "limit": 100,
+                    "service": "inventory-api",
+                    "start_time": "2026-11-06T08:00:00+08:00"
+                  },
+                  "id": "call_00_j0HVsAzgtn5fA3oTjEkk5888",
+                  "type": "tool_call"
+                },
+                {
+                  "name": "search_logs",
+                  "args": {
+                    "end_time": "2026-11-06T08:15:00+08:00",
+                    "level": "INFO",
+                    "limit": 100,
+                    "service": "inventory-api",
+                    "start_time": "2026-11-06T08:00:00+08:00"
+                  },
+                  "id": "call_01_gOyoVFvXeT7hqcYsEkxq0045",
+                  "type": "tool_call"
+                }
+              ],
+              "usage": {
+                "input_tokens": 2237,
+                "output_tokens": 288,
+                "total_tokens": 2525,
+                "input_token_details": {
+                  "cache_read": 1792
+                },
+                "output_token_details": {}
+              },
+              "response_model": "agentlens-agent",
+              "billing": {
+                "currency": "USD",
+                "pricing_version": "deepseek-2026-11-01",
+                "pricing_sha256": "6a41970e9ba6f1c65aadd1eab8483e562cfa3abb7eecfe9dc78e264dc22f301d",
+                "source": "https://api-docs.deepseek.com/quick_start/pricing/",
+                "cost": "0.000244926",
+                "cache_read_tokens": 1792,
+                "reason": null,
+                "model_source": "local_gateway_configuration; response_contains_alias",
+                "gateway_config_sha256": "7defcb62e9bf9f418561063d1b4ccb9ed038bffc5c3921858278e02ec5c600de",
+                "priced_model": "deepseek-flash",
+                "rates_per_million": {
+                  "cache_hit": 0.003,
+                  "cache_miss": 0.15,
+                  "output": 0.6
+                }
+              }
+            },
+            "error": null,
+            "duration_ms": 1748.03,
+            "span_id": "7afdf545661bfd4c",
+            "source_step_sequence": null
+          },
+          {
+            "sequence": 5,
+            "kind": "tool",
+            "name": "search_logs",
+            "input": {
+              "end_time": "2026-11-06T08:15:00+08:00",
+              "level": "WARN",
+              "limit": 100,
+              "service": "inventory-api",
+              "start_time": "2026-11-06T08:00:00+08:00"
+            },
+            "output": {
+              "logs": []
+            },
+            "error": null,
+            "duration_ms": 16.65,
+            "span_id": "dd081abdbfd6279c",
+            "source_step_sequence": null
+          },
+          {
+            "sequence": 6,
+            "kind": "tool",
+            "name": "search_logs",
+            "input": {
+              "end_time": "2026-11-06T08:15:00+08:00",
+              "level": "INFO",
+              "limit": 100,
+              "service": "inventory-api",
+              "start_time": "2026-11-06T08:00:00+08:00"
+            },
+            "output": {
+              "logs": []
+            },
+            "error": null,
+            "duration_ms": 16.14,
+            "span_id": "30cc98b53d170943",
+            "source_step_sequence": null
+          },
+          {
+            "sequence": 7,
+            "kind": "model",
+            "name": "agentlens-agent",
+            "input": {
+              "messages": [
+                {
+                  "content": "请调查 inventory-api 在 2026-11-06T08:00:00+08:00 至 2026-11-06T08:15:00+08:00（结束时间不包含）的异常，结合日志与指标，检索并引用支持建议的手册。",
+                  "additional_kwargs": {},
+                  "response_metadata": {},
+                  "type": "human",
+                  "name": null,
+                  "id": "9cf113a0-5f2f-48c6-be0c-340a87bb2e63"
+                },
+                {
+                  "content": "我先查询 inventory-api 在该时间窗内的日志和指标。",
+                  "additional_kwargs": {},
+                  "response_metadata": {
+                    "model_provider": "openai",
+                    "finish_reason": "tool_calls",
+                    "model_name": "agentlens-agent",
+                    "system_fingerprint": "bc19ba97cbe016479903222bb1578db6"
+                  },
+                  "type": "ai",
+                  "name": null,
+                  "id": "lc_run--01a1969d-862f-74be-a094-be8083b74bbb",
+                  "tool_calls": [
+                    {
+                      "name": "search_logs",
+                      "args": {
+                        "service": "inventory-api",
+                        "start_time": "2026-11-06T08:00:00+08:00",
+                        "end_time": "2026-11-06T08:15:00+08:00",
+                        "level": "ERROR",
+                        "limit": 100
+                      },
+                      "id": "call_00_lVDIh76tzGzghpqTeD4y3790",
+                      "type": "tool_call"
+                    },
+                    {
+                      "name": "query_metrics",
+                      "args": {
+                        "service": "inventory-api",
+                        "start_time": "2026-11-06T08:00:00+08:00",
+                        "end_time": "2026-11-06T08:15:00+08:00",
+                        "limit": 100
+                      },
+                      "id": "call_01_9h7EDshRzveJ5DqqXPvf5530",
+                      "type": "tool_call"
+                    }
+                  ],
+                  "invalid_tool_calls": [],
+                  "usage_metadata": {
+                    "input_tokens": 1533,
+                    "output_tokens": 259,
+                    "total_tokens": 1792,
+                    "input_token_details": {
+                      "cache_read": 1280
+                    },
+                    "output_token_details": {}
+                  }
+                },
+                {
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "{\n  \"logs\": [\n    {\n      \"evidence_id\": \"w6-traffic-spike-01-log-1\",\n      \"timestamp\": \"2026-11-06T08:02:00+08:00\",\n      \"service\": \"inventory-api\",\n      \"level\": \"ERROR\",\n      \"message\": \"instance=replica-1; Worker queue full: pending=2400; requests rejected with HTTP 503\"\n    }\n  ]\n}",
+                      "id": "lc_78487046-13ec-462e-b2cc-6423c9f29598"
+                    }
+                  ],
+                  "additional_kwargs": {},
+                  "response_metadata": {},
+                  "type": "tool",
+                  "name": "search_logs",
+                  "id": "d74de27a-c069-400f-9b06-12fd284b3f08",
+                  "tool_call_id": "call_00_lVDIh76tzGzghpqTeD4y3790",
+                  "artifact": {
+                    "structured_content": {
+                      "logs": [
+                        {
+                          "evidence_id": "w6-traffic-spike-01-log-1",
+                          "timestamp": "2026-11-06T08:02:00+08:00",
+                          "service": "inventory-api",
+                          "level": "ERROR",
+                          "message": "instance=replica-1; Worker queue full: pending=2400; requests rejected with HTTP 503"
+                        }
+                      ]
+                    }
+                  },
+                  "status": "success"
+                },
+                {
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "{\n  \"metrics\": [\n    {\n      \"evidence_id\": \"w6-traffic-spike-01-metric-1\",\n      \"timestamp\": \"2026-11-06T08:03:00+08:00\",\n      \"service\": \"inventory-api\",\n      \"name\": \"request_rate\",\n      \"value\": 1900.0,\n      \"unit\": \"requests/s\"\n    },\n    {\n      \"evidence_id\": \"w6-traffic-spike-01-metric-2\",\n      \"timestamp\": \"2026-11-06T08:03:00+08:00\",\n      \"service\": \"inventory-api\",\n      \"name\": \"baseline_request_rate\",\n      \"value\": 120.0,\n      \"unit\": \"requests/s\"\n    },\n    {\n      \"evidence_id\": \"w6-traffic-spike-01-metric-3\",\n      \"timestamp\": \"2026-11-06T08:03:00+08:00\",\n      \"service\": \"inventory-api\",\n      \"name\": \"worker_cpu_percent\",\n      \"value\": 99.0,\n      \"unit\": \"percent\"\n    },\n    {\n      \"evidence_id\": \"w6-traffic-spike-01-metric-4\",\n      \"timestamp\": \"2026-11-06T08:03:00+08:00\",\n      \"service\": \"inventory-api\",\n      \"name\": \"queue_length\",\n      \"value\": 2400.0,\n      \"unit\": \"requests\"\n    }\n  ]\n}",
+                      "id": "lc_6fdc472f-bd31-49b6-aa46-f449fbdc5bd4"
+                    }
+                  ],
+                  "additional_kwargs": {},
+                  "response_metadata": {},
+                  "type": "tool",
+                  "name": "query_metrics",
+                  "id": "0a200967-61c7-45f5-926a-829342b691c2",
+                  "tool_call_id": "call_01_9h7EDshRzveJ5DqqXPvf5530",
+                  "artifact": {
+                    "structured_content": {
+                      "metrics": [
+                        {
+                          "evidence_id": "w6-traffic-spike-01-metric-1",
+                          "timestamp": "2026-11-06T08:03:00+08:00",
+                          "service": "inventory-api",
+                          "name": "request_rate",
+                          "value": 1900.0,
+                          "unit": "requests/s"
+                        },
+                        {
+                          "evidence_id": "w6-traffic-spike-01-metric-2",
+                          "timestamp": "2026-11-06T08:03:00+08:00",
+                          "service": "inventory-api",
+                          "name": "baseline_request_rate",
+                          "value": 120.0,
+                          "unit": "requests/s"
+                        },
+                        {
+                          "evidence_id": "w6-traffic-spike-01-metric-3",
+                          "timestamp": "2026-11-06T08:03:00+08:00",
+                          "service": "inventory-api",
+                          "name": "worker_cpu_percent",
+                          "value": 99.0,
+                          "unit": "percent"
+                        },
+                        {
+                          "evidence_id": "w6-traffic-spike-01-metric-4",
+                          "timestamp": "2026-11-06T08:03:00+08:00",
+                          "service": "inventory-api",
+                          "name": "queue_length",
+                          "value": 2400.0,
+                          "unit": "requests"
+                        }
+                      ]
+                    }
+                  },
+                  "status": "success"
+                },
+                {
+                  "content": "日志和指标都指向请求量激增。我再查看 WARN 日志和可用指标列表，以补充上下文。",
+                  "additional_kwargs": {},
+                  "response_metadata": {
+                    "model_provider": "openai",
+                    "finish_reason": "tool_calls",
+                    "model_name": "agentlens-agent",
+                    "system_fingerprint": "bc19ba97cbe016479903222bb1578db6"
+                  },
+                  "type": "ai",
+                  "name": null,
+                  "id": "lc_run--01a1969d-8b34-7400-8f72-41c1f49ec728",
+                  "tool_calls": [
+                    {
+                      "name": "search_logs",
+                      "args": {
+                        "end_time": "2026-11-06T08:15:00+08:00",
+                        "level": "WARN",
+                        "limit": 100,
+                        "service": "inventory-api",
+                        "start_time": "2026-11-06T08:00:00+08:00"
+                      },
+                      "id": "call_00_j0HVsAzgtn5fA3oTjEkk5888",
+                      "type": "tool_call"
+                    },
+                    {
+                      "name": "search_logs",
+                      "args": {
+                        "end_time": "2026-11-06T08:15:00+08:00",
+                        "level": "INFO",
+                        "limit": 100,
+                        "service": "inventory-api",
+                        "start_time": "2026-11-06T08:00:00+08:00"
+                      },
+                      "id": "call_01_gOyoVFvXeT7hqcYsEkxq0045",
+                      "type": "tool_call"
+                    }
+                  ],
+                  "invalid_tool_calls": [],
+                  "usage_metadata": {
+                    "input_tokens": 2237,
+                    "output_tokens": 288,
+                    "total_tokens": 2525,
+                    "input_token_details": {
+                      "cache_read": 1792
+                    },
+                    "output_token_details": {}
+                  }
+                },
+                {
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "{\n  \"logs\": []\n}",
+                      "id": "lc_46f2b646-f49a-4a9c-9a78-b2b7bd554ab8"
+                    }
+                  ],
+                  "additional_kwargs": {},
+                  "response_metadata": {},
+                  "type": "tool",
+                  "name": "search_logs",
+                  "id": "abe1b037-495a-4707-b8e7-2410bb32c602",
+                  "tool_call_id": "call_00_j0HVsAzgtn5fA3oTjEkk5888",
+                  "artifact": {
+                    "structured_content": {
+                      "logs": []
+                    }
+                  },
+                  "status": "success"
+                },
+                {
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "{\n  \"logs\": []\n}",
+                      "id": "lc_2a543637-9c92-49b5-9ad6-262b12b4687a"
+                    }
+                  ],
+                  "additional_kwargs": {},
+                  "response_metadata": {},
+                  "type": "tool",
+                  "name": "search_logs",
+                  "id": "4118a00f-7e56-46bb-8dab-e3afe4710c80",
+                  "tool_call_id": "call_01_gOyoVFvXeT7hqcYsEkxq0045",
+                  "artifact": {
+                    "structured_content": {
+                      "logs": []
+                    }
+                  },
+                  "status": "success"
+                }
+              ]
+            },
+            "output": {
+              "content": "现在检索手册，使用已观察到的具体术语。",
+              "tool_calls": [
+                {
+                  "name": "search_runbooks",
+                  "args": {
+                    "query": "inventory-api Worker queue full pending=2400 requests rejected HTTP 503 request_rate 1900 远超 baseline 120 worker_cpu_percent 99 queue_length 2400",
+                    "top_k": 5
+                  },
+                  "id": "call_00_S7Fmk4inijaje5NDnoUH0087",
+                  "type": "tool_call"
+                },
+                {
+                  "name": "search_experiences",
+                  "args": {
+                    "service": "inventory-api",
+                    "limit": 5
+                  },
+                  "id": "call_01_32UQpGEOH8cOCoTAlwlg6141",
+                  "type": "tool_call"
+                }
+              ],
+              "usage": {
+                "input_tokens": 2557,
+                "output_tokens": 149,
+                "total_tokens": 2706,
+                "input_token_details": {
+                  "cache_read": 2304
+                },
+                "output_token_details": {}
+              },
+              "response_model": "agentlens-agent",
+              "billing": {
+                "currency": "USD",
+                "pricing_version": "deepseek-2026-11-01",
+                "pricing_sha256": "6a41970e9ba6f1c65aadd1eab8483e562cfa3abb7eecfe9dc78e264dc22f301d",
+                "source": "https://api-docs.deepseek.com/quick_start/pricing/",
+                "cost": "0.000134262",
+                "cache_read_tokens": 2304,
+                "reason": null,
+                "model_source": "local_gateway_configuration; response_contains_alias",
+                "gateway_config_sha256": "7defcb62e9bf9f418561063d1b4ccb9ed038bffc5c3921858278e02ec5c600de",
+                "priced_model": "deepseek-flash",
+                "rates_per_million": {
+                  "cache_hit": 0.003,
+                  "cache_miss": 0.15,
+                  "output": 0.6
+                }
+              }
+            },
+            "error": null,
+            "duration_ms": 1391.15,
+            "span_id": "91a52bca6471a925",
+            "source_step_sequence": null
+          },
+          {
+            "sequence": 8,
+            "kind": "tool",
+            "name": "search_runbooks",
+            "input": {
+              "query": "inventory-api Worker queue full pending=2400 requests rejected HTTP 503 request_rate 1900 远超 baseline 120 worker_cpu_percent 99 queue_length 2400",
+              "top_k": 5
+            },
+            "output": {
+              "chunks": [
+                {
+                  "evidence_id": "traffic-spike--s01",
+                  "document_id": "traffic-spike",
+                  "project_id": "project-b",
+                  "source": "datasets/runbooks/traffic-spike.md",
+                  "revision": "c54e4b0d3ec11682443adca06e72a0dae2646f7729aba64f119645f1a33acc4d",
+                  "content": "inventory-api 流量突增与队列饱和\n识别过载\n\ninventory-api 的 Worker queue full、HTTP 503 与 queue_length 上升时，对比 request_rate、baseline_request_rate 和 worker_cpu_percent。流量显著超过基线且队列与 CPU 同时饱和，支持处理能力不足。",
+                  "ranks": {
+                    "vector": 1
+                  },
+                  "rrf_score": 0.01639344262295082,
+                  "retrieval_manifest": {
+                    "corpus_sha256": "023114864f127896cfc77ae214368e69d1dcfb883b0395c7c363db162c1a03ca",
+                    "chunks_sha256": "b6a49d5e1a286048cf707277fb38f796b74ab0a6bd946245fa74ee64ea24fdd7",
+                    "chunking": "authored-h2-v1",
+                    "embedding_model": "BAAI/bge-small-zh-v1.5",
+                    "embedding_revision": "7999e1d3359715c523056ef9478215996d62a620",
+                    "dimensions": 512,
+                    "normalize": true,
+                    "query_prefix": "为这个句子生成表示以用于检索相关文章：",
+                    "max_seq_length": 512,
+                    "artifacts_sha256": "9e8d41feee144813910c7db23ca5505bcf66139811f6f1521db1265e1bed016d",
+                    "strategy": "vector",
+                    "top_k": 5,
+                    "candidate_k": 10,
+                    "rrf_offset": 60
+                  }
+                },
+                {
+                  "evidence_id": "cpu-throttling--s01",
+                  "document_id": "cpu-throttling",
+                  "project_id": "project-b",
+                  "source": "datasets/runbooks/cpu-throttling.md",
+                  "revision": "0bce3a078ae992079cab02f2c1f3e6d2776b55fba9a8d04d426b179ded572d87",
+                  "content": "inventory-api CPU 配额节流\n识别 CPU throttling\n\ninventory-api 延迟升高时，对照 container_cpu_cfs_throttled_seconds_total、CPU limit 和队列。受 CPU 配额限制时，节点总体 CPU 仍可能空闲。不能只用 worker_cpu_percent 推断节点算力不足。",
+                  "ranks": {
+                    "vector": 2
+                  },
+                  "rrf_score": 0.016129032258064516,
+                  "retrieval_manifest": {
+                    "corpus_sha256": "023114864f127896cfc77ae214368e69d1dcfb883b0395c7c363db162c1a03ca",
+                    "chunks_sha256": "b6a49d5e1a286048cf707277fb38f796b74ab0a6bd946245fa74ee64ea24fdd7",
+                    "chunking": "authored-h2-v1",
+                    "embedding_model": "BAAI/bge-small-zh-v1.5",
+                    "embedding_revision": "7999e1d3359715c523056ef9478215996d62a620",
+                    "dimensions": 512,
+                    "normalize": true,
+                    "query_prefix": "为这个句子生成表示以用于检索相关文章：",
+                    "max_seq_length": 512,
+                    "artifacts_sha256": "9e8d41feee144813910c7db23ca5505bcf66139811f6f1521db1265e1bed016d",
+                    "strategy": "vector",
+                    "top_k": 5,
+                    "candidate_k": 10,
+                    "rrf_offset": 60
+                  }
+                },
+                {
+                  "evidence_id": "cpu-throttling--s02",
+                  "document_id": "cpu-throttling",
+                  "project_id": "project-b",
+                  "source": "datasets/runbooks/cpu-throttling.md",
+                  "revision": "0bce3a078ae992079cab02f2c1f3e6d2776b55fba9a8d04d426b179ded572d87",
+                  "content": "inventory-api CPU 配额节流\n继续定位\n\n比较发布前后单位请求 CPU、请求量与热点堆栈。区分流量增长和代码回归后再建议调整配额。内存与 CPU 指标需要分别判断，不把所有资源故障混为一类。",
+                  "ranks": {
+                    "vector": 3
+                  },
+                  "rrf_score": 0.015873015873015872,
+                  "retrieval_manifest": {
+                    "corpus_sha256": "023114864f127896cfc77ae214368e69d1dcfb883b0395c7c363db162c1a03ca",
+                    "chunks_sha256": "b6a49d5e1a286048cf707277fb38f796b74ab0a6bd946245fa74ee64ea24fdd7",
+                    "chunking": "authored-h2-v1",
+                    "embedding_model": "BAAI/bge-small-zh-v1.5",
+                    "embedding_revision": "7999e1d3359715c523056ef9478215996d62a620",
+                    "dimensions": 512,
+                    "normalize": true,
+                    "query_prefix": "为这个句子生成表示以用于检索相关文章：",
+                    "max_seq_length": 512,
+                    "artifacts_sha256": "9e8d41feee144813910c7db23ca5505bcf66139811f6f1521db1265e1bed016d",
+                    "strategy": "vector",
+                    "top_k": 5,
+                    "candidate_k": 10,
+                    "rrf_offset": 60
+                  }
+                },
+                {
+                  "evidence_id": "cache-miss--s02",
+                  "document_id": "cache-miss",
+                  "project_id": "project-b",
+                  "source": "datasets/runbooks/cache-miss.md",
+                  "revision": "a9a090938d5969413eb35ffbfbe9b92bcf843d3efc541f9632cf0fbcc9169ef3",
+                  "content": "inventory-api 缓存命中率下降\n确认影响范围\n\n检查热点键、缓存错误与容量淘汰，区分批量过期和连接失败。建议预热或修改过期策略前，评估回源负载和数据一致性要求。",
+                  "ranks": {
+                    "vector": 4
+                  },
+                  "rrf_score": 0.015625,
+                  "retrieval_manifest": {
+                    "corpus_sha256": "023114864f127896cfc77ae214368e69d1dcfb883b0395c7c363db162c1a03ca",
+                    "chunks_sha256": "b6a49d5e1a286048cf707277fb38f796b74ab0a6bd946245fa74ee64ea24fdd7",
+                    "chunking": "authored-h2-v1",
+                    "embedding_model": "BAAI/bge-small-zh-v1.5",
+                    "embedding_revision": "7999e1d3359715c523056ef9478215996d62a620",
+                    "dimensions": 512,
+                    "normalize": true,
+                    "query_prefix": "为这个句子生成表示以用于检索相关文章：",
+                    "max_seq_length": 512,
+                    "artifacts_sha256": "9e8d41feee144813910c7db23ca5505bcf66139811f6f1521db1265e1bed016d",
+                    "strategy": "vector",
+                    "top_k": 5,
+                    "candidate_k": 10,
+                    "rrf_offset": 60
+                  }
+                },
+                {
+                  "evidence_id": "cache-miss--s01",
+                  "document_id": "cache-miss",
+                  "project_id": "project-b",
+                  "source": "datasets/runbooks/cache-miss.md",
+                  "revision": "a9a090938d5969413eb35ffbfbe9b92bcf843d3efc541f9632cf0fbcc9169ef3",
+                  "content": "inventory-api 缓存命中率下降\n识别缓存穿透到数据库\n\ninventory-api cache_hit_ratio 下降并伴随 db_query_rate 上升时，核对缓存过期时间、键空间与发布变更。下游数据库压力可能是缓存失效的后果，不能只据数据库变慢推断连接泄漏。",
+                  "ranks": {
+                    "vector": 5
+                  },
+                  "rrf_score": 0.015384615384615385,
+                  "retrieval_manifest": {
+                    "corpus_sha256": "023114864f127896cfc77ae214368e69d1dcfb883b0395c7c363db162c1a03ca",
+                    "chunks_sha256": "b6a49d5e1a286048cf707277fb38f796b74ab0a6bd946245fa74ee64ea24fdd7",
+                    "chunking": "authored-h2-v1",
+                    "embedding_model": "BAAI/bge-small-zh-v1.5",
+                    "embedding_revision": "7999e1d3359715c523056ef9478215996d62a620",
+                    "dimensions": 512,
+                    "normalize": true,
+                    "query_prefix": "为这个句子生成表示以用于检索相关文章：",
+                    "max_seq_length": 512,
+                    "artifacts_sha256": "9e8d41feee144813910c7db23ca5505bcf66139811f6f1521db1265e1bed016d",
+                    "strategy": "vector",
+                    "top_k": 5,
+                    "candidate_k": 10,
+                    "rrf_offset": 60
+                  }
+                }
+              ]
+            },
+            "error": null,
+            "duration_ms": 43.38,
+            "span_id": "3da5f058c4d1bd03",
+            "source_step_sequence": null
+          },
+          {
+            "sequence": 9,
+            "kind": "tool",
+            "name": "search_experiences",
+            "input": {
+              "service": "inventory-api",
+              "limit": 5
+            },
+            "output": {
+              "experiences": []
+            },
+            "error": null,
+            "duration_ms": 21.56,
+            "span_id": "4bf3945a6488eb9c",
+            "source_step_sequence": null
+          },
+          {
+            "sequence": 10,
+            "kind": "model",
+            "name": "agentlens-agent",
+            "input": {
+              "messages": [
+                {
+                  "content": "请调查 inventory-api 在 2026-11-06T08:00:00+08:00 至 2026-11-06T08:15:00+08:00（结束时间不包含）的异常，结合日志与指标，检索并引用支持建议的手册。",
+                  "additional_kwargs": {},
+                  "response_metadata": {},
+                  "type": "human",
+                  "name": null,
+                  "id": "9cf113a0-5f2f-48c6-be0c-340a87bb2e63"
+                },
+                {
+                  "content": "我先查询 inventory-api 在该时间窗内的日志和指标。",
+                  "additional_kwargs": {},
+                  "response_metadata": {
+                    "model_provider": "openai",
+                    "finish_reason": "tool_calls",
+                    "model_name": "agentlens-agent",
+                    "system_fingerprint": "bc19ba97cbe016479903222bb1578db6"
+                  },
+                  "type": "ai",
+                  "name": null,
+                  "id": "lc_run--01a1969d-862f-74be-a094-be8083b74bbb",
+                  "tool_calls": [
+                    {
+                      "name": "search_logs",
+                      "args": {
+                        "service": "inventory-api",
+                        "start_time": "2026-11-06T08:00:00+08:00",
+                        "end_time": "2026-11-06T08:15:00+08:00",
+                        "level": "ERROR",
+                        "limit": 100
+                      },
+                      "id": "call_00_lVDIh76tzGzghpqTeD4y3790",
+                      "type": "tool_call"
+                    },
+                    {
+                      "name": "query_metrics",
+                      "args": {
+                        "service": "inventory-api",
+                        "start_time": "2026-11-06T08:00:00+08:00",
+                        "end_time": "2026-11-06T08:15:00+08:00",
+                        "limit": 100
+                      },
+                      "id": "call_01_9h7EDshRzveJ5DqqXPvf5530",
+                      "type": "tool_call"
+                    }
+                  ],
+                  "invalid_tool_calls": [],
+                  "usage_metadata": {
+                    "input_tokens": 1533,
+                    "output_tokens": 259,
+                    "total_tokens": 1792,
+                    "input_token_details": {
+                      "cache_read": 1280
+                    },
+                    "output_token_details": {}
+                  }
+                },
+                {
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "{\n  \"logs\": [\n    {\n      \"evidence_id\": \"w6-traffic-spike-01-log-1\",\n      \"timestamp\": \"2026-11-06T08:02:00+08:00\",\n      \"service\": \"inventory-api\",\n      \"level\": \"ERROR\",\n      \"message\": \"instance=replica-1; Worker queue full: pending=2400; requests rejected with HTTP 503\"\n    }\n  ]\n}",
+                      "id": "lc_78487046-13ec-462e-b2cc-6423c9f29598"
+                    }
+                  ],
+                  "additional_kwargs": {},
+                  "response_metadata": {},
+                  "type": "tool",
+                  "name": "search_logs",
+                  "id": "d74de27a-c069-400f-9b06-12fd284b3f08",
+                  "tool_call_id": "call_00_lVDIh76tzGzghpqTeD4y3790",
+                  "artifact": {
+                    "structured_content": {
+                      "logs": [
+                        {
+                          "evidence_id": "w6-traffic-spike-01-log-1",
+                          "timestamp": "2026-11-06T08:02:00+08:00",
+                          "service": "inventory-api",
+                          "level": "ERROR",
+                          "message": "instance=replica-1; Worker queue full: pending=2400; requests rejected with HTTP 503"
+                        }
+                      ]
+                    }
+                  },
+                  "status": "success"
+                },
+                {
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "{\n  \"metrics\": [\n    {\n      \"evidence_id\": \"w6-traffic-spike-01-metric-1\",\n      \"timestamp\": \"2026-11-06T08:03:00+08:00\",\n      \"service\": \"inventory-api\",\n      \"name\": \"request_rate\",\n      \"value\": 1900.0,\n      \"unit\": \"requests/s\"\n    },\n    {\n      \"evidence_id\": \"w6-traffic-spike-01-metric-2\",\n      \"timestamp\": \"2026-11-06T08:03:00+08:00\",\n      \"service\": \"inventory-api\",\n      \"name\": \"baseline_request_rate\",\n      \"value\": 120.0,\n      \"unit\": \"requests/s\"\n    },\n    {\n      \"evidence_id\": \"w6-traffic-spike-01-metric-3\",\n      \"timestamp\": \"2026-11-06T08:03:00+08:00\",\n      \"service\": \"inventory-api\",\n      \"name\": \"worker_cpu_percent\",\n      \"value\": 99.0,\n      \"unit\": \"percent\"\n    },\n    {\n      \"evidence_id\": \"w6-traffic-spike-01-metric-4\",\n      \"timestamp\": \"2026-11-06T08:03:00+08:00\",\n      \"service\": \"inventory-api\",\n      \"name\": \"queue_length\",\n      \"value\": 2400.0,\n      \"unit\": \"requests\"\n    }\n  ]\n}",
+                      "id": "lc_6fdc472f-bd31-49b6-aa46-f449fbdc5bd4"
+                    }
+                  ],
+                  "additional_kwargs": {},
+                  "response_metadata": {},
+                  "type": "tool",
+                  "name": "query_metrics",
+                  "id": "0a200967-61c7-45f5-926a-829342b691c2",
+                  "tool_call_id": "call_01_9h7EDshRzveJ5DqqXPvf5530",
+                  "artifact": {
+                    "structured_content": {
+                      "metrics": [
+                        {
+                          "evidence_id": "w6-traffic-spike-01-metric-1",
+                          "timestamp": "2026-11-06T08:03:00+08:00",
+                          "service": "inventory-api",
+                          "name": "request_rate",
+                          "value": 1900.0,
+                          "unit": "requests/s"
+                        },
+                        {
+                          "evidence_id": "w6-traffic-spike-01-metric-2",
+                          "timestamp": "2026-11-06T08:03:00+08:00",
+                          "service": "inventory-api",
+                          "name": "baseline_request_rate",
+                          "value": 120.0,
+                          "unit": "requests/s"
+                        },
+                        {
+                          "evidence_id": "w6-traffic-spike-01-metric-3",
+                          "timestamp": "2026-11-06T08:03:00+08:00",
+                          "service": "inventory-api",
+                          "name": "worker_cpu_percent",
+                          "value": 99.0,
+                          "unit": "percent"
+                        },
+                        {
+                          "evidence_id": "w6-traffic-spike-01-metric-4",
+                          "timestamp": "2026-11-06T08:03:00+08:00",
+                          "service": "inventory-api",
+                          "name": "queue_length",
+                          "value": 2400.0,
+                          "unit": "requests"
+                        }
+                      ]
+                    }
+                  },
+                  "status": "success"
+                },
+                {
+                  "content": "日志和指标都指向请求量激增。我再查看 WARN 日志和可用指标列表，以补充上下文。",
+                  "additional_kwargs": {},
+                  "response_metadata": {
+                    "model_provider": "openai",
+                    "finish_reason": "tool_calls",
+                    "model_name": "agentlens-agent",
+                    "system_fingerprint": "bc19ba97cbe016479903222bb1578db6"
+                  },
+                  "type": "ai",
+                  "name": null,
+                  "id": "lc_run--01a1969d-8b34-7400-8f72-41c1f49ec728",
+                  "tool_calls": [
+                    {
+                      "name": "search_logs",
+                      "args": {
+                        "end_time": "2026-11-06T08:15:00+08:00",
+                        "level": "WARN",
+                        "limit": 100,
+                        "service": "inventory-api",
+                        "start_time": "2026-11-06T08:00:00+08:00"
+                      },
+                      "id": "call_00_j0HVsAzgtn5fA3oTjEkk5888",
+                      "type": "tool_call"
+                    },
+                    {
+                      "name": "search_logs",
+                      "args": {
+                        "end_time": "2026-11-06T08:15:00+08:00",
+                        "level": "INFO",
+                        "limit": 100,
+                        "service": "inventory-api",
+                        "start_time": "2026-11-06T08:00:00+08:00"
+                      },
+                      "id": "call_01_gOyoVFvXeT7hqcYsEkxq0045",
+                      "type": "tool_call"
+                    }
+                  ],
+                  "invalid_tool_calls": [],
+                  "usage_metadata": {
+                    "input_tokens": 2237,
+                    "output_tokens": 288,
+                    "total_tokens": 2525,
+                    "input_token_details": {
+                      "cache_read": 1792
+                    },
+                    "output_token_details": {}
+                  }
+                },
+                {
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "{\n  \"logs\": []\n}",
+                      "id": "lc_46f2b646-f49a-4a9c-9a78-b2b7bd554ab8"
+                    }
+                  ],
+                  "additional_kwargs": {},
+                  "response_metadata": {},
+                  "type": "tool",
+                  "name": "search_logs",
+                  "id": "abe1b037-495a-4707-b8e7-2410bb32c602",
+                  "tool_call_id": "call_00_j0HVsAzgtn5fA3oTjEkk5888",
+                  "artifact": {
+                    "structured_content": {
+                      "logs": []
+                    }
+                  },
+                  "status": "success"
+                },
+                {
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "{\n  \"logs\": []\n}",
+                      "id": "lc_2a543637-9c92-49b5-9ad6-262b12b4687a"
+                    }
+                  ],
+                  "additional_kwargs": {},
+                  "response_metadata": {},
+                  "type": "tool",
+                  "name": "search_logs",
+                  "id": "4118a00f-7e56-46bb-8dab-e3afe4710c80",
+                  "tool_call_id": "call_01_gOyoVFvXeT7hqcYsEkxq0045",
+                  "artifact": {
+                    "structured_content": {
+                      "logs": []
+                    }
+                  },
+                  "status": "success"
+                },
+                {
+                  "content": "现在检索手册，使用已观察到的具体术语。",
+                  "additional_kwargs": {},
+                  "response_metadata": {
+                    "model_provider": "openai",
+                    "finish_reason": "tool_calls",
+                    "model_name": "agentlens-agent",
+                    "system_fingerprint": "bc19ba97cbe016479903222bb1578db6"
+                  },
+                  "type": "ai",
+                  "name": null,
+                  "id": "lc_run--01a1969d-9236-71f5-8a12-c3d91ae3073b",
+                  "tool_calls": [
+                    {
+                      "name": "search_runbooks",
+                      "args": {
+                        "query": "inventory-api Worker queue full pending=2400 requests rejected HTTP 503 request_rate 1900 远超 baseline 120 worker_cpu_percent 99 queue_length 2400",
+                        "top_k": 5
+                      },
+                      "id": "call_00_S7Fmk4inijaje5NDnoUH0087",
+                      "type": "tool_call"
+                    },
+                    {
+                      "name": "search_experiences",
+                      "args": {
+                        "service": "inventory-api",
+                        "limit": 5
+                      },
+                      "id": "call_01_32UQpGEOH8cOCoTAlwlg6141",
+                      "type": "tool_call"
+                    }
+                  ],
+                  "invalid_tool_calls": [],
+                  "usage_metadata": {
+                    "input_tokens": 2557,
+                    "output_tokens": 149,
+                    "total_tokens": 2706,
+                    "input_token_details": {
+                      "cache_read": 2304
+                    },
+                    "output_token_details": {}
+                  }
+                },
+                {
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "{\n  \"chunks\": [\n    {\n      \"evidence_id\": \"traffic-spike--s01\",\n      \"document_id\": \"traffic-spike\",\n      \"project_id\": \"project-b\",\n      \"source\": \"datasets/runbooks/traffic-spike.md\",\n      \"revision\": \"c54e4b0d3ec11682443adca06e72a0dae2646f7729aba64f119645f1a33acc4d\",\n      \"content\": \"inventory-api 流量突增与队列饱和\\n识别过载\\n\\ninventory-api 的 Worker queue full、HTTP 503 与 queue_length 上升时，对比 request_rate、baseline_request_rate 和 worker_cpu_percent。流量显著超过基线且队列与 CPU 同时饱和，支持处理能力不足。\",\n      \"ranks\": {\n        \"vector\": 1\n      },\n      \"rrf_score\": 0.01639344262295082,\n      \"retrieval_manifest\": {\n        \"corpus_sha256\": \"023114864f127896cfc77ae214368e69d1dcfb883b0395c7c363db162c1a03ca\",\n        \"chunks_sha256\": \"b6a49d5e1a286048cf707277fb38f796b74ab0a6bd946245fa74ee64ea24fdd7\",\n        \"chunking\": \"authored-h2-v1\",\n        \"embedding_model\": \"BAAI/bge-small-zh-v1.5\",\n        \"embedding_revision\": \"7999e1d3359715c523056ef9478215996d62a620\",\n        \"dimensions\": 512,\n        \"normalize\": true,\n        \"query_prefix\": \"为这个句子生成表示以用于检索相关文章：\",\n        \"max_seq_length\": 512,\n        \"artifacts_sha256\": \"9e8d41feee144813910c7db23ca5505bcf66139811f6f1521db1265e1bed016d\",\n        \"strategy\": \"vector\",\n        \"top_k\": 5,\n        \"candidate_k\": 10,\n        \"rrf_offset\": 60\n      }\n    },\n    {\n      \"evidence_id\": \"cpu-throttling--s01\",\n      \"document_id\": \"cpu-throttling\",\n      \"project_id\": \"project-b\",\n      \"source\": \"datasets/runbooks/cpu-throttling.md\",\n      \"revision\": \"0bce3a078ae992079cab02f2c1f3e6d2776b55fba9a8d04d426b179ded572d87\",\n      \"content\": \"inventory-api CPU 配额节流\\n识别 CPU throttling\\n\\ninventory-api 延迟升高时，对照 container_cpu_cfs_throttled_seconds_total、CPU limit 和队列。受 CPU 配额限制时，节点总体 CPU 仍可能空闲。不能只用 worker_cpu_percent 推断节点算力不足。\",\n      \"ranks\": {\n        \"vector\": 2\n      },\n      \"rrf_score\": 0.016129032258064516,\n      \"retrieval_manifest\": {\n        \"corpus_sha256\": \"023114864f127896cfc77ae214368e69d1dcfb883b0395c7c363db162c1a03ca\",\n        \"chunks_sha256\": \"b6a49d5e1a286048cf707277fb38f796b74ab0a6bd946245fa74ee64ea24fdd7\",\n        \"chunking\": \"authored-h2-v1\",\n        \"embedding_model\": \"BAAI/bge-small-zh-v1.5\",\n        \"embedding_revision\": \"7999e1d3359715c523056ef9478215996d62a620\",\n        \"dimensions\": 512,\n        \"normalize\": true,\n        \"query_prefix\": \"为这个句子生成表示以用于检索相关文章：\",\n        \"max_seq_length\": 512,\n        \"artifacts_sha256\": \"9e8d41feee144813910c7db23ca5505bcf66139811f6f1521db1265e1bed016d\",\n        \"strategy\": \"vector\",\n        \"top_k\": 5,\n        \"candidate_k\": 10,\n        \"rrf_offset\": 60\n      }\n    },\n    {\n      \"evidence_id\": \"cpu-throttling--s02\",\n      \"document_id\": \"cpu-throttling\",\n      \"project_id\": \"project-b\",\n      \"source\": \"datasets/runbooks/cpu-throttling.md\",\n      \"revision\": \"0bce3a078ae992079cab02f2c1f3e6d2776b55fba9a8d04d426b179ded572d87\",\n      \"content\": \"inventory-api CPU 配额节流\\n继续定位\\n\\n比较发布前后单位请求 CPU、请求量与热点堆栈。区分流量增长和代码回归后再建议调整配额。内存与 CPU 指标需要分别判断，不把所有资源故障混为一类。\",\n      \"ranks\": {\n        \"vector\": 3\n      },\n      \"rrf_score\": 0.015873015873015872,\n      \"retrieval_manifest\": {\n        \"corpus_sha256\": \"023114864f127896cfc77ae214368e69d1dcfb883b0395c7c363db162c1a03ca\",\n        \"chunks_sha256\": \"b6a49d5e1a286048cf707277fb38f796b74ab0a6bd946245fa74ee64ea24fdd7\",\n        \"chunking\": \"authored-h2-v1\",\n        \"embedding_model\": \"BAAI/bge-small-zh-v1.5\",\n        \"embedding_revision\": \"7999e1d3359715c523056ef9478215996d62a620\",\n        \"dimensions\": 512,\n        \"normalize\": true,\n        \"query_prefix\": \"为这个句子生成表示以用于检索相关文章：\",\n        \"max_seq_length\": 512,\n        \"artifacts_sha256\": \"9e8d41feee144813910c7db23ca5505bcf66139811f6f1521db1265e1bed016d\",\n        \"strategy\": \"vector\",\n        \"top_k\": 5,\n        \"candidate_k\": 10,\n        \"rrf_offset\": 60\n      }\n    },\n    {\n      \"evidence_id\": \"cache-miss--s02\",\n      \"document_id\": \"cache-miss\",\n      \"project_id\": \"project-b\",\n      \"source\": \"datasets/runbooks/cache-miss.md\",\n      \"revision\": \"a9a090938d5969413eb35ffbfbe9b92bcf843d3efc541f9632cf0fbcc9169ef3\",\n      \"content\": \"inventory-api 缓存命中率下降\\n确认影响范围\\n\\n检查热点键、缓存错误与容量淘汰，区分批量过期和连接失败。建议预热或修改过期策略前，评估回源负载和数据一致性要求。\",\n      \"ranks\": {\n        \"vector\": 4\n      },\n      \"rrf_score\": 0.015625,\n      \"retrieval_manifest\": {\n        \"corpus_sha256\": \"023114864f127896cfc77ae214368e69d1dcfb883b0395c7c363db162c1a03ca\",\n        \"chunks_sha256\": \"b6a49d5e1a286048cf707277fb38f796b74ab0a6bd946245fa74ee64ea24fdd7\",\n        \"chunking\": \"authored-h2-v1\",\n        \"embedding_model\": \"BAAI/bge-small-zh-v1.5\",\n        \"embedding_revision\": \"7999e1d3359715c523056ef9478215996d62a620\",\n        \"dimensions\": 512,\n        \"normalize\": true,\n        \"query_prefix\": \"为这个句子生成表示以用于检索相关文章：\",\n        \"max_seq_length\": 512,\n        \"artifacts_sha256\": \"9e8d41feee144813910c7db23ca5505bcf66139811f6f1521db1265e1bed016d\",\n        \"strategy\": \"vector\",\n        \"top_k\": 5,\n        \"candidate_k\": 10,\n        \"rrf_offset\": 60\n      }\n    },\n    {\n      \"evidence_id\": \"cache-miss--s01\",\n      \"document_id\": \"cache-miss\",\n      \"project_id\": \"project-b\",\n      \"source\": \"datasets/runbooks/cache-miss.md\",\n      \"revision\": \"a9a090938d5969413eb35ffbfbe9b92bcf843d3efc541f9632cf0fbcc9169ef3\",\n      \"content\": \"inventory-api 缓存命中率下降\\n识别缓存穿透到数据库\\n\\ninventory-api cache_hit_ratio 下降并伴随 db_query_rate 上升时，核对缓存过期时间、键空间与发布变更。下游数据库压力可能是缓存失效的后果，不能只据数据库变慢推断连接泄漏。\",\n      \"ranks\": {\n        \"vector\": 5\n      },\n      \"rrf_score\": 0.015384615384615385,\n      \"retrieval_manifest\": {\n        \"corpus_sha256\": \"023114864f127896cfc77ae214368e69d1dcfb883b0395c7c363db162c1a03ca\",\n        \"chunks_sha256\": \"b6a49d5e1a286048cf707277fb38f796b74ab0a6bd946245fa74ee64ea24fdd7\",\n        \"chunking\": \"authored-h2-v1\",\n        \"embedding_model\": \"BAAI/bge-small-zh-v1.5\",\n        \"embedding_revision\": \"7999e1d3359715c523056ef9478215996d62a620\",\n        \"dimensions\": 512,\n        \"normalize\": true,\n        \"query_prefix\": \"为这个句子生成表示以用于检索相关文章：\",\n        \"max_seq_length\": 512,\n        \"artifacts_sha256\": \"9e8d41feee144813910c7db23ca5505bcf66139811f6f1521db1265e1bed016d\",\n        \"strategy\": \"vector\",\n        \"top_k\": 5,\n        \"candidate_k\": 10,\n        \"rrf_offset\": 60\n      }\n    }\n  ]\n}",
+                      "id": "lc_cf0d0fa0-e428-4b06-ae6d-e65cdb3b66d3"
+                    }
+                  ],
+                  "additional_kwargs": {},
+                  "response_metadata": {},
+                  "type": "tool",
+                  "name": "search_runbooks",
+                  "id": "92880eb8-35d0-42b3-ae8d-43650e53a109",
+                  "tool_call_id": "call_00_S7Fmk4inijaje5NDnoUH0087",
+                  "artifact": {
+                    "structured_content": {
+                      "chunks": [
+                        {
+                          "evidence_id": "traffic-spike--s01",
+                          "document_id": "traffic-spike",
+                          "project_id": "project-b",
+                          "source": "datasets/runbooks/traffic-spike.md",
+                          "revision": "c54e4b0d3ec11682443adca06e72a0dae2646f7729aba64f119645f1a33acc4d",
+                          "content": "inventory-api 流量突增与队列饱和\n识别过载\n\ninventory-api 的 Worker queue full、HTTP 503 与 queue_length 上升时，对比 request_rate、baseline_request_rate 和 worker_cpu_percent。流量显著超过基线且队列与 CPU 同时饱和，支持处理能力不足。",
+                          "ranks": {
+                            "vector": 1
+                          },
+                          "rrf_score": 0.01639344262295082,
+                          "retrieval_manifest": {
+                            "corpus_sha256": "023114864f127896cfc77ae214368e69d1dcfb883b0395c7c363db162c1a03ca",
+                            "chunks_sha256": "b6a49d5e1a286048cf707277fb38f796b74ab0a6bd946245fa74ee64ea24fdd7",
+                            "chunking": "authored-h2-v1",
+                            "embedding_model": "BAAI/bge-small-zh-v1.5",
+                            "embedding_revision": "7999e1d3359715c523056ef9478215996d62a620",
+                            "dimensions": 512,
+                            "normalize": true,
+                            "query_prefix": "为这个句子生成表示以用于检索相关文章：",
+                            "max_seq_length": 512,
+                            "artifacts_sha256": "9e8d41feee144813910c7db23ca5505bcf66139811f6f1521db1265e1bed016d",
+                            "strategy": "vector",
+                            "top_k": 5,
+                            "candidate_k": 10,
+                            "rrf_offset": 60
+                          }
+                        },
+                        {
+                          "evidence_id": "cpu-throttling--s01",
+                          "document_id": "cpu-throttling",
+                          "project_id": "project-b",
+                          "source": "datasets/runbooks/cpu-throttling.md",
+                          "revision": "0bce3a078ae992079cab02f2c1f3e6d2776b55fba9a8d04d426b179ded572d87",
+                          "content": "inventory-api CPU 配额节流\n识别 CPU throttling\n\ninventory-api 延迟升高时，对照 container_cpu_cfs_throttled_seconds_total、CPU limit 和队列。受 CPU 配额限制时，节点总体 CPU 仍可能空闲。不能只用 worker_cpu_percent 推断节点算力不足。",
+                          "ranks": {
+                            "vector": 2
+                          },
+                          "rrf_score": 0.016129032258064516,
+                          "retrieval_manifest": {
+                            "corpus_sha256": "023114864f127896cfc77ae214368e69d1dcfb883b0395c7c363db162c1a03ca",
+                            "chunks_sha256": "b6a49d5e1a286048cf707277fb38f796b74ab0a6bd946245fa74ee64ea24fdd7",
+                            "chunking": "authored-h2-v1",
+                            "embedding_model": "BAAI/bge-small-zh-v1.5",
+                            "embedding_revision": "7999e1d3359715c523056ef9478215996d62a620",
+                            "dimensions": 512,
+                            "normalize": true,
+                            "query_prefix": "为这个句子生成表示以用于检索相关文章：",
+                            "max_seq_length": 512,
+                            "artifacts_sha256": "9e8d41feee144813910c7db23ca5505bcf66139811f6f1521db1265e1bed016d",
+                            "strategy": "vector",
+                            "top_k": 5,
+                            "candidate_k": 10,
+                            "rrf_offset": 60
+                          }
+                        },
+                        {
+                          "evidence_id": "cpu-throttling--s02",
+                          "document_id": "cpu-throttling",
+                          "project_id": "project-b",
+                          "source": "datasets/runbooks/cpu-throttling.md",
+                          "revision": "0bce3a078ae992079cab02f2c1f3e6d2776b55fba9a8d04d426b179ded572d87",
+                          "content": "inventory-api CPU 配额节流\n继续定位\n\n比较发布前后单位请求 CPU、请求量与热点堆栈。区分流量增长和代码回归后再建议调整配额。内存与 CPU 指标需要分别判断，不把所有资源故障混为一类。",
+                          "ranks": {
+                            "vector": 3
+                          },
+                          "rrf_score": 0.015873015873015872,
+                          "retrieval_manifest": {
+                            "corpus_sha256": "023114864f127896cfc77ae214368e69d1dcfb883b0395c7c363db162c1a03ca",
+                            "chunks_sha256": "b6a49d5e1a286048cf707277fb38f796b74ab0a6bd946245fa74ee64ea24fdd7",
+                            "chunking": "authored-h2-v1",
+                            "embedding_model": "BAAI/bge-small-zh-v1.5",
+                            "embedding_revision": "7999e1d3359715c523056ef9478215996d62a620",
+                            "dimensions": 512,
+                            "normalize": true,
+                            "query_prefix": "为这个句子生成表示以用于检索相关文章：",
+                            "max_seq_length": 512,
+                            "artifacts_sha256": "9e8d41feee144813910c7db23ca5505bcf66139811f6f1521db1265e1bed016d",
+                            "strategy": "vector",
+                            "top_k": 5,
+                            "candidate_k": 10,
+                            "rrf_offset": 60
+                          }
+                        },
+                        {
+                          "evidence_id": "cache-miss--s02",
+                          "document_id": "cache-miss",
+                          "project_id": "project-b",
+                          "source": "datasets/runbooks/cache-miss.md",
+                          "revision": "a9a090938d5969413eb35ffbfbe9b92bcf843d3efc541f9632cf0fbcc9169ef3",
+                          "content": "inventory-api 缓存命中率下降\n确认影响范围\n\n检查热点键、缓存错误与容量淘汰，区分批量过期和连接失败。建议预热或修改过期策略前，评估回源负载和数据一致性要求。",
+                          "ranks": {
+                            "vector": 4
+                          },
+                          "rrf_score": 0.015625,
+                          "retrieval_manifest": {
+                            "corpus_sha256": "023114864f127896cfc77ae214368e69d1dcfb883b0395c7c363db162c1a03ca",
+                            "chunks_sha256": "b6a49d5e1a286048cf707277fb38f796b74ab0a6bd946245fa74ee64ea24fdd7",
+                            "chunking": "authored-h2-v1",
+                            "embedding_model": "BAAI/bge-small-zh-v1.5",
+                            "embedding_revision": "7999e1d3359715c523056ef9478215996d62a620",
+                            "dimensions": 512,
+                            "normalize": true,
+                            "query_prefix": "为这个句子生成表示以用于检索相关文章：",
+                            "max_seq_length": 512,
+                            "artifacts_sha256": "9e8d41feee144813910c7db23ca5505bcf66139811f6f1521db1265e1bed016d",
+                            "strategy": "vector",
+                            "top_k": 5,
+                            "candidate_k": 10,
+                            "rrf_offset": 60
+                          }
+                        },
+                        {
+                          "evidence_id": "cache-miss--s01",
+                          "document_id": "cache-miss",
+                          "project_id": "project-b",
+                          "source": "datasets/runbooks/cache-miss.md",
+                          "revision": "a9a090938d5969413eb35ffbfbe9b92bcf843d3efc541f9632cf0fbcc9169ef3",
+                          "content": "inventory-api 缓存命中率下降\n识别缓存穿透到数据库\n\ninventory-api cache_hit_ratio 下降并伴随 db_query_rate 上升时，核对缓存过期时间、键空间与发布变更。下游数据库压力可能是缓存失效的后果，不能只据数据库变慢推断连接泄漏。",
+                          "ranks": {
+                            "vector": 5
+                          },
+                          "rrf_score": 0.015384615384615385,
+                          "retrieval_manifest": {
+                            "corpus_sha256": "023114864f127896cfc77ae214368e69d1dcfb883b0395c7c363db162c1a03ca",
+                            "chunks_sha256": "b6a49d5e1a286048cf707277fb38f796b74ab0a6bd946245fa74ee64ea24fdd7",
+                            "chunking": "authored-h2-v1",
+                            "embedding_model": "BAAI/bge-small-zh-v1.5",
+                            "embedding_revision": "7999e1d3359715c523056ef9478215996d62a620",
+                            "dimensions": 512,
+                            "normalize": true,
+                            "query_prefix": "为这个句子生成表示以用于检索相关文章：",
+                            "max_seq_length": 512,
+                            "artifacts_sha256": "9e8d41feee144813910c7db23ca5505bcf66139811f6f1521db1265e1bed016d",
+                            "strategy": "vector",
+                            "top_k": 5,
+                            "candidate_k": 10,
+                            "rrf_offset": 60
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  "status": "success"
+                },
+                {
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "{\n  \"experiences\": []\n}",
+                      "id": "lc_b2089929-ab47-4b0e-a005-37e08ae5c749"
+                    }
+                  ],
+                  "additional_kwargs": {},
+                  "response_metadata": {},
+                  "type": "tool",
+                  "name": "search_experiences",
+                  "id": "a2b6bc6a-2c98-4390-92e7-4f3c6216079e",
+                  "tool_call_id": "call_01_32UQpGEOH8cOCoTAlwlg6141",
+                  "artifact": {
+                    "structured_content": {
+                      "experiences": []
+                    }
+                  },
+                  "status": "success"
+                }
+              ]
+            },
+            "output": {
+              "content": "{\"status\":\"diagnosed\",\"cause_summary\":\"2026-11-06 08:00–08:15（+08:00）窗口内，inventory-api 出现请求量突增导致的处理能力不足：08:03 的 request_rate 为 1900 req/s，而 baseline_request_rate 仅为 120 req/s，约为基线的 15.8 倍；同时 worker_cpu_percent 达到 99%，queue_length 达到 2400。08:02 的 replica-1 日志显示“Worker queue full: pending=2400; requests rejected with HTTP 503”，说明工作队列已满，请求被拒绝并返回 503。日志与指标相互印证，支持“流量显著超过基线，且队列与 CPU 同时饱和，导致过载拒绝”的判断（手册 traffic-spike--s01 的识别条件与现场一致）。目前没有证据表明存在 CPU 配额节流或缓存命中率下降；cpu-throttling 手册也提示不能仅凭 worker_cpu_percent 推断节点算力不足，因此根因仍应归为流量过载，而非资源配额或代码回归。\",\"evidence_ids\":[\"w6-traffic-spike-01-log-1\",\"w6-traffic-spike-01-metric-1\",\"w6-traffic-spike-01-metric-2\",\"w6-traffic-spike-01-metric-3\",\"w6-traffic-spike-01-metric-4\",\"traffic-spike--s01\",\"cpu-throttling--s01\"],\"unknowns\":[\"流量突增的来源尚未证实：是外部真实业务峰值、上游重试放大，还是压测或爬虫流量\",\"窗口内只有 08:02 一条 ERROR 日志和 08:03 一个指标采样点，无法判断过载的持续时长与恢复时间\",\"未取得 container_cpu_cfs_throttled_seconds_total 与 CPU limit，无法排除容器 CPU 配额节流叠加影响\",\"未取得 cache_hit_ratio、db_query_rate，无法排除缓存失效放大回源负载\",\"未取得发布变更记录，无法排除代码回归导致单位请求 CPU 上升\",\"该服务无人工确认的历史故障经验可参考（search_experiences 返回空）\"],\"next_steps\":[\"按 traffic-spike--s01：继续对比 request_rate、baseline_request_rate 与 queue_length 的时间序列，确认突增起止时间与峰值形态\",\"按 cpu-throttling--s01：查询 container_cpu_cfs_throttled_seconds_total 与容器 CPU limit，判断是否同时存在配额节流\",\"按 cpu-throttling--s02：比较发布前后单位请求 CPU 与请求量，区分纯流量增长与代码回归\",\"按 cache-miss--s01：查询 cache_hit_ratio 与 db_query_rate，确认缓存是否失效并放大下游压力\",\"核查上游调用方与网关侧流量来源（重试策略、限流配置、异常客户端），定位突增来源\",\"评估短期缓解手段（限流、扩容副本、队列上限与快速失败策略），并在变更前评估对下游的影响\"]}",
+              "tool_calls": [],
+              "usage": {
+                "input_tokens": 5146,
+                "output_tokens": 667,
+                "total_tokens": 5813,
+                "input_token_details": {
+                  "cache_read": 2688
+                },
+                "output_token_details": {
+                  "reasoning": 0
+                }
+              },
+              "response_model": "agentlens-agent",
+              "billing": {
+                "currency": "USD",
+                "pricing_version": "deepseek-2026-11-01",
+                "pricing_sha256": "6a41970e9ba6f1c65aadd1eab8483e562cfa3abb7eecfe9dc78e264dc22f301d",
+                "source": "https://api-docs.deepseek.com/quick_start/pricing/",
+                "cost": "0.000776964",
+                "cache_read_tokens": 2688,
+                "reason": null,
+                "model_source": "local_gateway_configuration; response_contains_alias",
+                "gateway_config_sha256": "7defcb62e9bf9f418561063d1b4ccb9ed038bffc5c3921858278e02ec5c600de",
+                "priced_model": "deepseek-flash",
+                "rates_per_million": {
+                  "cache_hit": 0.003,
+                  "cache_miss": 0.15,
+                  "output": 0.6
+                }
+              }
+            },
+            "error": null,
+            "duration_ms": 4254.36,
+            "span_id": "dd1fc92c598ef28a",
+            "source_step_sequence": null
+          }
+        ]
+      }
+    }
+  ]
+}

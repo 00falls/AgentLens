@@ -1,0 +1,35 @@
+{
+  "date": "2026-11-01",
+  "passed": true,
+  "software_tests": {
+    "tests": 36,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "week6_and_week7_contract_tests": 27,
+  "week89_real_pg_api_components": 9,
+  "real_mcp_http_checks": 7,
+  "browser_checks": 15,
+  "ruff": "passed",
+  "compileall": "passed",
+  "frontend_typecheck_and_build": "passed",
+  "provider_requests_for_these_checks": 0,
+  "real_acceptance": "one case, two configurations, both 16 quality checks passed",
+  "remote_actions_run": false,
+  "openshell_actual_isolation_verified": false,
+  "actual_monitoring_integration_checks": 6,
+  "real_grafana_browser": "passed",
+  "temporary_services_and_database": "stopped",
+  "local_ports_verified_closed": [
+    4000,
+    8010,
+    8000,
+    8001,
+    4318,
+    5432,
+    9090,
+    3000
+  ],
+  "credentials_in_delivery_files": false
+}

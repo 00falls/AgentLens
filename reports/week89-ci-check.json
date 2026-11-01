@@ -1,0 +1,11 @@
+{
+  "workflow_yaml": "passed",
+  "jobs": [
+    "deterministic",
+    "real-one-case"
+  ],
+  "remote_actions_run": false,
+  "linux_container_job_verified": false,
+  "manual_real_job": "one frozen case, Flash and Pro",
+  "sandbox_isolation_job_verified": false
+}

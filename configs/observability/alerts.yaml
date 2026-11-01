@@ -1,0 +1,23 @@
+groups:
+  - name: agentlens
+    rules:
+      - alert: AgentLensToolErrorRate
+        expr: >-
+          (sum by (job) (rate(agentlens_tool_calls_total{outcome="error"}[5m]))
+          / sum by (job) (rate(agentlens_tool_calls_total[5m])) > 0.2)
+          and (sum by (job) (increase(agentlens_tool_calls_total[5m])) >= 5)
+        for: 1m
+        labels:
+          severity: warning
+        annotations:
+          summary: Tool errors exceed 20% for one minute (at least 5 attempts in 5m)
+      - alert: AgentLensSustainedRunFailures
+        expr: >-
+          (sum by (job) (rate(agentlens_runs_total{status="failed"}[5m]))
+          / sum by (job) (rate(agentlens_runs_total{status=~"diagnosed|insufficient_evidence|failed"}[5m])) > 0.5)
+          and (sum by (job) (increase(agentlens_runs_total{status=~"diagnosed|insufficient_evidence|failed"}[5m])) >= 3)
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: Failed executions exceed 50% for two minutes (at least 3 in 5m)

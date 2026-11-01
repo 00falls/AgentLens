@@ -1,0 +1,15 @@
+{
+  "date": "2026-11-01",
+  "selected_business_cases": 1,
+  "real_model_executions": 2,
+  "model_requests": 7,
+  "judge_requests": 0,
+  "input_tokens": 26474,
+  "output_tokens": 2115,
+  "observed_cache_read_tokens": 14976,
+  "estimated_cost_usd": "0.008244442",
+  "cost_basis": "Observed usage and same-session verified local gateway mapping; not provider invoice",
+  "initial_global_run_count": 47,
+  "final_global_run_count": 49,
+  "software_probes_provider_requests": 0
+}

@@ -1,0 +1,16 @@
+{
+  "model_calls": 0,
+  "checks": {
+    "model_failure_persisted": true,
+    "failure_event": true,
+    "generator_close_persisted_as_cancelled": true,
+    "http_failure_returns_502": true,
+    "http_disconnect_persisted_as_cancelled": true
+  },
+  "probe_run_ids": [
+    "4ec8d798-a9ef-431d-96aa-a7fe93eab9b3",
+    "3aa40110-8e4e-4d58-aa63-bed103c6d737",
+    "ca915a84-de35-463b-ae53-c52cad8f76cc",
+    "2fed17aa-e88f-4b74-89c5-60c6f017e41c"
+  ]
+}

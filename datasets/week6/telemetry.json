@@ -1,0 +1,2102 @@
+{
+  "synthetic": true,
+  "logs": [
+    {
+      "id": "w6-pool-exhaustion-02-log-1",
+      "project_id": "project-a",
+      "service": "order-api",
+      "timestamp": "2026-11-02T09:02:00+08:00",
+      "level": "ERROR",
+      "message": "instance=replica-2; HikariPool connection acquisition timed out after 30000ms; active=20, idle=0, max=20"
+    },
+    {
+      "id": "w6-pool-exhaustion-02-outside",
+      "project_id": "project-a",
+      "service": "order-api",
+      "timestamp": "2026-11-02T09:15:00+08:00",
+      "level": "ERROR",
+      "message": "Unrelated incident outside requested window"
+    },
+    {
+      "id": "w6-pool-exhaustion-03-log-1",
+      "project_id": "project-a",
+      "service": "order-api",
+      "timestamp": "2026-11-02T10:02:00+08:00",
+      "level": "ERROR",
+      "message": "instance=replica-3; HikariPool connection acquisition timed out after 30000ms; active=20, idle=0, max=20"
+    },
+    {
+      "id": "w6-pool-exhaustion-03-outside",
+      "project_id": "project-a",
+      "service": "order-api",
+      "timestamp": "2026-11-02T10:15:00+08:00",
+      "level": "ERROR",
+      "message": "Unrelated incident outside requested window"
+    },
+    {
+      "id": "w6-pool-exhaustion-04-log-1",
+      "project_id": "project-a",
+      "service": "order-api",
+      "timestamp": "2026-11-02T11:02:00+08:00",
+      "level": "ERROR",
+      "message": "instance=replica-4; HikariPool connection acquisition timed out after 30000ms; active=20, idle=0, max=20"
+    },
+    {
+      "id": "w6-pool-exhaustion-04-outside",
+      "project_id": "project-a",
+      "service": "order-api",
+      "timestamp": "2026-11-02T11:15:00+08:00",
+      "level": "ERROR",
+      "message": "Unrelated incident outside requested window"
+    },
+    {
+      "id": "w6-pool-exhaustion-05-log-1",
+      "project_id": "project-a",
+      "service": "order-api",
+      "timestamp": "2026-11-02T12:02:00+08:00",
+      "level": "ERROR",
+      "message": "instance=replica-5; HikariPool connection acquisition timed out after 30000ms; active=20, idle=0, max=20"
+    },
+    {
+      "id": "w6-pool-exhaustion-05-outside",
+      "project_id": "project-a",
+      "service": "order-api",
+      "timestamp": "2026-11-02T12:15:00+08:00",
+      "level": "ERROR",
+      "message": "Unrelated incident outside requested window"
+    },
+    {
+      "id": "w6-downstream-timeout-01-log-1",
+      "project_id": "project-a",
+      "service": "order-api",
+      "timestamp": "2026-11-03T08:02:00+08:00",
+      "level": "ERROR",
+      "message": "instance=replica-1; HTTP request to payment-api timed out after 5000ms; upstream returned 504"
+    },
+    {
+      "id": "w6-downstream-timeout-01-outside",
+      "project_id": "project-a",
+      "service": "order-api",
+      "timestamp": "2026-11-03T08:15:00+08:00",
+      "level": "ERROR",
+      "message": "Unrelated incident outside requested window"
+    },
+    {
+      "id": "w6-downstream-timeout-02-log-1",
+      "project_id": "project-a",
+      "service": "order-api",
+      "timestamp": "2026-11-03T09:02:00+08:00",
+      "level": "ERROR",
+      "message": "instance=replica-2; HTTP request to payment-api timed out after 5000ms; upstream returned 504"
+    },
+    {
+      "id": "w6-downstream-timeout-02-outside",
+      "project_id": "project-a",
+      "service": "order-api",
+      "timestamp": "2026-11-03T09:15:00+08:00",
+      "level": "ERROR",
+      "message": "Unrelated incident outside requested window"
+    },
+    {
+      "id": "w6-downstream-timeout-03-log-1",
+      "project_id": "project-a",
+      "service": "order-api",
+      "timestamp": "2026-11-03T10:02:00+08:00",
+      "level": "ERROR",
+      "message": "instance=replica-3; HTTP request to payment-api timed out after 5000ms; upstream returned 504"
+    },
+    {
+      "id": "w6-downstream-timeout-03-outside",
+      "project_id": "project-a",
+      "service": "order-api",
+      "timestamp": "2026-11-03T10:15:00+08:00",
+      "level": "ERROR",
+      "message": "Unrelated incident outside requested window"
+    },
+    {
+      "id": "w6-downstream-timeout-04-log-1",
+      "project_id": "project-a",
+      "service": "order-api",
+      "timestamp": "2026-11-03T11:02:00+08:00",
+      "level": "ERROR",
+      "message": "instance=replica-4; HTTP request to payment-api timed out after 5000ms; upstream returned 504"
+    },
+    {
+      "id": "w6-downstream-timeout-04-outside",
+      "project_id": "project-a",
+      "service": "order-api",
+      "timestamp": "2026-11-03T11:15:00+08:00",
+      "level": "ERROR",
+      "message": "Unrelated incident outside requested window"
+    },
+    {
+      "id": "w6-downstream-timeout-05-log-1",
+      "project_id": "project-a",
+      "service": "order-api",
+      "timestamp": "2026-11-03T12:02:00+08:00",
+      "level": "ERROR",
+      "message": "instance=replica-5; HTTP request to payment-api timed out after 5000ms; upstream returned 504"
+    },
+    {
+      "id": "w6-downstream-timeout-05-outside",
+      "project_id": "project-a",
+      "service": "order-api",
+      "timestamp": "2026-11-03T12:15:00+08:00",
+      "level": "ERROR",
+      "message": "Unrelated incident outside requested window"
+    },
+    {
+      "id": "w6-config-regression-01-log-1",
+      "project_id": "project-a",
+      "service": "payment-api",
+      "timestamp": "2026-11-04T08:02:00+08:00",
+      "level": "ERROR",
+      "message": "instance=replica-1; After deploy v2.4.1: database host pg-paymnt.internal cannot be resolved; NXDOMAIN"
+    },
+    {
+      "id": "w6-config-regression-01-outside",
+      "project_id": "project-a",
+      "service": "payment-api",
+      "timestamp": "2026-11-04T08:15:00+08:00",
+      "level": "ERROR",
+      "message": "Unrelated incident outside requested window"
+    },
+    {
+      "id": "w6-config-regression-02-log-1",
+      "project_id": "project-a",
+      "service": "payment-api",
+      "timestamp": "2026-11-04T09:02:00+08:00",
+      "level": "ERROR",
+      "message": "instance=replica-2; After deploy v2.4.1: database host pg-paymnt.internal cannot be resolved; NXDOMAIN"
+    },
+    {
+      "id": "w6-config-regression-02-outside",
+      "project_id": "project-a",
+      "service": "payment-api",
+      "timestamp": "2026-11-04T09:15:00+08:00",
+      "level": "ERROR",
+      "message": "Unrelated incident outside requested window"
+    },
+    {
+      "id": "w6-config-regression-03-log-1",
+      "project_id": "project-a",
+      "service": "payment-api",
+      "timestamp": "2026-11-04T10:02:00+08:00",
+      "level": "ERROR",
+      "message": "instance=replica-3; After deploy v2.4.1: database host pg-paymnt.internal cannot be resolved; NXDOMAIN"
+    },
+    {
+      "id": "w6-config-regression-03-outside",
+      "project_id": "project-a",
+      "service": "payment-api",
+      "timestamp": "2026-11-04T10:15:00+08:00",
+      "level": "ERROR",
+      "message": "Unrelated incident outside requested window"
+    },
+    {
+      "id": "w6-config-regression-04-log-1",
+      "project_id": "project-a",
+      "service": "payment-api",
+      "timestamp": "2026-11-04T11:02:00+08:00",
+      "level": "ERROR",
+      "message": "instance=replica-4; After deploy v2.4.1: database host pg-paymnt.internal cannot be resolved; NXDOMAIN"
+    },
+    {
+      "id": "w6-config-regression-04-outside",
+      "project_id": "project-a",
+      "service": "payment-api",
+      "timestamp": "2026-11-04T11:15:00+08:00",
+      "level": "ERROR",
+      "message": "Unrelated incident outside requested window"
+    },
+    {
+      "id": "w6-config-regression-05-log-1",
+      "project_id": "project-a",
+      "service": "payment-api",
+      "timestamp": "2026-11-04T12:02:00+08:00",
+      "level": "ERROR",
+      "message": "instance=replica-5; After deploy v2.4.1: database host pg-paymnt.internal cannot be resolved; NXDOMAIN"
+    },
+    {
+      "id": "w6-config-regression-05-outside",
+      "project_id": "project-a",
+      "service": "payment-api",
+      "timestamp": "2026-11-04T12:15:00+08:00",
+      "level": "ERROR",
+      "message": "Unrelated incident outside requested window"
+    },
+    {
+      "id": "w6-memory-pressure-01-log-1",
+      "project_id": "project-b",
+      "service": "inventory-api",
+      "timestamp": "2026-11-05T08:02:00+08:00",
+      "level": "ERROR",
+      "message": "instance=replica-1; Container terminated: OOMKilled, exitCode=137, memory limit=512MiB"
+    },
+    {
+      "id": "w6-memory-pressure-01-outside",
+      "project_id": "project-b",
+      "service": "inventory-api",
+      "timestamp": "2026-11-05T08:15:00+08:00",
+      "level": "ERROR",
+      "message": "Unrelated incident outside requested window"
+    },
+    {
+      "id": "w6-memory-pressure-02-log-1",
+      "project_id": "project-b",
+      "service": "inventory-api",
+      "timestamp": "2026-11-05T09:02:00+08:00",
+      "level": "ERROR",
+      "message": "instance=replica-2; Container terminated: OOMKilled, exitCode=137, memory limit=512MiB"
+    },
+    {
+      "id": "w6-memory-pressure-02-outside",
+      "project_id": "project-b",
+      "service": "inventory-api",
+      "timestamp": "2026-11-05T09:15:00+08:00",
+      "level": "ERROR",
+      "message": "Unrelated incident outside requested window"
+    },
+    {
+      "id": "w6-memory-pressure-03-log-1",
+      "project_id": "project-b",
+      "service": "inventory-api",
+      "timestamp": "2026-11-05T10:02:00+08:00",
+      "level": "ERROR",
+      "message": "instance=replica-3; Container terminated: OOMKilled, exitCode=137, memory limit=512MiB"
+    },
+    {
+      "id": "w6-memory-pressure-03-outside",
+      "project_id": "project-b",
+      "service": "inventory-api",
+      "timestamp": "2026-11-05T10:15:00+08:00",
+      "level": "ERROR",
+      "message": "Unrelated incident outside requested window"
+    },
+    {
+      "id": "w6-memory-pressure-04-log-1",
+      "project_id": "project-b",
+      "service": "inventory-api",
+      "timestamp": "2026-11-05T11:02:00+08:00",
+      "level": "ERROR",
+      "message": "instance=replica-4; Container terminated: OOMKilled, exitCode=137, memory limit=512MiB"
+    },
+    {
+      "id": "w6-memory-pressure-04-outside",
+      "project_id": "project-b",
+      "service": "inventory-api",
+      "timestamp": "2026-11-05T11:15:00+08:00",
+      "level": "ERROR",
+      "message": "Unrelated incident outside requested window"
+    },
+    {
+      "id": "w6-memory-pressure-05-log-1",
+      "project_id": "project-b",
+      "service": "inventory-api",
+      "timestamp": "2026-11-05T12:02:00+08:00",
+      "level": "ERROR",
+      "message": "instance=replica-5; Container terminated: OOMKilled, exitCode=137, memory limit=512MiB"
+    },
+    {
+      "id": "w6-memory-pressure-05-outside",
+      "project_id": "project-b",
+      "service": "inventory-api",
+      "timestamp": "2026-11-05T12:15:00+08:00",
+      "level": "ERROR",
+      "message": "Unrelated incident outside requested window"
+    },
+    {
+      "id": "w6-traffic-spike-01-log-1",
+      "project_id": "project-b",
+      "service": "inventory-api",
+      "timestamp": "2026-11-06T08:02:00+08:00",
+      "level": "ERROR",
+      "message": "instance=replica-1; Worker queue full: pending=2400; requests rejected with HTTP 503"
+    },
+    {
+      "id": "w6-traffic-spike-01-outside",
+      "project_id": "project-b",
+      "service": "inventory-api",
+      "timestamp": "2026-11-06T08:15:00+08:00",
+      "level": "ERROR",
+      "message": "Unrelated incident outside requested window"
+    },
+    {
+      "id": "w6-traffic-spike-02-log-1",
+      "project_id": "project-b",
+      "service": "inventory-api",
+      "timestamp": "2026-11-06T09:02:00+08:00",
+      "level": "ERROR",
+      "message": "instance=replica-2; Worker queue full: pending=2400; requests rejected with HTTP 503"
+    },
+    {
+      "id": "w6-traffic-spike-02-outside",
+      "project_id": "project-b",
+      "service": "inventory-api",
+      "timestamp": "2026-11-06T09:15:00+08:00",
+      "level": "ERROR",
+      "message": "Unrelated incident outside requested window"
+    },
+    {
+      "id": "w6-traffic-spike-03-log-1",
+      "project_id": "project-b",
+      "service": "inventory-api",
+      "timestamp": "2026-11-06T10:02:00+08:00",
+      "level": "ERROR",
+      "message": "instance=replica-3; Worker queue full: pending=2400; requests rejected with HTTP 503"
+    },
+    {
+      "id": "w6-traffic-spike-03-outside",
+      "project_id": "project-b",
+      "service": "inventory-api",
+      "timestamp": "2026-11-06T10:15:00+08:00",
+      "level": "ERROR",
+      "message": "Unrelated incident outside requested window"
+    },
+    {
+      "id": "w6-traffic-spike-04-log-1",
+      "project_id": "project-b",
+      "service": "inventory-api",
+      "timestamp": "2026-11-06T11:02:00+08:00",
+      "level": "ERROR",
+      "message": "instance=replica-4; Worker queue full: pending=2400; requests rejected with HTTP 503"
+    },
+    {
+      "id": "w6-traffic-spike-04-outside",
+      "project_id": "project-b",
+      "service": "inventory-api",
+      "timestamp": "2026-11-06T11:15:00+08:00",
+      "level": "ERROR",
+      "message": "Unrelated incident outside requested window"
+    },
+    {
+      "id": "w6-traffic-spike-05-log-1",
+      "project_id": "project-b",
+      "service": "inventory-api",
+      "timestamp": "2026-11-06T12:02:00+08:00",
+      "level": "ERROR",
+      "message": "instance=replica-5; Worker queue full: pending=2400; requests rejected with HTTP 503"
+    },
+    {
+      "id": "w6-traffic-spike-05-outside",
+      "project_id": "project-b",
+      "service": "inventory-api",
+      "timestamp": "2026-11-06T12:15:00+08:00",
+      "level": "ERROR",
+      "message": "Unrelated incident outside requested window"
+    },
+    {
+      "id": "w6-healthy-01-log-1",
+      "project_id": "project-a",
+      "service": "order-api",
+      "timestamp": "2026-11-07T08:02:00+08:00",
+      "level": "INFO",
+      "message": "instance=replica-1; Request completed successfully: status=200 duration_ms=42"
+    },
+    {
+      "id": "w6-healthy-01-outside",
+      "project_id": "project-a",
+      "service": "order-api",
+      "timestamp": "2026-11-07T08:15:00+08:00",
+      "level": "ERROR",
+      "message": "Unrelated incident outside requested window"
+    },
+    {
+      "id": "w6-healthy-02-log-1",
+      "project_id": "project-a",
+      "service": "order-api",
+      "timestamp": "2026-11-07T09:02:00+08:00",
+      "level": "INFO",
+      "message": "instance=replica-2; Request completed successfully: status=200 duration_ms=42"
+    },
+    {
+      "id": "w6-healthy-02-outside",
+      "project_id": "project-a",
+      "service": "order-api",
+      "timestamp": "2026-11-07T09:15:00+08:00",
+      "level": "ERROR",
+      "message": "Unrelated incident outside requested window"
+    },
+    {
+      "id": "w6-healthy-03-log-1",
+      "project_id": "project-a",
+      "service": "order-api",
+      "timestamp": "2026-11-07T10:02:00+08:00",
+      "level": "INFO",
+      "message": "instance=replica-3; Request completed successfully: status=200 duration_ms=42"
+    },
+    {
+      "id": "w6-healthy-03-outside",
+      "project_id": "project-a",
+      "service": "order-api",
+      "timestamp": "2026-11-07T10:15:00+08:00",
+      "level": "ERROR",
+      "message": "Unrelated incident outside requested window"
+    },
+    {
+      "id": "w6-healthy-04-log-1",
+      "project_id": "project-a",
+      "service": "order-api",
+      "timestamp": "2026-11-07T11:02:00+08:00",
+      "level": "INFO",
+      "message": "instance=replica-4; Request completed successfully: status=200 duration_ms=42"
+    },
+    {
+      "id": "w6-healthy-04-outside",
+      "project_id": "project-a",
+      "service": "order-api",
+      "timestamp": "2026-11-07T11:15:00+08:00",
+      "level": "ERROR",
+      "message": "Unrelated incident outside requested window"
+    },
+    {
+      "id": "w6-healthy-05-log-1",
+      "project_id": "project-a",
+      "service": "order-api",
+      "timestamp": "2026-11-07T12:02:00+08:00",
+      "level": "INFO",
+      "message": "instance=replica-5; Request completed successfully: status=200 duration_ms=42"
+    },
+    {
+      "id": "w6-healthy-05-outside",
+      "project_id": "project-a",
+      "service": "order-api",
+      "timestamp": "2026-11-07T12:15:00+08:00",
+      "level": "ERROR",
+      "message": "Unrelated incident outside requested window"
+    },
+    {
+      "id": "w6-db-lock-wait-01-log-1",
+      "project_id": "project-a",
+      "service": "order-api",
+      "timestamp": "2026-11-09T08:02:00+08:00",
+      "level": "ERROR",
+      "message": "instance=replica-1; PostgreSQL statement blocked; wait_event_type=Lock; blocking_pid=214"
+    },
+    {
+      "id": "w6-db-lock-wait-01-outside",
+      "project_id": "project-a",
+      "service": "order-api",
+      "timestamp": "2026-11-09T08:15:00+08:00",
+      "level": "ERROR",
+      "message": "Unrelated incident outside requested window"
+    },
+    {
+      "id": "w6-db-lock-wait-02-log-1",
+      "project_id": "project-a",
+      "service": "order-api",
+      "timestamp": "2026-11-09T09:02:00+08:00",
+      "level": "ERROR",
+      "message": "instance=replica-2; PostgreSQL statement blocked; wait_event_type=Lock; blocking_pid=214"
+    },
+    {
+      "id": "w6-db-lock-wait-02-outside",
+      "project_id": "project-a",
+      "service": "order-api",
+      "timestamp": "2026-11-09T09:15:00+08:00",
+      "level": "ERROR",
+      "message": "Unrelated incident outside requested window"
+    },
+    {
+      "id": "w6-db-lock-wait-03-log-1",
+      "project_id": "project-a",
+      "service": "order-api",
+      "timestamp": "2026-11-09T10:02:00+08:00",
+      "level": "ERROR",
+      "message": "instance=replica-3; PostgreSQL statement blocked; wait_event_type=Lock; blocking_pid=214"
+    },
+    {
+      "id": "w6-db-lock-wait-03-outside",
+      "project_id": "project-a",
+      "service": "order-api",
+      "timestamp": "2026-11-09T10:15:00+08:00",
+      "level": "ERROR",
+      "message": "Unrelated incident outside requested window"
+    },
+    {
+      "id": "w6-db-lock-wait-04-log-1",
+      "project_id": "project-a",
+      "service": "order-api",
+      "timestamp": "2026-11-09T11:02:00+08:00",
+      "level": "ERROR",
+      "message": "instance=replica-4; PostgreSQL statement blocked; wait_event_type=Lock; blocking_pid=214"
+    },
+    {
+      "id": "w6-db-lock-wait-04-outside",
+      "project_id": "project-a",
+      "service": "order-api",
+      "timestamp": "2026-11-09T11:15:00+08:00",
+      "level": "ERROR",
+      "message": "Unrelated incident outside requested window"
+    },
+    {
+      "id": "w6-db-lock-wait-05-log-1",
+      "project_id": "project-a",
+      "service": "order-api",
+      "timestamp": "2026-11-09T12:02:00+08:00",
+      "level": "ERROR",
+      "message": "instance=replica-5; PostgreSQL statement blocked; wait_event_type=Lock; blocking_pid=214"
+    },
+    {
+      "id": "w6-db-lock-wait-05-outside",
+      "project_id": "project-a",
+      "service": "order-api",
+      "timestamp": "2026-11-09T12:15:00+08:00",
+      "level": "ERROR",
+      "message": "Unrelated incident outside requested window"
+    },
+    {
+      "id": "w6-cpu-throttling-01-log-1",
+      "project_id": "project-b",
+      "service": "inventory-api",
+      "timestamp": "2026-11-10T08:02:00+08:00",
+      "level": "ERROR",
+      "message": "instance=replica-1; Cgroup CPU quota exceeded; throttled_periods rising; request latency high"
+    },
+    {
+      "id": "w6-cpu-throttling-01-outside",
+      "project_id": "project-b",
+      "service": "inventory-api",
+      "timestamp": "2026-11-10T08:15:00+08:00",
+      "level": "ERROR",
+      "message": "Unrelated incident outside requested window"
+    },
+    {
+      "id": "w6-cpu-throttling-02-log-1",
+      "project_id": "project-b",
+      "service": "inventory-api",
+      "timestamp": "2026-11-10T09:02:00+08:00",
+      "level": "ERROR",
+      "message": "instance=replica-2; Cgroup CPU quota exceeded; throttled_periods rising; request latency high"
+    },
+    {
+      "id": "w6-cpu-throttling-02-outside",
+      "project_id": "project-b",
+      "service": "inventory-api",
+      "timestamp": "2026-11-10T09:15:00+08:00",
+      "level": "ERROR",
+      "message": "Unrelated incident outside requested window"
+    },
+    {
+      "id": "w6-cpu-throttling-03-log-1",
+      "project_id": "project-b",
+      "service": "inventory-api",
+      "timestamp": "2026-11-10T10:02:00+08:00",
+      "level": "ERROR",
+      "message": "instance=replica-3; Cgroup CPU quota exceeded; throttled_periods rising; request latency high"
+    },
+    {
+      "id": "w6-cpu-throttling-03-outside",
+      "project_id": "project-b",
+      "service": "inventory-api",
+      "timestamp": "2026-11-10T10:15:00+08:00",
+      "level": "ERROR",
+      "message": "Unrelated incident outside requested window"
+    },
+    {
+      "id": "w6-cpu-throttling-04-log-1",
+      "project_id": "project-b",
+      "service": "inventory-api",
+      "timestamp": "2026-11-10T11:02:00+08:00",
+      "level": "ERROR",
+      "message": "instance=replica-4; Cgroup CPU quota exceeded; throttled_periods rising; request latency high"
+    },
+    {
+      "id": "w6-cpu-throttling-04-outside",
+      "project_id": "project-b",
+      "service": "inventory-api",
+      "timestamp": "2026-11-10T11:15:00+08:00",
+      "level": "ERROR",
+      "message": "Unrelated incident outside requested window"
+    },
+    {
+      "id": "w6-cpu-throttling-05-log-1",
+      "project_id": "project-b",
+      "service": "inventory-api",
+      "timestamp": "2026-11-10T12:02:00+08:00",
+      "level": "ERROR",
+      "message": "instance=replica-5; Cgroup CPU quota exceeded; throttled_periods rising; request latency high"
+    },
+    {
+      "id": "w6-cpu-throttling-05-outside",
+      "project_id": "project-b",
+      "service": "inventory-api",
+      "timestamp": "2026-11-10T12:15:00+08:00",
+      "level": "ERROR",
+      "message": "Unrelated incident outside requested window"
+    },
+    {
+      "id": "w6-disk-full-01-log-1",
+      "project_id": "project-b",
+      "service": "inventory-api",
+      "timestamp": "2026-11-11T08:02:00+08:00",
+      "level": "ERROR",
+      "message": "instance=replica-1; write failed: ENOSPC no space left on device /var/log/inventory"
+    },
+    {
+      "id": "w6-disk-full-01-outside",
+      "project_id": "project-b",
+      "service": "inventory-api",
+      "timestamp": "2026-11-11T08:15:00+08:00",
+      "level": "ERROR",
+      "message": "Unrelated incident outside requested window"
+    },
+    {
+      "id": "w6-disk-full-02-log-1",
+      "project_id": "project-b",
+      "service": "inventory-api",
+      "timestamp": "2026-11-11T09:02:00+08:00",
+      "level": "ERROR",
+      "message": "instance=replica-2; write failed: ENOSPC no space left on device /var/log/inventory"
+    },
+    {
+      "id": "w6-disk-full-02-outside",
+      "project_id": "project-b",
+      "service": "inventory-api",
+      "timestamp": "2026-11-11T09:15:00+08:00",
+      "level": "ERROR",
+      "message": "Unrelated incident outside requested window"
+    },
+    {
+      "id": "w6-disk-full-03-log-1",
+      "project_id": "project-b",
+      "service": "inventory-api",
+      "timestamp": "2026-11-11T10:02:00+08:00",
+      "level": "ERROR",
+      "message": "instance=replica-3; write failed: ENOSPC no space left on device /var/log/inventory"
+    },
+    {
+      "id": "w6-disk-full-03-outside",
+      "project_id": "project-b",
+      "service": "inventory-api",
+      "timestamp": "2026-11-11T10:15:00+08:00",
+      "level": "ERROR",
+      "message": "Unrelated incident outside requested window"
+    },
+    {
+      "id": "w6-disk-full-04-log-1",
+      "project_id": "project-b",
+      "service": "inventory-api",
+      "timestamp": "2026-11-11T11:02:00+08:00",
+      "level": "ERROR",
+      "message": "instance=replica-4; write failed: ENOSPC no space left on device /var/log/inventory"
+    },
+    {
+      "id": "w6-disk-full-04-outside",
+      "project_id": "project-b",
+      "service": "inventory-api",
+      "timestamp": "2026-11-11T11:15:00+08:00",
+      "level": "ERROR",
+      "message": "Unrelated incident outside requested window"
+    },
+    {
+      "id": "w6-disk-full-05-log-1",
+      "project_id": "project-b",
+      "service": "inventory-api",
+      "timestamp": "2026-11-11T12:02:00+08:00",
+      "level": "ERROR",
+      "message": "instance=replica-5; write failed: ENOSPC no space left on device /var/log/inventory"
+    },
+    {
+      "id": "w6-disk-full-05-outside",
+      "project_id": "project-b",
+      "service": "inventory-api",
+      "timestamp": "2026-11-11T12:15:00+08:00",
+      "level": "ERROR",
+      "message": "Unrelated incident outside requested window"
+    },
+    {
+      "id": "w6-tls-expired-01-log-1",
+      "project_id": "project-a",
+      "service": "order-api",
+      "timestamp": "2026-11-12T08:02:00+08:00",
+      "level": "ERROR",
+      "message": "instance=replica-1; TLS handshake failed: certificate has expired for payment-api.internal"
+    },
+    {
+      "id": "w6-tls-expired-01-outside",
+      "project_id": "project-a",
+      "service": "order-api",
+      "timestamp": "2026-11-12T08:15:00+08:00",
+      "level": "ERROR",
+      "message": "Unrelated incident outside requested window"
+    },
+    {
+      "id": "w6-tls-expired-02-log-1",
+      "project_id": "project-a",
+      "service": "order-api",
+      "timestamp": "2026-11-12T09:02:00+08:00",
+      "level": "ERROR",
+      "message": "instance=replica-2; TLS handshake failed: certificate has expired for payment-api.internal"
+    },
+    {
+      "id": "w6-tls-expired-02-outside",
+      "project_id": "project-a",
+      "service": "order-api",
+      "timestamp": "2026-11-12T09:15:00+08:00",
+      "level": "ERROR",
+      "message": "Unrelated incident outside requested window"
+    },
+    {
+      "id": "w6-tls-expired-03-log-1",
+      "project_id": "project-a",
+      "service": "order-api",
+      "timestamp": "2026-11-12T10:02:00+08:00",
+      "level": "ERROR",
+      "message": "instance=replica-3; TLS handshake failed: certificate has expired for payment-api.internal"
+    },
+    {
+      "id": "w6-tls-expired-03-outside",
+      "project_id": "project-a",
+      "service": "order-api",
+      "timestamp": "2026-11-12T10:15:00+08:00",
+      "level": "ERROR",
+      "message": "Unrelated incident outside requested window"
+    },
+    {
+      "id": "w6-tls-expired-04-log-1",
+      "project_id": "project-a",
+      "service": "order-api",
+      "timestamp": "2026-11-12T11:02:00+08:00",
+      "level": "ERROR",
+      "message": "instance=replica-4; TLS handshake failed: certificate has expired for payment-api.internal"
+    },
+    {
+      "id": "w6-tls-expired-04-outside",
+      "project_id": "project-a",
+      "service": "order-api",
+      "timestamp": "2026-11-12T11:15:00+08:00",
+      "level": "ERROR",
+      "message": "Unrelated incident outside requested window"
+    },
+    {
+      "id": "w6-tls-expired-05-log-1",
+      "project_id": "project-a",
+      "service": "order-api",
+      "timestamp": "2026-11-12T12:02:00+08:00",
+      "level": "ERROR",
+      "message": "instance=replica-5; TLS handshake failed: certificate has expired for payment-api.internal"
+    },
+    {
+      "id": "w6-tls-expired-05-outside",
+      "project_id": "project-a",
+      "service": "order-api",
+      "timestamp": "2026-11-12T12:15:00+08:00",
+      "level": "ERROR",
+      "message": "Unrelated incident outside requested window"
+    },
+    {
+      "id": "w6-queue-backlog-01-log-1",
+      "project_id": "project-b",
+      "service": "inventory-api",
+      "timestamp": "2026-11-13T08:02:00+08:00",
+      "level": "ERROR",
+      "message": "instance=replica-1; Consumer lag increasing; pending=18000; processing_rate below arrival_rate"
+    },
+    {
+      "id": "w6-queue-backlog-01-outside",
+      "project_id": "project-b",
+      "service": "inventory-api",
+      "timestamp": "2026-11-13T08:15:00+08:00",
+      "level": "ERROR",
+      "message": "Unrelated incident outside requested window"
+    },
+    {
+      "id": "w6-queue-backlog-02-log-1",
+      "project_id": "project-b",
+      "service": "inventory-api",
+      "timestamp": "2026-11-13T09:02:00+08:00",
+      "level": "ERROR",
+      "message": "instance=replica-2; Consumer lag increasing; pending=18000; processing_rate below arrival_rate"
+    },
+    {
+      "id": "w6-queue-backlog-02-outside",
+      "project_id": "project-b",
+      "service": "inventory-api",
+      "timestamp": "2026-11-13T09:15:00+08:00",
+      "level": "ERROR",
+      "message": "Unrelated incident outside requested window"
+    },
+    {
+      "id": "w6-queue-backlog-03-log-1",
+      "project_id": "project-b",
+      "service": "inventory-api",
+      "timestamp": "2026-11-13T10:02:00+08:00",
+      "level": "ERROR",
+      "message": "instance=replica-3; Consumer lag increasing; pending=18000; processing_rate below arrival_rate"
+    },
+    {
+      "id": "w6-queue-backlog-03-outside",
+      "project_id": "project-b",
+      "service": "inventory-api",
+      "timestamp": "2026-11-13T10:15:00+08:00",
+      "level": "ERROR",
+      "message": "Unrelated incident outside requested window"
+    },
+    {
+      "id": "w6-queue-backlog-04-log-1",
+      "project_id": "project-b",
+      "service": "inventory-api",
+      "timestamp": "2026-11-13T11:02:00+08:00",
+      "level": "ERROR",
+      "message": "instance=replica-4; Consumer lag increasing; pending=18000; processing_rate below arrival_rate"
+    },
+    {
+      "id": "w6-queue-backlog-04-outside",
+      "project_id": "project-b",
+      "service": "inventory-api",
+      "timestamp": "2026-11-13T11:15:00+08:00",
+      "level": "ERROR",
+      "message": "Unrelated incident outside requested window"
+    },
+    {
+      "id": "w6-queue-backlog-05-log-1",
+      "project_id": "project-b",
+      "service": "inventory-api",
+      "timestamp": "2026-11-13T12:02:00+08:00",
+      "level": "ERROR",
+      "message": "instance=replica-5; Consumer lag increasing; pending=18000; processing_rate below arrival_rate"
+    },
+    {
+      "id": "w6-queue-backlog-05-outside",
+      "project_id": "project-b",
+      "service": "inventory-api",
+      "timestamp": "2026-11-13T12:15:00+08:00",
+      "level": "ERROR",
+      "message": "Unrelated incident outside requested window"
+    },
+    {
+      "id": "pool-exhaustion-outside",
+      "project_id": "project-a",
+      "service": "order-api",
+      "timestamp": "2026-10-30T13:59:00+08:00",
+      "level": "INFO",
+      "message": "Pre-window observation; not evidence for this interval"
+    },
+    {
+      "id": "pool-exhaustion-log-1",
+      "project_id": "project-a",
+      "service": "order-api",
+      "timestamp": "2026-10-30T14:02:00+08:00",
+      "level": "ERROR",
+      "message": "HikariPool connection acquisition timed out after 30000ms; active=20, idle=0, max=20"
+    }
+  ],
+  "metrics": [
+    {
+      "id": "w6-pool-exhaustion-02-metric-1",
+      "project_id": "project-a",
+      "service": "order-api",
+      "timestamp": "2026-11-02T09:03:00+08:00",
+      "name": "db_pool_active",
+      "value": 21.0,
+      "unit": "connections"
+    },
+    {
+      "id": "w6-pool-exhaustion-02-metric-2",
+      "project_id": "project-a",
+      "service": "order-api",
+      "timestamp": "2026-11-02T09:03:00+08:00",
+      "name": "db_pool_max",
+      "value": 21.0,
+      "unit": "connections"
+    },
+    {
+      "id": "w6-pool-exhaustion-02-metric-3",
+      "project_id": "project-a",
+      "service": "order-api",
+      "timestamp": "2026-11-02T09:03:00+08:00",
+      "name": "db_pool_waiters",
+      "value": 50.400000000000006,
+      "unit": "requests"
+    },
+    {
+      "id": "w6-pool-exhaustion-02-metric-4",
+      "project_id": "project-a",
+      "service": "order-api",
+      "timestamp": "2026-11-02T09:03:00+08:00",
+      "name": "http_5xx_ratio",
+      "value": 0.38,
+      "unit": "ratio"
+    },
+    {
+      "id": "w6-pool-exhaustion-03-metric-1",
+      "project_id": "project-a",
+      "service": "order-api",
+      "timestamp": "2026-11-02T10:03:00+08:00",
+      "name": "db_pool_active",
+      "value": 22.0,
+      "unit": "connections"
+    },
+    {
+      "id": "w6-pool-exhaustion-03-metric-2",
+      "project_id": "project-a",
+      "service": "order-api",
+      "timestamp": "2026-11-02T10:03:00+08:00",
+      "name": "db_pool_max",
+      "value": 22.0,
+      "unit": "connections"
+    },
+    {
+      "id": "w6-pool-exhaustion-03-metric-3",
+      "project_id": "project-a",
+      "service": "order-api",
+      "timestamp": "2026-11-02T10:03:00+08:00",
+      "name": "db_pool_waiters",
+      "value": 52.800000000000004,
+      "unit": "requests"
+    },
+    {
+      "id": "w6-pool-exhaustion-03-metric-4",
+      "project_id": "project-a",
+      "service": "order-api",
+      "timestamp": "2026-11-02T10:03:00+08:00",
+      "name": "http_5xx_ratio",
+      "value": 0.38,
+      "unit": "ratio"
+    },
+    {
+      "id": "w6-pool-exhaustion-04-metric-1",
+      "project_id": "project-a",
+      "service": "order-api",
+      "timestamp": "2026-11-02T11:03:00+08:00",
+      "name": "db_pool_active",
+      "value": 23.0,
+      "unit": "connections"
+    },
+    {
+      "id": "w6-pool-exhaustion-04-metric-2",
+      "project_id": "project-a",
+      "service": "order-api",
+      "timestamp": "2026-11-02T11:03:00+08:00",
+      "name": "db_pool_max",
+      "value": 23.0,
+      "unit": "connections"
+    },
+    {
+      "id": "w6-pool-exhaustion-04-metric-3",
+      "project_id": "project-a",
+      "service": "order-api",
+      "timestamp": "2026-11-02T11:03:00+08:00",
+      "name": "db_pool_waiters",
+      "value": 55.199999999999996,
+      "unit": "requests"
+    },
+    {
+      "id": "w6-pool-exhaustion-04-metric-4",
+      "project_id": "project-a",
+      "service": "order-api",
+      "timestamp": "2026-11-02T11:03:00+08:00",
+      "name": "http_5xx_ratio",
+      "value": 0.38,
+      "unit": "ratio"
+    },
+    {
+      "id": "w6-pool-exhaustion-05-metric-1",
+      "project_id": "project-a",
+      "service": "order-api",
+      "timestamp": "2026-11-02T12:03:00+08:00",
+      "name": "db_pool_active",
+      "value": 24.0,
+      "unit": "connections"
+    },
+    {
+      "id": "w6-pool-exhaustion-05-metric-2",
+      "project_id": "project-a",
+      "service": "order-api",
+      "timestamp": "2026-11-02T12:03:00+08:00",
+      "name": "db_pool_max",
+      "value": 24.0,
+      "unit": "connections"
+    },
+    {
+      "id": "w6-pool-exhaustion-05-metric-3",
+      "project_id": "project-a",
+      "service": "order-api",
+      "timestamp": "2026-11-02T12:03:00+08:00",
+      "name": "db_pool_waiters",
+      "value": 57.599999999999994,
+      "unit": "requests"
+    },
+    {
+      "id": "w6-pool-exhaustion-05-metric-4",
+      "project_id": "project-a",
+      "service": "order-api",
+      "timestamp": "2026-11-02T12:03:00+08:00",
+      "name": "http_5xx_ratio",
+      "value": 0.38,
+      "unit": "ratio"
+    },
+    {
+      "id": "w6-downstream-timeout-01-metric-1",
+      "project_id": "project-a",
+      "service": "order-api",
+      "timestamp": "2026-11-03T08:03:00+08:00",
+      "name": "payment_api_p95_ms",
+      "value": 6200.0,
+      "unit": "ms"
+    },
+    {
+      "id": "w6-downstream-timeout-01-metric-2",
+      "project_id": "project-a",
+      "service": "order-api",
+      "timestamp": "2026-11-03T08:03:00+08:00",
+      "name": "http_5xx_ratio",
+      "value": 0.27,
+      "unit": "ratio"
+    },
+    {
+      "id": "w6-downstream-timeout-02-metric-1",
+      "project_id": "project-a",
+      "service": "order-api",
+      "timestamp": "2026-11-03T09:03:00+08:00",
+      "name": "payment_api_p95_ms",
+      "value": 6510.0,
+      "unit": "ms"
+    },
+    {
+      "id": "w6-downstream-timeout-02-metric-2",
+      "project_id": "project-a",
+      "service": "order-api",
+      "timestamp": "2026-11-03T09:03:00+08:00",
+      "name": "http_5xx_ratio",
+      "value": 0.27,
+      "unit": "ratio"
+    },
+    {
+      "id": "w6-downstream-timeout-03-metric-1",
+      "project_id": "project-a",
+      "service": "order-api",
+      "timestamp": "2026-11-03T10:03:00+08:00",
+      "name": "payment_api_p95_ms",
+      "value": 6820.000000000001,
+      "unit": "ms"
+    },
+    {
+      "id": "w6-downstream-timeout-03-metric-2",
+      "project_id": "project-a",
+      "service": "order-api",
+      "timestamp": "2026-11-03T10:03:00+08:00",
+      "name": "http_5xx_ratio",
+      "value": 0.27,
+      "unit": "ratio"
+    },
+    {
+      "id": "w6-downstream-timeout-04-metric-1",
+      "project_id": "project-a",
+      "service": "order-api",
+      "timestamp": "2026-11-03T11:03:00+08:00",
+      "name": "payment_api_p95_ms",
+      "value": 7129.999999999999,
+      "unit": "ms"
+    },
+    {
+      "id": "w6-downstream-timeout-04-metric-2",
+      "project_id": "project-a",
+      "service": "order-api",
+      "timestamp": "2026-11-03T11:03:00+08:00",
+      "name": "http_5xx_ratio",
+      "value": 0.27,
+      "unit": "ratio"
+    },
+    {
+      "id": "w6-downstream-timeout-05-metric-1",
+      "project_id": "project-a",
+      "service": "order-api",
+      "timestamp": "2026-11-03T12:03:00+08:00",
+      "name": "payment_api_p95_ms",
+      "value": 7440.0,
+      "unit": "ms"
+    },
+    {
+      "id": "w6-downstream-timeout-05-metric-2",
+      "project_id": "project-a",
+      "service": "order-api",
+      "timestamp": "2026-11-03T12:03:00+08:00",
+      "name": "http_5xx_ratio",
+      "value": 0.27,
+      "unit": "ratio"
+    },
+    {
+      "id": "w6-config-regression-01-metric-1",
+      "project_id": "project-a",
+      "service": "payment-api",
+      "timestamp": "2026-11-04T08:03:00+08:00",
+      "name": "dns_failures",
+      "value": 190.0,
+      "unit": "requests"
+    },
+    {
+      "id": "w6-config-regression-01-metric-2",
+      "project_id": "project-a",
+      "service": "payment-api",
+      "timestamp": "2026-11-04T08:03:00+08:00",
+      "name": "http_5xx_ratio",
+      "value": 0.91,
+      "unit": "ratio"
+    },
+    {
+      "id": "w6-config-regression-02-metric-1",
+      "project_id": "project-a",
+      "service": "payment-api",
+      "timestamp": "2026-11-04T09:03:00+08:00",
+      "name": "dns_failures",
+      "value": 199.5,
+      "unit": "requests"
+    },
+    {
+      "id": "w6-config-regression-02-metric-2",
+      "project_id": "project-a",
+      "service": "payment-api",
+      "timestamp": "2026-11-04T09:03:00+08:00",
+      "name": "http_5xx_ratio",
+      "value": 0.91,
+      "unit": "ratio"
+    },
+    {
+      "id": "w6-config-regression-03-metric-1",
+      "project_id": "project-a",
+      "service": "payment-api",
+      "timestamp": "2026-11-04T10:03:00+08:00",
+      "name": "dns_failures",
+      "value": 209.00000000000003,
+      "unit": "requests"
+    },
+    {
+      "id": "w6-config-regression-03-metric-2",
+      "project_id": "project-a",
+      "service": "payment-api",
+      "timestamp": "2026-11-04T10:03:00+08:00",
+      "name": "http_5xx_ratio",
+      "value": 0.91,
+      "unit": "ratio"
+    },
+    {
+      "id": "w6-config-regression-04-metric-1",
+      "project_id": "project-a",
+      "service": "payment-api",
+      "timestamp": "2026-11-04T11:03:00+08:00",
+      "name": "dns_failures",
+      "value": 218.49999999999997,
+      "unit": "requests"
+    },
+    {
+      "id": "w6-config-regression-04-metric-2",
+      "project_id": "project-a",
+      "service": "payment-api",
+      "timestamp": "2026-11-04T11:03:00+08:00",
+      "name": "http_5xx_ratio",
+      "value": 0.91,
+      "unit": "ratio"
+    },
+    {
+      "id": "w6-config-regression-05-metric-1",
+      "project_id": "project-a",
+      "service": "payment-api",
+      "timestamp": "2026-11-04T12:03:00+08:00",
+      "name": "dns_failures",
+      "value": 228.0,
+      "unit": "requests"
+    },
+    {
+      "id": "w6-config-regression-05-metric-2",
+      "project_id": "project-a",
+      "service": "payment-api",
+      "timestamp": "2026-11-04T12:03:00+08:00",
+      "name": "http_5xx_ratio",
+      "value": 0.91,
+      "unit": "ratio"
+    },
+    {
+      "id": "w6-memory-pressure-01-metric-1",
+      "project_id": "project-b",
+      "service": "inventory-api",
+      "timestamp": "2026-11-05T08:03:00+08:00",
+      "name": "memory_working_set_mb",
+      "value": 511.0,
+      "unit": "MB"
+    },
+    {
+      "id": "w6-memory-pressure-01-metric-2",
+      "project_id": "project-b",
+      "service": "inventory-api",
+      "timestamp": "2026-11-05T08:03:00+08:00",
+      "name": "memory_limit_mb",
+      "value": 512.0,
+      "unit": "MB"
+    },
+    {
+      "id": "w6-memory-pressure-01-metric-3",
+      "project_id": "project-b",
+      "service": "inventory-api",
+      "timestamp": "2026-11-05T08:03:00+08:00",
+      "name": "container_restarts",
+      "value": 4.0,
+      "unit": "restarts"
+    },
+    {
+      "id": "w6-memory-pressure-02-metric-1",
+      "project_id": "project-b",
+      "service": "inventory-api",
+      "timestamp": "2026-11-05T09:03:00+08:00",
+      "name": "memory_working_set_mb",
+      "value": 536.5500000000001,
+      "unit": "MB"
+    },
+    {
+      "id": "w6-memory-pressure-02-metric-2",
+      "project_id": "project-b",
+      "service": "inventory-api",
+      "timestamp": "2026-11-05T09:03:00+08:00",
+      "name": "memory_limit_mb",
+      "value": 537.6,
+      "unit": "MB"
+    },
+    {
+      "id": "w6-memory-pressure-02-metric-3",
+      "project_id": "project-b",
+      "service": "inventory-api",
+      "timestamp": "2026-11-05T09:03:00+08:00",
+      "name": "container_restarts",
+      "value": 4.2,
+      "unit": "restarts"
+    },
+    {
+      "id": "w6-memory-pressure-03-metric-1",
+      "project_id": "project-b",
+      "service": "inventory-api",
+      "timestamp": "2026-11-05T10:03:00+08:00",
+      "name": "memory_working_set_mb",
+      "value": 562.1,
+      "unit": "MB"
+    },
+    {
+      "id": "w6-memory-pressure-03-metric-2",
+      "project_id": "project-b",
+      "service": "inventory-api",
+      "timestamp": "2026-11-05T10:03:00+08:00",
+      "name": "memory_limit_mb",
+      "value": 563.2,
+      "unit": "MB"
+    },
+    {
+      "id": "w6-memory-pressure-03-metric-3",
+      "project_id": "project-b",
+      "service": "inventory-api",
+      "timestamp": "2026-11-05T10:03:00+08:00",
+      "name": "container_restarts",
+      "value": 4.4,
+      "unit": "restarts"
+    },
+    {
+      "id": "w6-memory-pressure-04-metric-1",
+      "project_id": "project-b",
+      "service": "inventory-api",
+      "timestamp": "2026-11-05T11:03:00+08:00",
+      "name": "memory_working_set_mb",
+      "value": 587.65,
+      "unit": "MB"
+    },
+    {
+      "id": "w6-memory-pressure-04-metric-2",
+      "project_id": "project-b",
+      "service": "inventory-api",
+      "timestamp": "2026-11-05T11:03:00+08:00",
+      "name": "memory_limit_mb",
+      "value": 588.8,
+      "unit": "MB"
+    },
+    {
+      "id": "w6-memory-pressure-04-metric-3",
+      "project_id": "project-b",
+      "service": "inventory-api",
+      "timestamp": "2026-11-05T11:03:00+08:00",
+      "name": "container_restarts",
+      "value": 4.6,
+      "unit": "restarts"
+    },
+    {
+      "id": "w6-memory-pressure-05-metric-1",
+      "project_id": "project-b",
+      "service": "inventory-api",
+      "timestamp": "2026-11-05T12:03:00+08:00",
+      "name": "memory_working_set_mb",
+      "value": 613.1999999999999,
+      "unit": "MB"
+    },
+    {
+      "id": "w6-memory-pressure-05-metric-2",
+      "project_id": "project-b",
+      "service": "inventory-api",
+      "timestamp": "2026-11-05T12:03:00+08:00",
+      "name": "memory_limit_mb",
+      "value": 614.4,
+      "unit": "MB"
+    },
+    {
+      "id": "w6-memory-pressure-05-metric-3",
+      "project_id": "project-b",
+      "service": "inventory-api",
+      "timestamp": "2026-11-05T12:03:00+08:00",
+      "name": "container_restarts",
+      "value": 4.8,
+      "unit": "restarts"
+    },
+    {
+      "id": "w6-traffic-spike-01-metric-1",
+      "project_id": "project-b",
+      "service": "inventory-api",
+      "timestamp": "2026-11-06T08:03:00+08:00",
+      "name": "request_rate",
+      "value": 1900.0,
+      "unit": "requests/s"
+    },
+    {
+      "id": "w6-traffic-spike-01-metric-2",
+      "project_id": "project-b",
+      "service": "inventory-api",
+      "timestamp": "2026-11-06T08:03:00+08:00",
+      "name": "baseline_request_rate",
+      "value": 120.0,
+      "unit": "requests/s"
+    },
+    {
+      "id": "w6-traffic-spike-01-metric-3",
+      "project_id": "project-b",
+      "service": "inventory-api",
+      "timestamp": "2026-11-06T08:03:00+08:00",
+      "name": "worker_cpu_percent",
+      "value": 99.0,
+      "unit": "percent"
+    },
+    {
+      "id": "w6-traffic-spike-01-metric-4",
+      "project_id": "project-b",
+      "service": "inventory-api",
+      "timestamp": "2026-11-06T08:03:00+08:00",
+      "name": "queue_length",
+      "value": 2400.0,
+      "unit": "requests"
+    },
+    {
+      "id": "w6-traffic-spike-02-metric-1",
+      "project_id": "project-b",
+      "service": "inventory-api",
+      "timestamp": "2026-11-06T09:03:00+08:00",
+      "name": "request_rate",
+      "value": 1995.0,
+      "unit": "requests/s"
+    },
+    {
+      "id": "w6-traffic-spike-02-metric-2",
+      "project_id": "project-b",
+      "service": "inventory-api",
+      "timestamp": "2026-11-06T09:03:00+08:00",
+      "name": "baseline_request_rate",
+      "value": 126.0,
+      "unit": "requests/s"
+    },
+    {
+      "id": "w6-traffic-spike-02-metric-3",
+      "project_id": "project-b",
+      "service": "inventory-api",
+      "timestamp": "2026-11-06T09:03:00+08:00",
+      "name": "worker_cpu_percent",
+      "value": 103.95,
+      "unit": "percent"
+    },
+    {
+      "id": "w6-traffic-spike-02-metric-4",
+      "project_id": "project-b",
+      "service": "inventory-api",
+      "timestamp": "2026-11-06T09:03:00+08:00",
+      "name": "queue_length",
+      "value": 2520.0,
+      "unit": "requests"
+    },
+    {
+      "id": "w6-traffic-spike-03-metric-1",
+      "project_id": "project-b",
+      "service": "inventory-api",
+      "timestamp": "2026-11-06T10:03:00+08:00",
+      "name": "request_rate",
+      "value": 2090.0,
+      "unit": "requests/s"
+    },
+    {
+      "id": "w6-traffic-spike-03-metric-2",
+      "project_id": "project-b",
+      "service": "inventory-api",
+      "timestamp": "2026-11-06T10:03:00+08:00",
+      "name": "baseline_request_rate",
+      "value": 132.0,
+      "unit": "requests/s"
+    },
+    {
+      "id": "w6-traffic-spike-03-metric-3",
+      "project_id": "project-b",
+      "service": "inventory-api",
+      "timestamp": "2026-11-06T10:03:00+08:00",
+      "name": "worker_cpu_percent",
+      "value": 108.9,
+      "unit": "percent"
+    },
+    {
+      "id": "w6-traffic-spike-03-metric-4",
+      "project_id": "project-b",
+      "service": "inventory-api",
+      "timestamp": "2026-11-06T10:03:00+08:00",
+      "name": "queue_length",
+      "value": 2640.0,
+      "unit": "requests"
+    },
+    {
+      "id": "w6-traffic-spike-04-metric-1",
+      "project_id": "project-b",
+      "service": "inventory-api",
+      "timestamp": "2026-11-06T11:03:00+08:00",
+      "name": "request_rate",
+      "value": 2185.0,
+      "unit": "requests/s"
+    },
+    {
+      "id": "w6-traffic-spike-04-metric-2",
+      "project_id": "project-b",
+      "service": "inventory-api",
+      "timestamp": "2026-11-06T11:03:00+08:00",
+      "name": "baseline_request_rate",
+      "value": 138.0,
+      "unit": "requests/s"
+    },
+    {
+      "id": "w6-traffic-spike-04-metric-3",
+      "project_id": "project-b",
+      "service": "inventory-api",
+      "timestamp": "2026-11-06T11:03:00+08:00",
+      "name": "worker_cpu_percent",
+      "value": 113.85,
+      "unit": "percent"
+    },
+    {
+      "id": "w6-traffic-spike-04-metric-4",
+      "project_id": "project-b",
+      "service": "inventory-api",
+      "timestamp": "2026-11-06T11:03:00+08:00",
+      "name": "queue_length",
+      "value": 2760.0,
+      "unit": "requests"
+    },
+    {
+      "id": "w6-traffic-spike-05-metric-1",
+      "project_id": "project-b",
+      "service": "inventory-api",
+      "timestamp": "2026-11-06T12:03:00+08:00",
+      "name": "request_rate",
+      "value": 2280.0,
+      "unit": "requests/s"
+    },
+    {
+      "id": "w6-traffic-spike-05-metric-2",
+      "project_id": "project-b",
+      "service": "inventory-api",
+      "timestamp": "2026-11-06T12:03:00+08:00",
+      "name": "baseline_request_rate",
+      "value": 144.0,
+      "unit": "requests/s"
+    },
+    {
+      "id": "w6-traffic-spike-05-metric-3",
+      "project_id": "project-b",
+      "service": "inventory-api",
+      "timestamp": "2026-11-06T12:03:00+08:00",
+      "name": "worker_cpu_percent",
+      "value": 118.8,
+      "unit": "percent"
+    },
+    {
+      "id": "w6-traffic-spike-05-metric-4",
+      "project_id": "project-b",
+      "service": "inventory-api",
+      "timestamp": "2026-11-06T12:03:00+08:00",
+      "name": "queue_length",
+      "value": 2880.0,
+      "unit": "requests"
+    },
+    {
+      "id": "w6-healthy-01-metric-1",
+      "project_id": "project-a",
+      "service": "order-api",
+      "timestamp": "2026-11-07T08:03:00+08:00",
+      "name": "http_5xx_ratio",
+      "value": 0,
+      "unit": "ratio"
+    },
+    {
+      "id": "w6-healthy-01-metric-2",
+      "project_id": "project-a",
+      "service": "order-api",
+      "timestamp": "2026-11-07T08:03:00+08:00",
+      "name": "p95_latency_ms",
+      "value": 72.0,
+      "unit": "ms"
+    },
+    {
+      "id": "w6-healthy-02-metric-1",
+      "project_id": "project-a",
+      "service": "order-api",
+      "timestamp": "2026-11-07T09:03:00+08:00",
+      "name": "http_5xx_ratio",
+      "value": 0,
+      "unit": "ratio"
+    },
+    {
+      "id": "w6-healthy-02-metric-2",
+      "project_id": "project-a",
+      "service": "order-api",
+      "timestamp": "2026-11-07T09:03:00+08:00",
+      "name": "p95_latency_ms",
+      "value": 75.60000000000001,
+      "unit": "ms"
+    },
+    {
+      "id": "w6-healthy-03-metric-1",
+      "project_id": "project-a",
+      "service": "order-api",
+      "timestamp": "2026-11-07T10:03:00+08:00",
+      "name": "http_5xx_ratio",
+      "value": 0,
+      "unit": "ratio"
+    },
+    {
+      "id": "w6-healthy-03-metric-2",
+      "project_id": "project-a",
+      "service": "order-api",
+      "timestamp": "2026-11-07T10:03:00+08:00",
+      "name": "p95_latency_ms",
+      "value": 79.2,
+      "unit": "ms"
+    },
+    {
+      "id": "w6-healthy-04-metric-1",
+      "project_id": "project-a",
+      "service": "order-api",
+      "timestamp": "2026-11-07T11:03:00+08:00",
+      "name": "http_5xx_ratio",
+      "value": 0,
+      "unit": "ratio"
+    },
+    {
+      "id": "w6-healthy-04-metric-2",
+      "project_id": "project-a",
+      "service": "order-api",
+      "timestamp": "2026-11-07T11:03:00+08:00",
+      "name": "p95_latency_ms",
+      "value": 82.8,
+      "unit": "ms"
+    },
+    {
+      "id": "w6-healthy-05-metric-1",
+      "project_id": "project-a",
+      "service": "order-api",
+      "timestamp": "2026-11-07T12:03:00+08:00",
+      "name": "http_5xx_ratio",
+      "value": 0,
+      "unit": "ratio"
+    },
+    {
+      "id": "w6-healthy-05-metric-2",
+      "project_id": "project-a",
+      "service": "order-api",
+      "timestamp": "2026-11-07T12:03:00+08:00",
+      "name": "p95_latency_ms",
+      "value": 86.39999999999999,
+      "unit": "ms"
+    },
+    {
+      "id": "w6-db-lock-wait-01-metric-1",
+      "project_id": "project-a",
+      "service": "order-api",
+      "timestamp": "2026-11-09T08:03:00+08:00",
+      "name": "db_lock_waiters",
+      "value": 18.0,
+      "unit": "connections"
+    },
+    {
+      "id": "w6-db-lock-wait-01-metric-2",
+      "project_id": "project-a",
+      "service": "order-api",
+      "timestamp": "2026-11-09T08:03:00+08:00",
+      "name": "sql_p95_ms",
+      "value": 6200.0,
+      "unit": "ms"
+    },
+    {
+      "id": "w6-db-lock-wait-02-metric-1",
+      "project_id": "project-a",
+      "service": "order-api",
+      "timestamp": "2026-11-09T09:03:00+08:00",
+      "name": "db_lock_waiters",
+      "value": 18.900000000000002,
+      "unit": "connections"
+    },
+    {
+      "id": "w6-db-lock-wait-02-metric-2",
+      "project_id": "project-a",
+      "service": "order-api",
+      "timestamp": "2026-11-09T09:03:00+08:00",
+      "name": "sql_p95_ms",
+      "value": 6510.0,
+      "unit": "ms"
+    },
+    {
+      "id": "w6-db-lock-wait-03-metric-1",
+      "project_id": "project-a",
+      "service": "order-api",
+      "timestamp": "2026-11-09T10:03:00+08:00",
+      "name": "db_lock_waiters",
+      "value": 19.8,
+      "unit": "connections"
+    },
+    {
+      "id": "w6-db-lock-wait-03-metric-2",
+      "project_id": "project-a",
+      "service": "order-api",
+      "timestamp": "2026-11-09T10:03:00+08:00",
+      "name": "sql_p95_ms",
+      "value": 6820.000000000001,
+      "unit": "ms"
+    },
+    {
+      "id": "w6-db-lock-wait-04-metric-1",
+      "project_id": "project-a",
+      "service": "order-api",
+      "timestamp": "2026-11-09T11:03:00+08:00",
+      "name": "db_lock_waiters",
+      "value": 20.7,
+      "unit": "connections"
+    },
+    {
+      "id": "w6-db-lock-wait-04-metric-2",
+      "project_id": "project-a",
+      "service": "order-api",
+      "timestamp": "2026-11-09T11:03:00+08:00",
+      "name": "sql_p95_ms",
+      "value": 7129.999999999999,
+      "unit": "ms"
+    },
+    {
+      "id": "w6-db-lock-wait-05-metric-1",
+      "project_id": "project-a",
+      "service": "order-api",
+      "timestamp": "2026-11-09T12:03:00+08:00",
+      "name": "db_lock_waiters",
+      "value": 21.599999999999998,
+      "unit": "connections"
+    },
+    {
+      "id": "w6-db-lock-wait-05-metric-2",
+      "project_id": "project-a",
+      "service": "order-api",
+      "timestamp": "2026-11-09T12:03:00+08:00",
+      "name": "sql_p95_ms",
+      "value": 7440.0,
+      "unit": "ms"
+    },
+    {
+      "id": "w6-cpu-throttling-01-metric-1",
+      "project_id": "project-b",
+      "service": "inventory-api",
+      "timestamp": "2026-11-10T08:03:00+08:00",
+      "name": "cpu_throttled_ratio",
+      "value": 0.73,
+      "unit": "ratio"
+    },
+    {
+      "id": "w6-cpu-throttling-01-metric-2",
+      "project_id": "project-b",
+      "service": "inventory-api",
+      "timestamp": "2026-11-10T08:03:00+08:00",
+      "name": "p95_latency_ms",
+      "value": 2200.0,
+      "unit": "ms"
+    },
+    {
+      "id": "w6-cpu-throttling-02-metric-1",
+      "project_id": "project-b",
+      "service": "inventory-api",
+      "timestamp": "2026-11-10T09:03:00+08:00",
+      "name": "cpu_throttled_ratio",
+      "value": 0.73,
+      "unit": "ratio"
+    },
+    {
+      "id": "w6-cpu-throttling-02-metric-2",
+      "project_id": "project-b",
+      "service": "inventory-api",
+      "timestamp": "2026-11-10T09:03:00+08:00",
+      "name": "p95_latency_ms",
+      "value": 2310.0,
+      "unit": "ms"
+    },
+    {
+      "id": "w6-cpu-throttling-03-metric-1",
+      "project_id": "project-b",
+      "service": "inventory-api",
+      "timestamp": "2026-11-10T10:03:00+08:00",
+      "name": "cpu_throttled_ratio",
+      "value": 0.73,
+      "unit": "ratio"
+    },
+    {
+      "id": "w6-cpu-throttling-03-metric-2",
+      "project_id": "project-b",
+      "service": "inventory-api",
+      "timestamp": "2026-11-10T10:03:00+08:00",
+      "name": "p95_latency_ms",
+      "value": 2420.0,
+      "unit": "ms"
+    },
+    {
+      "id": "w6-cpu-throttling-04-metric-1",
+      "project_id": "project-b",
+      "service": "inventory-api",
+      "timestamp": "2026-11-10T11:03:00+08:00",
+      "name": "cpu_throttled_ratio",
+      "value": 0.73,
+      "unit": "ratio"
+    },
+    {
+      "id": "w6-cpu-throttling-04-metric-2",
+      "project_id": "project-b",
+      "service": "inventory-api",
+      "timestamp": "2026-11-10T11:03:00+08:00",
+      "name": "p95_latency_ms",
+      "value": 2530.0,
+      "unit": "ms"
+    },
+    {
+      "id": "w6-cpu-throttling-05-metric-1",
+      "project_id": "project-b",
+      "service": "inventory-api",
+      "timestamp": "2026-11-10T12:03:00+08:00",
+      "name": "cpu_throttled_ratio",
+      "value": 0.73,
+      "unit": "ratio"
+    },
+    {
+      "id": "w6-cpu-throttling-05-metric-2",
+      "project_id": "project-b",
+      "service": "inventory-api",
+      "timestamp": "2026-11-10T12:03:00+08:00",
+      "name": "p95_latency_ms",
+      "value": 2640.0,
+      "unit": "ms"
+    },
+    {
+      "id": "w6-disk-full-01-metric-1",
+      "project_id": "project-b",
+      "service": "inventory-api",
+      "timestamp": "2026-11-11T08:03:00+08:00",
+      "name": "disk_used_ratio",
+      "value": 0.999,
+      "unit": "ratio"
+    },
+    {
+      "id": "w6-disk-full-01-metric-2",
+      "project_id": "project-b",
+      "service": "inventory-api",
+      "timestamp": "2026-11-11T08:03:00+08:00",
+      "name": "disk_write_errors",
+      "value": 120.0,
+      "unit": "errors"
+    },
+    {
+      "id": "w6-disk-full-02-metric-1",
+      "project_id": "project-b",
+      "service": "inventory-api",
+      "timestamp": "2026-11-11T09:03:00+08:00",
+      "name": "disk_used_ratio",
+      "value": 0.999,
+      "unit": "ratio"
+    },
+    {
+      "id": "w6-disk-full-02-metric-2",
+      "project_id": "project-b",
+      "service": "inventory-api",
+      "timestamp": "2026-11-11T09:03:00+08:00",
+      "name": "disk_write_errors",
+      "value": 126.0,
+      "unit": "errors"
+    },
+    {
+      "id": "w6-disk-full-03-metric-1",
+      "project_id": "project-b",
+      "service": "inventory-api",
+      "timestamp": "2026-11-11T10:03:00+08:00",
+      "name": "disk_used_ratio",
+      "value": 0.999,
+      "unit": "ratio"
+    },
+    {
+      "id": "w6-disk-full-03-metric-2",
+      "project_id": "project-b",
+      "service": "inventory-api",
+      "timestamp": "2026-11-11T10:03:00+08:00",
+      "name": "disk_write_errors",
+      "value": 132.0,
+      "unit": "errors"
+    },
+    {
+      "id": "w6-disk-full-04-metric-1",
+      "project_id": "project-b",
+      "service": "inventory-api",
+      "timestamp": "2026-11-11T11:03:00+08:00",
+      "name": "disk_used_ratio",
+      "value": 0.999,
+      "unit": "ratio"
+    },
+    {
+      "id": "w6-disk-full-04-metric-2",
+      "project_id": "project-b",
+      "service": "inventory-api",
+      "timestamp": "2026-11-11T11:03:00+08:00",
+      "name": "disk_write_errors",
+      "value": 138.0,
+      "unit": "errors"
+    },
+    {
+      "id": "w6-disk-full-05-metric-1",
+      "project_id": "project-b",
+      "service": "inventory-api",
+      "timestamp": "2026-11-11T12:03:00+08:00",
+      "name": "disk_used_ratio",
+      "value": 0.999,
+      "unit": "ratio"
+    },
+    {
+      "id": "w6-disk-full-05-metric-2",
+      "project_id": "project-b",
+      "service": "inventory-api",
+      "timestamp": "2026-11-11T12:03:00+08:00",
+      "name": "disk_write_errors",
+      "value": 144.0,
+      "unit": "errors"
+    },
+    {
+      "id": "w6-tls-expired-01-metric-1",
+      "project_id": "project-a",
+      "service": "order-api",
+      "timestamp": "2026-11-12T08:03:00+08:00",
+      "name": "tls_handshake_failures",
+      "value": 140.0,
+      "unit": "errors"
+    },
+    {
+      "id": "w6-tls-expired-01-metric-2",
+      "project_id": "project-a",
+      "service": "order-api",
+      "timestamp": "2026-11-12T08:03:00+08:00",
+      "name": "http_5xx_ratio",
+      "value": 0.6,
+      "unit": "ratio"
+    },
+    {
+      "id": "w6-tls-expired-02-metric-1",
+      "project_id": "project-a",
+      "service": "order-api",
+      "timestamp": "2026-11-12T09:03:00+08:00",
+      "name": "tls_handshake_failures",
+      "value": 147.0,
+      "unit": "errors"
+    },
+    {
+      "id": "w6-tls-expired-02-metric-2",
+      "project_id": "project-a",
+      "service": "order-api",
+      "timestamp": "2026-11-12T09:03:00+08:00",
+      "name": "http_5xx_ratio",
+      "value": 0.6,
+      "unit": "ratio"
+    },
+    {
+      "id": "w6-tls-expired-03-metric-1",
+      "project_id": "project-a",
+      "service": "order-api",
+      "timestamp": "2026-11-12T10:03:00+08:00",
+      "name": "tls_handshake_failures",
+      "value": 154.0,
+      "unit": "errors"
+    },
+    {
+      "id": "w6-tls-expired-03-metric-2",
+      "project_id": "project-a",
+      "service": "order-api",
+      "timestamp": "2026-11-12T10:03:00+08:00",
+      "name": "http_5xx_ratio",
+      "value": 0.6,
+      "unit": "ratio"
+    },
+    {
+      "id": "w6-tls-expired-04-metric-1",
+      "project_id": "project-a",
+      "service": "order-api",
+      "timestamp": "2026-11-12T11:03:00+08:00",
+      "name": "tls_handshake_failures",
+      "value": 161.0,
+      "unit": "errors"
+    },
+    {
+      "id": "w6-tls-expired-04-metric-2",
+      "project_id": "project-a",
+      "service": "order-api",
+      "timestamp": "2026-11-12T11:03:00+08:00",
+      "name": "http_5xx_ratio",
+      "value": 0.6,
+      "unit": "ratio"
+    },
+    {
+      "id": "w6-tls-expired-05-metric-1",
+      "project_id": "project-a",
+      "service": "order-api",
+      "timestamp": "2026-11-12T12:03:00+08:00",
+      "name": "tls_handshake_failures",
+      "value": 168.0,
+      "unit": "errors"
+    },
+    {
+      "id": "w6-tls-expired-05-metric-2",
+      "project_id": "project-a",
+      "service": "order-api",
+      "timestamp": "2026-11-12T12:03:00+08:00",
+      "name": "http_5xx_ratio",
+      "value": 0.6,
+      "unit": "ratio"
+    },
+    {
+      "id": "w6-queue-backlog-01-metric-1",
+      "project_id": "project-b",
+      "service": "inventory-api",
+      "timestamp": "2026-11-13T08:03:00+08:00",
+      "name": "consumer_lag",
+      "value": 18000.0,
+      "unit": "messages"
+    },
+    {
+      "id": "w6-queue-backlog-01-metric-2",
+      "project_id": "project-b",
+      "service": "inventory-api",
+      "timestamp": "2026-11-13T08:03:00+08:00",
+      "name": "oldest_message_age_s",
+      "value": 900.0,
+      "unit": "s"
+    },
+    {
+      "id": "w6-queue-backlog-02-metric-1",
+      "project_id": "project-b",
+      "service": "inventory-api",
+      "timestamp": "2026-11-13T09:03:00+08:00",
+      "name": "consumer_lag",
+      "value": 18900.0,
+      "unit": "messages"
+    },
+    {
+      "id": "w6-queue-backlog-02-metric-2",
+      "project_id": "project-b",
+      "service": "inventory-api",
+      "timestamp": "2026-11-13T09:03:00+08:00",
+      "name": "oldest_message_age_s",
+      "value": 945.0,
+      "unit": "s"
+    },
+    {
+      "id": "w6-queue-backlog-03-metric-1",
+      "project_id": "project-b",
+      "service": "inventory-api",
+      "timestamp": "2026-11-13T10:03:00+08:00",
+      "name": "consumer_lag",
+      "value": 19800.0,
+      "unit": "messages"
+    },
+    {
+      "id": "w6-queue-backlog-03-metric-2",
+      "project_id": "project-b",
+      "service": "inventory-api",
+      "timestamp": "2026-11-13T10:03:00+08:00",
+      "name": "oldest_message_age_s",
+      "value": 990.0000000000001,
+      "unit": "s"
+    },
+    {
+      "id": "w6-queue-backlog-04-metric-1",
+      "project_id": "project-b",
+      "service": "inventory-api",
+      "timestamp": "2026-11-13T11:03:00+08:00",
+      "name": "consumer_lag",
+      "value": 20700.0,
+      "unit": "messages"
+    },
+    {
+      "id": "w6-queue-backlog-04-metric-2",
+      "project_id": "project-b",
+      "service": "inventory-api",
+      "timestamp": "2026-11-13T11:03:00+08:00",
+      "name": "oldest_message_age_s",
+      "value": 1035.0,
+      "unit": "s"
+    },
+    {
+      "id": "w6-queue-backlog-05-metric-1",
+      "project_id": "project-b",
+      "service": "inventory-api",
+      "timestamp": "2026-11-13T12:03:00+08:00",
+      "name": "consumer_lag",
+      "value": 21600.0,
+      "unit": "messages"
+    },
+    {
+      "id": "w6-queue-backlog-05-metric-2",
+      "project_id": "project-b",
+      "service": "inventory-api",
+      "timestamp": "2026-11-13T12:03:00+08:00",
+      "name": "oldest_message_age_s",
+      "value": 1080.0,
+      "unit": "s"
+    },
+    {
+      "id": "pool-exhaustion-metric-1",
+      "project_id": "project-a",
+      "service": "order-api",
+      "timestamp": "2026-10-30T14:03:00+08:00",
+      "name": "db_pool_active",
+      "value": 20,
+      "unit": "connections"
+    },
+    {
+      "id": "pool-exhaustion-metric-2",
+      "project_id": "project-a",
+      "service": "order-api",
+      "timestamp": "2026-10-30T14:03:00+08:00",
+      "name": "db_pool_max",
+      "value": 20,
+      "unit": "connections"
+    },
+    {
+      "id": "pool-exhaustion-metric-3",
+      "project_id": "project-a",
+      "service": "order-api",
+      "timestamp": "2026-10-30T14:03:00+08:00",
+      "name": "db_pool_waiters",
+      "value": 48,
+      "unit": "requests"
+    },
+    {
+      "id": "pool-exhaustion-metric-4",
+      "project_id": "project-a",
+      "service": "order-api",
+      "timestamp": "2026-10-30T14:03:00+08:00",
+      "name": "http_5xx_ratio",
+      "value": 0.38,
+      "unit": "ratio"
+    }
+  ]
+}

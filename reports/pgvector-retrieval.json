@@ -1,0 +1,230 @@
+{
+  "schema_version": 1,
+  "status": "complete",
+  "created_at": "2026-11-01T02:37:35.755579+00:00",
+  "case": {
+    "case_id": "pool-exhaustion-retrieval-01",
+    "project_id": "project-a",
+    "query": "order-api HikariPool connection acquisition timed out after 30000ms; active=20 idle=0 max=20，db_pool_waiters 升高，如何排查？",
+    "relevant_chunk_ids": [
+      "pool-exhaustion--s01",
+      "pool-exhaustion--s02"
+    ]
+  },
+  "selected_cases": 1,
+  "chat_model_calls": 0,
+  "dataset_sha256": "2cab0bdbe73d89534fc0b68448f1c5fe79f28cc5d4cfaf5e1a148f927dd09a61",
+  "retrieval_code_sha256": "635da8049285f940e9c84c8e390df5c696260f798f2edc8dd4f4a954a9d39cb4",
+  "evaluator_sha256": "b4f942ed8590983ae9474ef43052cea5efab29743fd39d9dbf1affd61f24087f",
+  "fixed_manifest": {
+    "corpus_sha256": "023114864f127896cfc77ae214368e69d1dcfb883b0395c7c363db162c1a03ca",
+    "chunks_sha256": "b6a49d5e1a286048cf707277fb38f796b74ab0a6bd946245fa74ee64ea24fdd7",
+    "chunking": "authored-h2-v1",
+    "embedding_model": "BAAI/bge-small-zh-v1.5",
+    "embedding_revision": "7999e1d3359715c523056ef9478215996d62a620",
+    "dimensions": 512,
+    "normalize": true,
+    "query_prefix": "为这个句子生成表示以用于检索相关文章：",
+    "max_seq_length": 512,
+    "artifacts_sha256": "9e8d41feee144813910c7db23ca5505bcf66139811f6f1521db1265e1bed016d",
+    "top_k": 3,
+    "candidate_k": 10,
+    "rrf_offset": 60
+  },
+  "changed_factor": "vector vs vector+keyword RRF",
+  "results": {
+    "vector": {
+      "scores": {
+        "hit_at_k": 1,
+        "recall_at_k": 0.5
+      },
+      "chunks": [
+        {
+          "evidence_id": "pool-exhaustion--s01",
+          "document_id": "pool-exhaustion",
+          "project_id": "project-a",
+          "source": "datasets/runbooks/pool-exhaustion.md",
+          "revision": "46e4099b81d82494707b05013c4a1f8761e2d117abadbf8f2ce20f9893519313",
+          "content": "order-api 数据库连接池耗尽\n识别连接获取等待\n\norder-api 使用 HikariPool。connection acquisition timed out 表示等待池内连接超时，不等于 SQL 执行超时。对照 db_pool_active、db_pool_max、db_pool_waiters；active 达到 max、idle=0 且 waiters 持续上升时，可判断连接池饱和。结合相同时间窗的 5xx，确认影响范围。",
+          "ranks": {
+            "vector": 1
+          },
+          "rrf_score": 0.01639344262295082,
+          "retrieval_manifest": {
+            "corpus_sha256": "023114864f127896cfc77ae214368e69d1dcfb883b0395c7c363db162c1a03ca",
+            "chunks_sha256": "b6a49d5e1a286048cf707277fb38f796b74ab0a6bd946245fa74ee64ea24fdd7",
+            "chunking": "authored-h2-v1",
+            "embedding_model": "BAAI/bge-small-zh-v1.5",
+            "embedding_revision": "7999e1d3359715c523056ef9478215996d62a620",
+            "dimensions": 512,
+            "normalize": true,
+            "query_prefix": "为这个句子生成表示以用于检索相关文章：",
+            "max_seq_length": 512,
+            "artifacts_sha256": "9e8d41feee144813910c7db23ca5505bcf66139811f6f1521db1265e1bed016d",
+            "strategy": "vector",
+            "top_k": 3,
+            "candidate_k": 10,
+            "rrf_offset": 60
+          }
+        },
+        {
+          "evidence_id": "db-lock-wait--s01",
+          "document_id": "db-lock-wait",
+          "project_id": "project-a",
+          "source": "datasets/runbooks/db-lock-wait.md",
+          "revision": "143c6616c0c0b0f475197bb8f89ba40878d34b57e0388266eb3dfa067f9e7103",
+          "content": "order-api PostgreSQL 锁等待\n识别阻塞事务\n\norder-api SQL 延迟伴随 pg_stat_activity 的 wait_event_type=Lock 时，查询阻塞关系、事务年龄和等待语句。连接池 active 上升可能是锁等待的后果，只有池满日志无法确认锁为根因。",
+          "ranks": {
+            "vector": 2
+          },
+          "rrf_score": 0.016129032258064516,
+          "retrieval_manifest": {
+            "corpus_sha256": "023114864f127896cfc77ae214368e69d1dcfb883b0395c7c363db162c1a03ca",
+            "chunks_sha256": "b6a49d5e1a286048cf707277fb38f796b74ab0a6bd946245fa74ee64ea24fdd7",
+            "chunking": "authored-h2-v1",
+            "embedding_model": "BAAI/bge-small-zh-v1.5",
+            "embedding_revision": "7999e1d3359715c523056ef9478215996d62a620",
+            "dimensions": 512,
+            "normalize": true,
+            "query_prefix": "为这个句子生成表示以用于检索相关文章：",
+            "max_seq_length": 512,
+            "artifacts_sha256": "9e8d41feee144813910c7db23ca5505bcf66139811f6f1521db1265e1bed016d",
+            "strategy": "vector",
+            "top_k": 3,
+            "candidate_k": 10,
+            "rrf_offset": 60
+          }
+        },
+        {
+          "evidence_id": "http-client-pool--s02",
+          "document_id": "http-client-pool",
+          "project_id": "project-a",
+          "source": "datasets/runbooks/http-client-pool.md",
+          "revision": "124c4b9b328fd0ee9780a82c072a470ee027b576ee6cc8318bd87fc9ea27335d",
+          "content": "order-api HTTP 客户端连接池等待\n检查下游与连接释放\n\n核对 HTTP 连接上限、下游响应耗时与响应体关闭情况。数据库 db_pool_active 不可用来证明 HTTP 池已满。保留发生等待的客户端名称与目标服务。",
+          "ranks": {
+            "vector": 3
+          },
+          "rrf_score": 0.015873015873015872,
+          "retrieval_manifest": {
+            "corpus_sha256": "023114864f127896cfc77ae214368e69d1dcfb883b0395c7c363db162c1a03ca",
+            "chunks_sha256": "b6a49d5e1a286048cf707277fb38f796b74ab0a6bd946245fa74ee64ea24fdd7",
+            "chunking": "authored-h2-v1",
+            "embedding_model": "BAAI/bge-small-zh-v1.5",
+            "embedding_revision": "7999e1d3359715c523056ef9478215996d62a620",
+            "dimensions": 512,
+            "normalize": true,
+            "query_prefix": "为这个句子生成表示以用于检索相关文章：",
+            "max_seq_length": 512,
+            "artifacts_sha256": "9e8d41feee144813910c7db23ca5505bcf66139811f6f1521db1265e1bed016d",
+            "strategy": "vector",
+            "top_k": 3,
+            "candidate_k": 10,
+            "rrf_offset": 60
+          }
+        }
+      ]
+    },
+    "hybrid": {
+      "scores": {
+        "hit_at_k": 1,
+        "recall_at_k": 0.5
+      },
+      "chunks": [
+        {
+          "evidence_id": "pool-exhaustion--s01",
+          "document_id": "pool-exhaustion",
+          "project_id": "project-a",
+          "source": "datasets/runbooks/pool-exhaustion.md",
+          "revision": "46e4099b81d82494707b05013c4a1f8761e2d117abadbf8f2ce20f9893519313",
+          "content": "order-api 数据库连接池耗尽\n识别连接获取等待\n\norder-api 使用 HikariPool。connection acquisition timed out 表示等待池内连接超时，不等于 SQL 执行超时。对照 db_pool_active、db_pool_max、db_pool_waiters；active 达到 max、idle=0 且 waiters 持续上升时，可判断连接池饱和。结合相同时间窗的 5xx，确认影响范围。",
+          "ranks": {
+            "vector": 1,
+            "keyword": 1
+          },
+          "rrf_score": 0.03278688524590164,
+          "retrieval_manifest": {
+            "corpus_sha256": "023114864f127896cfc77ae214368e69d1dcfb883b0395c7c363db162c1a03ca",
+            "chunks_sha256": "b6a49d5e1a286048cf707277fb38f796b74ab0a6bd946245fa74ee64ea24fdd7",
+            "chunking": "authored-h2-v1",
+            "embedding_model": "BAAI/bge-small-zh-v1.5",
+            "embedding_revision": "7999e1d3359715c523056ef9478215996d62a620",
+            "dimensions": 512,
+            "normalize": true,
+            "query_prefix": "为这个句子生成表示以用于检索相关文章：",
+            "max_seq_length": 512,
+            "artifacts_sha256": "9e8d41feee144813910c7db23ca5505bcf66139811f6f1521db1265e1bed016d",
+            "strategy": "hybrid",
+            "top_k": 3,
+            "candidate_k": 10,
+            "rrf_offset": 60
+          }
+        },
+        {
+          "evidence_id": "db-lock-wait--s01",
+          "document_id": "db-lock-wait",
+          "project_id": "project-a",
+          "source": "datasets/runbooks/db-lock-wait.md",
+          "revision": "143c6616c0c0b0f475197bb8f89ba40878d34b57e0388266eb3dfa067f9e7103",
+          "content": "order-api PostgreSQL 锁等待\n识别阻塞事务\n\norder-api SQL 延迟伴随 pg_stat_activity 的 wait_event_type=Lock 时，查询阻塞关系、事务年龄和等待语句。连接池 active 上升可能是锁等待的后果，只有池满日志无法确认锁为根因。",
+          "ranks": {
+            "vector": 2,
+            "keyword": 4
+          },
+          "rrf_score": 0.031754032258064516,
+          "retrieval_manifest": {
+            "corpus_sha256": "023114864f127896cfc77ae214368e69d1dcfb883b0395c7c363db162c1a03ca",
+            "chunks_sha256": "b6a49d5e1a286048cf707277fb38f796b74ab0a6bd946245fa74ee64ea24fdd7",
+            "chunking": "authored-h2-v1",
+            "embedding_model": "BAAI/bge-small-zh-v1.5",
+            "embedding_revision": "7999e1d3359715c523056ef9478215996d62a620",
+            "dimensions": 512,
+            "normalize": true,
+            "query_prefix": "为这个句子生成表示以用于检索相关文章：",
+            "max_seq_length": 512,
+            "artifacts_sha256": "9e8d41feee144813910c7db23ca5505bcf66139811f6f1521db1265e1bed016d",
+            "strategy": "hybrid",
+            "top_k": 3,
+            "candidate_k": 10,
+            "rrf_offset": 60
+          }
+        },
+        {
+          "evidence_id": "downstream-timeout--s01",
+          "document_id": "downstream-timeout",
+          "project_id": "project-a",
+          "source": "datasets/runbooks/downstream-timeout.md",
+          "revision": "171fed5ff5047abba1281eb01d2884610bdc737087d6873b9ba1223cafa24a6d",
+          "content": "order-api 调用 payment-api 超时\n识别依赖延迟\n\norder-api 的 HTTP 504、payment-api timed out 与 payment_api_p95_ms 同时上升，支持下游延迟影响上游。对齐请求时间、超时阈值和调用链，避免把上游错误率直接解释为数据库故障。",
+          "ranks": {
+            "vector": 4,
+            "keyword": 2
+          },
+          "rrf_score": 0.031754032258064516,
+          "retrieval_manifest": {
+            "corpus_sha256": "023114864f127896cfc77ae214368e69d1dcfb883b0395c7c363db162c1a03ca",
+            "chunks_sha256": "b6a49d5e1a286048cf707277fb38f796b74ab0a6bd946245fa74ee64ea24fdd7",
+            "chunking": "authored-h2-v1",
+            "embedding_model": "BAAI/bge-small-zh-v1.5",
+            "embedding_revision": "7999e1d3359715c523056ef9478215996d62a620",
+            "dimensions": 512,
+            "normalize": true,
+            "query_prefix": "为这个句子生成表示以用于检索相关文章：",
+            "max_seq_length": 512,
+            "artifacts_sha256": "9e8d41feee144813910c7db23ca5505bcf66139811f6f1521db1265e1bed016d",
+            "strategy": "hybrid",
+            "top_k": 3,
+            "candidate_k": 10,
+            "rrf_offset": 60
+          }
+        }
+      ]
+    }
+  },
+  "delta": {
+    "hit_at_k": 0,
+    "recall_at_k": 0.0
+  },
+  "outcome": "unchanged",
+  "limitation": "One synthetic development case; no aggregate quality claim."
+}

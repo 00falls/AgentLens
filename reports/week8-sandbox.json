@@ -1,0 +1,6 @@
+{
+  "status": "blocked",
+  "checks": {},
+  "reason": "OpenShell CLI/gateway required; host execution is prohibited",
+  "actual_isolation_verified": false
+}

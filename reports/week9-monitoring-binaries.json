@@ -1,0 +1,12 @@
+[
+  {
+    "name": "prometheus",
+    "source": "https://github.com/prometheus/prometheus/releases/download/v3.15.1/prometheus-3.15.1.windows-amd64.zip",
+    "sha256": "ba25b5e590520cb9fb028edef99bdc8523244d2d489b8c629e0d453d94fb030b"
+  },
+  {
+    "name": "grafana",
+    "source": "https://dl.grafana.com/grafana/release/13.3.0/grafana_13.3.0_40412481033_windows_amd64.tar.gz",
+    "sha256": "748358c29405b50b28c67792f264b5a49c07faf4c2c353b652db3ab751bb874d"
+  }
+]

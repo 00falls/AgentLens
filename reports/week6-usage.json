@@ -1,0 +1,19 @@
+{
+  "date": "2026-11-01",
+  "new_business_runs": 1,
+  "business_model_calls": 3,
+  "business_usage": {
+    "input_tokens": 9014,
+    "output_tokens": 1099
+  },
+  "judge_requests_attempted": 28,
+  "judge_responses_validated": 26,
+  "judge_responses_rejected": 2,
+  "validated_judge_usage": {
+    "input_tokens": 119128,
+    "output_tokens": 16612
+  },
+  "rejected_response_usage": "unknown; not counted as zero",
+  "judge_usage_is_lower_bound": true,
+  "monetary_cost": null
+}

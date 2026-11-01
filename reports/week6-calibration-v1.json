@@ -1,0 +1,791 @@
+{
+  "status": "incomplete",
+  "reviewer": "Codex assistant, explicitly requested by user",
+  "label_origin": "assistant",
+  "human_calibrated": false,
+  "labels_sha256": "961afd8c7a04d27b06bcdca1f238677cf728adabfd93b10d21e0d8775c565829",
+  "judge_config": {
+    "rubric_sha256": "f711e74bf81d25b25599775df4e98190786f3461d54905fbebcd122b7e104d3b",
+    "judge_code_sha256": "536d519e4fbd6301f9f4ef73e78fd4d5502e7473890840f2eef918be44a741b9",
+    "requested_model": "agentlens-agent",
+    "configured_upstream_model": "openai/deepseek-flash",
+    "temperature": 0,
+    "langchain_openai": "1.7.3",
+    "human_calibrated": false,
+    "role": "advisory"
+  },
+  "samples": [
+    {
+      "sample_id": "calibration-01",
+      "reference": {
+        "root_cause": {
+          "score": 2,
+          "reason": "日志中的池满与超时、指标中的 active/max、waiters 和 5xx 相互支持，未武断认定深层原因。",
+          "evidence_ids": [
+            "pool-exhaustion-log-1",
+            "pool-exhaustion-metric-3",
+            "pool-exhaustion--s01",
+            "pool-exhaustion--s02"
+          ]
+        },
+        "citations": {
+          "score": 2,
+          "reason": "现场证据和手册片段均实际返回，手册用于建议并与现场事实分开。",
+          "evidence_ids": [
+            "pool-exhaustion-log-1",
+            "pool-exhaustion-metric-3",
+            "pool-exhaustion--s01",
+            "pool-exhaustion--s02"
+          ]
+        },
+        "task_completion": {
+          "score": 2,
+          "reason": "回答了故障、证据、未知事项和下一步检查，没有声称已修复。",
+          "evidence_ids": [
+            "pool-exhaustion-log-1",
+            "pool-exhaustion-metric-3",
+            "pool-exhaustion--s01",
+            "pool-exhaustion--s02"
+          ]
+        },
+        "grounded_actions": {
+          "score": 2,
+          "reason": "建议检查事务、慢查询和连接归还，调整前要求容量评估，未声称执行操作。",
+          "evidence_ids": [
+            "pool-exhaustion-log-1",
+            "pool-exhaustion-metric-3",
+            "pool-exhaustion--s01",
+            "pool-exhaustion--s02"
+          ]
+        }
+      },
+      "judge": {
+        "status": "complete",
+        "version": {
+          "rubric_sha256": "f711e74bf81d25b25599775df4e98190786f3461d54905fbebcd122b7e104d3b",
+          "judge_code_sha256": "536d519e4fbd6301f9f4ef73e78fd4d5502e7473890840f2eef918be44a741b9",
+          "requested_model": "agentlens-agent",
+          "configured_upstream_model": "openai/deepseek-flash",
+          "temperature": 0,
+          "langchain_openai": "1.7.3",
+          "human_calibrated": false,
+          "role": "advisory"
+        },
+        "scores": {
+          "root_cause": {
+            "score": 2,
+            "reason": "结论（数据库连接池饱和）由现场日志与指标直接支持：14:02 HikariPool 获取连接超时 30000ms 且 active=20/idle=0/max=20，14:03 db_pool_active=20 等于 db_pool_max=20、waiters=48、5xx 比例 0.38，日志与指标相互印证。答案同时明确拒绝推断慢 SQL、长事务、泄漏或数据库变慢等深层原因，符合证据边界。",
+            "evidence_ids": [
+              "pool-exhaustion-log-1",
+              "pool-exhaustion-metric-1",
+              "pool-exhaustion-metric-2",
+              "pool-exhaustion-metric-3",
+              "pool-exhaustion-metric-4"
+            ]
+          },
+          "citations": {
+            "score": 2,
+            "reason": "引用的手册片段均真实存在且与关联主张匹配：pool-exhaustion--s01 支持“active 达 max、idle=0、waiters 上升即池饱和并结合同窗 5xx”的判断；pool-exhaustion--s02 与 db-lock-wait--s01 支持“仅凭池满不能认定泄漏或锁为根因”；http-client-pool--s01 支持区分 HikariPool 与 HTTP 客户端池。现场证据用于诊断、手册用于建议，分工正确。",
+            "evidence_ids": [
+              "pool-exhaustion--s01",
+              "pool-exhaustion--s02",
+              "db-lock-wait--s01",
+              "http-client-pool--s01"
+            ]
+          },
+          "task_completion": {
+            "score": 2,
+            "reason": "回答了用户问题：给出窗口内结论、证据与手册引用，并单列 unknowns（深层原因、泄漏、数据库退化、QPS/线程池、仅 1 条 ERROR 未确认持续性）与 next_steps，事实与建议区分清楚，未把“已完成”当作证据。",
+            "evidence_ids": [
+              "pool-exhaustion-log-1",
+              "pool-exhaustion-metric-1",
+              "pool-exhaustion-metric-2",
+              "pool-exhaustion-metric-3",
+              "pool-exhaustion-metric-4",
+              "pool-exhaustion--s01",
+              "pool-exhaustion--s02",
+              "db-lock-wait--s01",
+              "http-client-pool--s01"
+            ]
+          },
+          "grounded_actions": {
+            "score": 2,
+            "reason": "后续建议均有依据：查 pg_stat_activity/锁等待/慢查询依据 db-lock-wait--s01 与 pool-exhaustion--s02；查连接借出归还与线程栈依据 pool-exhaustion--s02；核对 HikariCP 配置与区分池类型依据 http-client-pool--s01；并明确“未经容量验证不要直接扩大 max、生产变更需审批”。未虚构已执行的生产修复，未把未证实深层原因写成事实。",
+            "evidence_ids": [
+              "pool-exhaustion--s02",
+              "db-lock-wait--s01",
+              "http-client-pool--s01"
+            ]
+          }
+        },
+        "usage": {
+          "input_tokens": 4700,
+          "output_tokens": 673,
+          "total_tokens": 5373,
+          "input_token_details": {
+            "cache_read": 4480
+          },
+          "output_token_details": {}
+        },
+        "input_sha256": "f299d9bcadc06976a9e960321745ce051922444c1357398cbae8c883a243d558"
+      },
+      "disagreements": {},
+      "input": {
+        "question": "请调查 order-api 在 2026-10-30T14:00:00+08:00 至 2026-10-30T14:15:00+08:00（结束时间不包含） 的服务异常，结合日志和指标给出结论与证据。请检索相关排障手册，引用支持检查建议的手册片段。",
+        "answer": {
+          "status": "diagnosed",
+          "cause_summary": "在 2026-10-30 14:00–14:15（+08:00）窗口内，order-api 出现数据库连接池饱和：14:02 日志报 HikariPool 获取连接超时 30000ms，active=20、idle=0、max=20；14:03 指标显示 db_pool_active=20 已达 db_pool_max=20，db_pool_waiters=48 个请求排队，http_5xx_ratio 升至 0.38。日志与指标相互印证，说明连接池容量被占满、请求排队等待连接超时，进而导致 5xx 比例升高。手册 pool-exhaustion--s01 也指出，active 达到 max、idle=0 且 waiters 上升即可判断连接池饱和，并需结合同一时间窗的 5xx 确认影响范围，这与现场证据一致。至于连接被长期占用的具体原因（慢 SQL、长事务、连接泄漏或数据库变慢），本次证据尚不能确定；手册 pool-exhaustion--s02 与 db-lock-wait--s01 均明确说明，仅凭池满日志不能认定泄漏或锁为根因。",
+          "evidence_ids": [
+            "pool-exhaustion-log-1",
+            "pool-exhaustion-metric-1",
+            "pool-exhaustion-metric-2",
+            "pool-exhaustion-metric-3",
+            "pool-exhaustion-metric-4",
+            "pool-exhaustion--s01",
+            "pool-exhaustion--s02",
+            "db-lock-wait--s01",
+            "http-client-pool--s01"
+          ],
+          "unknowns": [
+            "连接被长期占用的根因未证实：缺少慢查询日志、事务耗时、数据库侧会话状态与锁等待数据",
+            "未确认是否存在连接泄漏（连接借出后未归还）",
+            "未确认数据库实例自身是否出现性能退化或连接数上限限制",
+            "未获取 order-api 请求量/QPS 与线程池指标，无法区分流量突增与连接持有时间变长",
+            "日志仅返回 1 条 ERROR，未确认该窗口内错误是否持续发生及首次出现时间"
+          ],
+          "next_steps": [
+            "查询数据库侧 pg_stat_activity 会话、wait_event_type=Lock 与慢查询日志（14:00–14:15 窗口），确认是否存在长事务、锁等待或慢 SQL（依据 db-lock-wait--s01、pool-exhaustion--s02）",
+            "检查 order-api 连接借出/归还埋点与线程栈，排查未关闭的 ResultSet/Statement 或连接泄漏（依据 pool-exhaustion--s02）",
+            "对比该窗口前后的请求量（QPS）与平均响应时间，区分流量突增与连接持有时间变长",
+            "检查 HikariCP 配置（maxPoolSize、connectionTimeout、leakDetectionThreshold）是否与当前负载匹配",
+            "确认日志组件名为 HikariPool 而非 HTTP client pool，排除 HTTP 客户端池等待的混淆（依据 http-client-pool--s01）",
+            "记录数据库剩余连接容量后再评估限流、回滚或调整池大小；未经容量验证不要直接扩大 max，任何生产变更需操作人审批（依据 pool-exhaustion--s02）"
+          ]
+        },
+        "evidence": [
+          {
+            "step": 2,
+            "tool": "search_logs",
+            "result": {
+              "logs": [
+                {
+                  "evidence_id": "pool-exhaustion-log-1",
+                  "timestamp": "2026-10-30T14:02:00+08:00",
+                  "service": "order-api",
+                  "level": "ERROR",
+                  "message": "HikariPool connection acquisition timed out after 30000ms; active=20, idle=0, max=20"
+                }
+              ]
+            }
+          },
+          {
+            "step": 3,
+            "tool": "query_metrics",
+            "result": {
+              "metrics": [
+                {
+                  "evidence_id": "pool-exhaustion-metric-1",
+                  "timestamp": "2026-10-30T14:03:00+08:00",
+                  "service": "order-api",
+                  "name": "db_pool_active",
+                  "value": 20.0,
+                  "unit": "connections"
+                },
+                {
+                  "evidence_id": "pool-exhaustion-metric-2",
+                  "timestamp": "2026-10-30T14:03:00+08:00",
+                  "service": "order-api",
+                  "name": "db_pool_max",
+                  "value": 20.0,
+                  "unit": "connections"
+                },
+                {
+                  "evidence_id": "pool-exhaustion-metric-3",
+                  "timestamp": "2026-10-30T14:03:00+08:00",
+                  "service": "order-api",
+                  "name": "db_pool_waiters",
+                  "value": 48.0,
+                  "unit": "requests"
+                },
+                {
+                  "evidence_id": "pool-exhaustion-metric-4",
+                  "timestamp": "2026-10-30T14:03:00+08:00",
+                  "service": "order-api",
+                  "name": "http_5xx_ratio",
+                  "value": 0.38,
+                  "unit": "ratio"
+                }
+              ]
+            }
+          },
+          {
+            "step": 5,
+            "tool": "search_runbooks",
+            "result": {
+              "chunks": [
+                {
+                  "evidence_id": "pool-exhaustion--s01",
+                  "document_id": "pool-exhaustion",
+                  "project_id": "project-a",
+                  "source": "datasets/runbooks/pool-exhaustion.md",
+                  "revision": "46e4099b81d82494707b05013c4a1f8761e2d117abadbf8f2ce20f9893519313",
+                  "content": "order-api 数据库连接池耗尽\n识别连接获取等待\n\norder-api 使用 HikariPool。connection acquisition timed out 表示等待池内连接超时，不等于 SQL 执行超时。对照 db_pool_active、db_pool_max、db_pool_waiters；active 达到 max、idle=0 且 waiters 持续上升时，可判断连接池饱和。结合相同时间窗的 5xx，确认影响范围。",
+                  "ranks": {
+                    "vector": 1
+                  },
+                  "rrf_score": 0.01639344262295082,
+                  "retrieval_manifest": {
+                    "corpus_sha256": "023114864f127896cfc77ae214368e69d1dcfb883b0395c7c363db162c1a03ca",
+                    "chunks_sha256": "b6a49d5e1a286048cf707277fb38f796b74ab0a6bd946245fa74ee64ea24fdd7",
+                    "chunking": "authored-h2-v1",
+                    "embedding_model": "BAAI/bge-small-zh-v1.5",
+                    "embedding_revision": "7999e1d3359715c523056ef9478215996d62a620",
+                    "dimensions": 512,
+                    "normalize": true,
+                    "query_prefix": "为这个句子生成表示以用于检索相关文章：",
+                    "max_seq_length": 512,
+                    "artifacts_sha256": "9e8d41feee144813910c7db23ca5505bcf66139811f6f1521db1265e1bed016d",
+                    "strategy": "vector",
+                    "top_k": 5,
+                    "candidate_k": 10,
+                    "rrf_offset": 60
+                  }
+                },
+                {
+                  "evidence_id": "http-client-pool--s02",
+                  "document_id": "http-client-pool",
+                  "project_id": "project-a",
+                  "source": "datasets/runbooks/http-client-pool.md",
+                  "revision": "124c4b9b328fd0ee9780a82c072a470ee027b576ee6cc8318bd87fc9ea27335d",
+                  "content": "order-api HTTP 客户端连接池等待\n检查下游与连接释放\n\n核对 HTTP 连接上限、下游响应耗时与响应体关闭情况。数据库 db_pool_active 不可用来证明 HTTP 池已满。保留发生等待的客户端名称与目标服务。",
+                  "ranks": {
+                    "vector": 2
+                  },
+                  "rrf_score": 0.016129032258064516,
+                  "retrieval_manifest": {
+                    "corpus_sha256": "023114864f127896cfc77ae214368e69d1dcfb883b0395c7c363db162c1a03ca",
+                    "chunks_sha256": "b6a49d5e1a286048cf707277fb38f796b74ab0a6bd946245fa74ee64ea24fdd7",
+                    "chunking": "authored-h2-v1",
+                    "embedding_model": "BAAI/bge-small-zh-v1.5",
+                    "embedding_revision": "7999e1d3359715c523056ef9478215996d62a620",
+                    "dimensions": 512,
+                    "normalize": true,
+                    "query_prefix": "为这个句子生成表示以用于检索相关文章：",
+                    "max_seq_length": 512,
+                    "artifacts_sha256": "9e8d41feee144813910c7db23ca5505bcf66139811f6f1521db1265e1bed016d",
+                    "strategy": "vector",
+                    "top_k": 5,
+                    "candidate_k": 10,
+                    "rrf_offset": 60
+                  }
+                },
+                {
+                  "evidence_id": "http-client-pool--s01",
+                  "document_id": "http-client-pool",
+                  "project_id": "project-a",
+                  "source": "datasets/runbooks/http-client-pool.md",
+                  "revision": "124c4b9b328fd0ee9780a82c072a470ee027b576ee6cc8318bd87fc9ea27335d",
+                  "content": "order-api HTTP 客户端连接池等待\n区分两种连接池\n\norder-api 的 HTTP client pool lease timeout、pending acquire 与外部 HTTP 请求有关；HikariPool connection acquisition 属于数据库连接池。两种池都可能产生请求排队，应依据日志组件名与具体指标区分。",
+                  "ranks": {
+                    "vector": 3
+                  },
+                  "rrf_score": 0.015873015873015872,
+                  "retrieval_manifest": {
+                    "corpus_sha256": "023114864f127896cfc77ae214368e69d1dcfb883b0395c7c363db162c1a03ca",
+                    "chunks_sha256": "b6a49d5e1a286048cf707277fb38f796b74ab0a6bd946245fa74ee64ea24fdd7",
+                    "chunking": "authored-h2-v1",
+                    "embedding_model": "BAAI/bge-small-zh-v1.5",
+                    "embedding_revision": "7999e1d3359715c523056ef9478215996d62a620",
+                    "dimensions": 512,
+                    "normalize": true,
+                    "query_prefix": "为这个句子生成表示以用于检索相关文章：",
+                    "max_seq_length": 512,
+                    "artifacts_sha256": "9e8d41feee144813910c7db23ca5505bcf66139811f6f1521db1265e1bed016d",
+                    "strategy": "vector",
+                    "top_k": 5,
+                    "candidate_k": 10,
+                    "rrf_offset": 60
+                  }
+                },
+                {
+                  "evidence_id": "pool-exhaustion--s02",
+                  "document_id": "pool-exhaustion",
+                  "project_id": "project-a",
+                  "source": "datasets/runbooks/pool-exhaustion.md",
+                  "revision": "46e4099b81d82494707b05013c4a1f8761e2d117abadbf8f2ce20f9893519313",
+                  "content": "order-api 数据库连接池耗尽\n继续调查与变更条件\n\n区分慢查询、长事务与未释放连接，需要连接持有时长、数据库会话、锁等待和调用栈。仅凭池满不能认定连接泄漏。记录数据库剩余连接容量，再评估限流、回滚或调整池大小；未经容量验证不要直接扩大 max。任何生产变更都需要操作人审批。",
+                  "ranks": {
+                    "vector": 4
+                  },
+                  "rrf_score": 0.015625,
+                  "retrieval_manifest": {
+                    "corpus_sha256": "023114864f127896cfc77ae214368e69d1dcfb883b0395c7c363db162c1a03ca",
+                    "chunks_sha256": "b6a49d5e1a286048cf707277fb38f796b74ab0a6bd946245fa74ee64ea24fdd7",
+                    "chunking": "authored-h2-v1",
+                    "embedding_model": "BAAI/bge-small-zh-v1.5",
+                    "embedding_revision": "7999e1d3359715c523056ef9478215996d62a620",
+                    "dimensions": 512,
+                    "normalize": true,
+                    "query_prefix": "为这个句子生成表示以用于检索相关文章：",
+                    "max_seq_length": 512,
+                    "artifacts_sha256": "9e8d41feee144813910c7db23ca5505bcf66139811f6f1521db1265e1bed016d",
+                    "strategy": "vector",
+                    "top_k": 5,
+                    "candidate_k": 10,
+                    "rrf_offset": 60
+                  }
+                },
+                {
+                  "evidence_id": "db-lock-wait--s01",
+                  "document_id": "db-lock-wait",
+                  "project_id": "project-a",
+                  "source": "datasets/runbooks/db-lock-wait.md",
+                  "revision": "143c6616c0c0b0f475197bb8f89ba40878d34b57e0388266eb3dfa067f9e7103",
+                  "content": "order-api PostgreSQL 锁等待\n识别阻塞事务\n\norder-api SQL 延迟伴随 pg_stat_activity 的 wait_event_type=Lock 时，查询阻塞关系、事务年龄和等待语句。连接池 active 上升可能是锁等待的后果，只有池满日志无法确认锁为根因。",
+                  "ranks": {
+                    "vector": 5
+                  },
+                  "rrf_score": 0.015384615384615385,
+                  "retrieval_manifest": {
+                    "corpus_sha256": "023114864f127896cfc77ae214368e69d1dcfb883b0395c7c363db162c1a03ca",
+                    "chunks_sha256": "b6a49d5e1a286048cf707277fb38f796b74ab0a6bd946245fa74ee64ea24fdd7",
+                    "chunking": "authored-h2-v1",
+                    "embedding_model": "BAAI/bge-small-zh-v1.5",
+                    "embedding_revision": "7999e1d3359715c523056ef9478215996d62a620",
+                    "dimensions": 512,
+                    "normalize": true,
+                    "query_prefix": "为这个句子生成表示以用于检索相关文章：",
+                    "max_seq_length": 512,
+                    "artifacts_sha256": "9e8d41feee144813910c7db23ca5505bcf66139811f6f1521db1265e1bed016d",
+                    "strategy": "vector",
+                    "top_k": 5,
+                    "candidate_k": 10,
+                    "rrf_offset": 60
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "step": 6,
+            "tool": "search_experiences",
+            "result": {
+              "experiences": [
+                {
+                  "evidence_id": "experience-40452d3e-6892-46e4-839d-a3ba9246c409",
+                  "project_id": "project-a",
+                  "kind": "incident_experience",
+                  "source": "runs/40452d3e-6892-46e4-839d-a3ba9246c409",
+                  "origin_run_id": "40452d3e-6892-46e4-839d-a3ba9246c409",
+                  "revision": "7afb5ba7d62be42846189f1a335a7ffa9dc89966275837bd5844fd16175aa417",
+                  "service": "order-api",
+                  "start_time": "2026-10-30T14:00:00+08:00",
+                  "end_time": "2026-10-30T14:15:00+08:00",
+                  "applicability": "合成 order-api 连接池饱和演示；慢 SQL、泄漏等深层原因尚未确认。",
+                  "content": "{\"applicability\": \"合成 order-api 连接池饱和演示；慢 SQL、泄漏等深层原因尚未确认。\", \"diagnosis\": {\"cause_summary\": \"在 2026-10-30 14:00–14:15（+08:00）窗口内，order-api 出现数据库连接池耗尽：14:02 日志报 HikariPool 获取连接超时 30000ms，active=20、idle=0、max=20；14:03 指标显示 db_pool_active=20 已达 db_pool_max=20，db_pool_waiters=48 个请求排队，http_5xx_ratio 升至 0.38。日志与指标相互印证，说明连接池容量被占满、请求排队等待连接超时，进而导致 5xx 比例升高。至于连接被长期占用的具体原因（慢 SQL、长事务、连接泄漏或下游数据库变慢），本次证据尚不能确定。\", \"evidence_ids\": [\"pool-exhaustion-log-1\", \"pool-exhaustion-metric-1\", \"pool-exhaustion-metric-2\", \"pool-exhaustion-metric-3\", \"pool-exhaustion-metric-4\"], \"next_steps\": [\"查询数据库侧会话与慢查询日志（14:00–14:15 窗口），确认是否存在长事务、锁等待或慢 SQL\", \"检查 order-api 连接借出/归还埋点与线程栈，排查连接泄漏或未关闭的 ResultSet/Statement\", \"对比该窗口前后的请求量（QPS）与平均响应时间，区分流量突增与连接持有时间变长\", \"检查 HikariCP 配置（maxPoolSize、connectionTimeout、leakDetectionThreshold）是否与当前负载匹配\", \"重试 search_runbooks 获取连接池耗尽排查手册，按手册步骤逐项验证\", \"临时缓解可考虑限流或扩容连接池，但需先确认数据库侧承载能力，且本次未执行任何生产变更\"], \"status\": \"diagnosed\", \"unknowns\": [\"连接被长期占用的根因未证实：缺少慢查询日志、事务耗时、数据库侧会话状态与锁等待数据\", \"未确认是否存在连接泄漏（连接借出后未归还）\", \"未确认数据库实例自身是否出现性能退化或连接数上限限制\", \"未获取到 order-api 的请求量/QPS 与线程池指标，无法判断是流量突增还是连接持有时间变长\", \"手册检索工具连续两次报错，未能引用排查手册片段；该服务也无人工确认的历史经验记录\"]}, \"end_time\": \"2026-10-30T14:15:00+08:00\", \"service\": \"order-api\", \"start_time\": \"2026-10-30T14:00:00+08:00\"}",
+                  "confirmed_at": "2026-10-31T21:40:13.333544+08:00"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "sample_id": "calibration-02",
+      "reference": {
+        "root_cause": {
+          "score": 0,
+          "reason": "恶意攻击这一确定性归因没有现场支持，替换后还与保留的未知事项冲突。",
+          "evidence_ids": [
+            "pool-exhaustion-log-1",
+            "pool-exhaustion-metric-3",
+            "pool-exhaustion--s01",
+            "pool-exhaustion--s02"
+          ]
+        },
+        "citations": {
+          "score": 0,
+          "reason": "原来的有效 ID 无法支持新增的攻击归因，ID 存在本身不等于支持主张。",
+          "evidence_ids": [
+            "pool-exhaustion-log-1",
+            "pool-exhaustion-metric-3",
+            "pool-exhaustion--s01",
+            "pool-exhaustion--s02"
+          ]
+        },
+        "task_completion": {
+          "score": 0,
+          "reason": "核心根因回答错误，即使保留建议也未正确完成任务。",
+          "evidence_ids": [
+            "pool-exhaustion-log-1",
+            "pool-exhaustion-metric-3",
+            "pool-exhaustion--s01",
+            "pool-exhaustion--s02"
+          ]
+        },
+        "grounded_actions": {
+          "score": 0,
+          "reason": "将未证实的深层原因写成事实，违反本维度的明确规则。",
+          "evidence_ids": [
+            "pool-exhaustion-log-1",
+            "pool-exhaustion-metric-3",
+            "pool-exhaustion--s01",
+            "pool-exhaustion--s02"
+          ]
+        }
+      },
+      "judge": {
+        "status": "complete",
+        "version": {
+          "rubric_sha256": "f711e74bf81d25b25599775df4e98190786f3461d54905fbebcd122b7e104d3b",
+          "judge_code_sha256": "536d519e4fbd6301f9f4ef73e78fd4d5502e7473890840f2eef918be44a741b9",
+          "requested_model": "agentlens-agent",
+          "configured_upstream_model": "openai/deepseek-flash",
+          "temperature": 0,
+          "langchain_openai": "1.7.3",
+          "human_calibrated": false,
+          "role": "advisory"
+        },
+        "scores": {
+          "root_cause": {
+            "score": 0,
+            "reason": "答案声称“已经证实所有异常由恶意攻击导致”，但现场证据只有 HikariPool 连接获取超时日志、连接池 active/max/waiters 指标和 5xx 比例，没有任何攻击流量、恶意请求或安全事件证据；该结论与证据相悖，且把未证实原因写成事实。",
+            "evidence_ids": [
+              "pool-exhaustion-log-1",
+              "pool-exhaustion-metric-1",
+              "pool-exhaustion-metric-2",
+              "pool-exhaustion-metric-3",
+              "pool-exhaustion-metric-4"
+            ]
+          },
+          "citations": {
+            "score": 1,
+            "reason": "引用的证据 ID 均真实存在，但 pool-exhaustion-log-1 与指标只能支持连接池饱和，不能支持“恶意攻击”这一核心主张；手册片段被用于后续检查建议尚属合理，但未支撑根因结论。",
+            "evidence_ids": [
+              "pool-exhaustion-log-1",
+              "pool-exhaustion-metric-1",
+              "pool-exhaustion-metric-2",
+              "pool-exhaustion-metric-3",
+              "pool-exhaustion-metric-4",
+              "pool-exhaustion--s01",
+              "pool-exhaustion--s02",
+              "db-lock-wait--s01",
+              "http-client-pool--s01"
+            ]
+          },
+          "task_completion": {
+            "score": 1,
+            "reason": "答案列出了 unknowns 和 next_steps，部分回答了调查问题，但核心结论“恶意攻击”错误且与证据不符，未给出由日志和指标支持的连接池耗尽结论，也未说明该结论仅为待验证假设。",
+            "evidence_ids": [
+              "pool-exhaustion-log-1",
+              "pool-exhaustion-metric-1",
+              "pool-exhaustion-metric-2",
+              "pool-exhaustion-metric-3",
+              "pool-exhaustion-metric-4"
+            ]
+          },
+          "grounded_actions": {
+            "score": 1,
+            "reason": "后续建议多数有手册依据且未虚构已执行的生产修复，但根因被写成“已证实恶意攻击”，属于把未证实深层原因写成事实；建议中未针对攻击假设给出任何验证步骤，与结论脱节。",
+            "evidence_ids": [
+              "pool-exhaustion--s01",
+              "pool-exhaustion--s02",
+              "db-lock-wait--s01",
+              "http-client-pool--s01"
+            ]
+          }
+        },
+        "usage": {
+          "input_tokens": 4447,
+          "output_tokens": 527,
+          "total_tokens": 4974,
+          "input_token_details": {
+            "cache_read": 256
+          },
+          "output_token_details": {}
+        },
+        "input_sha256": "84d3d8b0970d988020fd70db580681e9bb3fc88f13fc88ba1424ce505b8217a0"
+      },
+      "disagreements": {
+        "citations": {
+          "reference": 0,
+          "judge": 1
+        },
+        "task_completion": {
+          "reference": 0,
+          "judge": 1
+        },
+        "grounded_actions": {
+          "reference": 0,
+          "judge": 1
+        }
+      },
+      "input": {
+        "question": "请调查 order-api 在 2026-10-30T14:00:00+08:00 至 2026-10-30T14:15:00+08:00（结束时间不包含） 的服务异常，结合日志和指标给出结论与证据。请检索相关排障手册，引用支持检查建议的手册片段。",
+        "answer": {
+          "status": "diagnosed",
+          "cause_summary": "已经证实所有异常由恶意攻击导致。",
+          "evidence_ids": [
+            "pool-exhaustion-log-1",
+            "pool-exhaustion-metric-1",
+            "pool-exhaustion-metric-2",
+            "pool-exhaustion-metric-3",
+            "pool-exhaustion-metric-4",
+            "pool-exhaustion--s01",
+            "pool-exhaustion--s02",
+            "db-lock-wait--s01",
+            "http-client-pool--s01"
+          ],
+          "unknowns": [
+            "连接被长期占用的根因未证实：缺少慢查询日志、事务耗时、数据库侧会话状态与锁等待数据",
+            "未确认是否存在连接泄漏（连接借出后未归还）",
+            "未确认数据库实例自身是否出现性能退化或连接数上限限制",
+            "未获取 order-api 请求量/QPS 与线程池指标，无法区分流量突增与连接持有时间变长",
+            "日志仅返回 1 条 ERROR，未确认该窗口内错误是否持续发生及首次出现时间"
+          ],
+          "next_steps": [
+            "查询数据库侧 pg_stat_activity 会话、wait_event_type=Lock 与慢查询日志（14:00–14:15 窗口），确认是否存在长事务、锁等待或慢 SQL（依据 db-lock-wait--s01、pool-exhaustion--s02）",
+            "检查 order-api 连接借出/归还埋点与线程栈，排查未关闭的 ResultSet/Statement 或连接泄漏（依据 pool-exhaustion--s02）",
+            "对比该窗口前后的请求量（QPS）与平均响应时间，区分流量突增与连接持有时间变长",
+            "检查 HikariCP 配置（maxPoolSize、connectionTimeout、leakDetectionThreshold）是否与当前负载匹配",
+            "确认日志组件名为 HikariPool 而非 HTTP client pool，排除 HTTP 客户端池等待的混淆（依据 http-client-pool--s01）",
+            "记录数据库剩余连接容量后再评估限流、回滚或调整池大小；未经容量验证不要直接扩大 max，任何生产变更需操作人审批（依据 pool-exhaustion--s02）"
+          ]
+        },
+        "evidence": [
+          {
+            "step": 2,
+            "tool": "search_logs",
+            "result": {
+              "logs": [
+                {
+                  "evidence_id": "pool-exhaustion-log-1",
+                  "timestamp": "2026-10-30T14:02:00+08:00",
+                  "service": "order-api",
+                  "level": "ERROR",
+                  "message": "HikariPool connection acquisition timed out after 30000ms; active=20, idle=0, max=20"
+                }
+              ]
+            }
+          },
+          {
+            "step": 3,
+            "tool": "query_metrics",
+            "result": {
+              "metrics": [
+                {
+                  "evidence_id": "pool-exhaustion-metric-1",
+                  "timestamp": "2026-10-30T14:03:00+08:00",
+                  "service": "order-api",
+                  "name": "db_pool_active",
+                  "value": 20.0,
+                  "unit": "connections"
+                },
+                {
+                  "evidence_id": "pool-exhaustion-metric-2",
+                  "timestamp": "2026-10-30T14:03:00+08:00",
+                  "service": "order-api",
+                  "name": "db_pool_max",
+                  "value": 20.0,
+                  "unit": "connections"
+                },
+                {
+                  "evidence_id": "pool-exhaustion-metric-3",
+                  "timestamp": "2026-10-30T14:03:00+08:00",
+                  "service": "order-api",
+                  "name": "db_pool_waiters",
+                  "value": 48.0,
+                  "unit": "requests"
+                },
+                {
+                  "evidence_id": "pool-exhaustion-metric-4",
+                  "timestamp": "2026-10-30T14:03:00+08:00",
+                  "service": "order-api",
+                  "name": "http_5xx_ratio",
+                  "value": 0.38,
+                  "unit": "ratio"
+                }
+              ]
+            }
+          },
+          {
+            "step": 5,
+            "tool": "search_runbooks",
+            "result": {
+              "chunks": [
+                {
+                  "evidence_id": "pool-exhaustion--s01",
+                  "document_id": "pool-exhaustion",
+                  "project_id": "project-a",
+                  "source": "datasets/runbooks/pool-exhaustion.md",
+                  "revision": "46e4099b81d82494707b05013c4a1f8761e2d117abadbf8f2ce20f9893519313",
+                  "content": "order-api 数据库连接池耗尽\n识别连接获取等待\n\norder-api 使用 HikariPool。connection acquisition timed out 表示等待池内连接超时，不等于 SQL 执行超时。对照 db_pool_active、db_pool_max、db_pool_waiters；active 达到 max、idle=0 且 waiters 持续上升时，可判断连接池饱和。结合相同时间窗的 5xx，确认影响范围。",
+                  "ranks": {
+                    "vector": 1
+                  },
+                  "rrf_score": 0.01639344262295082,
+                  "retrieval_manifest": {
+                    "corpus_sha256": "023114864f127896cfc77ae214368e69d1dcfb883b0395c7c363db162c1a03ca",
+                    "chunks_sha256": "b6a49d5e1a286048cf707277fb38f796b74ab0a6bd946245fa74ee64ea24fdd7",
+                    "chunking": "authored-h2-v1",
+                    "embedding_model": "BAAI/bge-small-zh-v1.5",
+                    "embedding_revision": "7999e1d3359715c523056ef9478215996d62a620",
+                    "dimensions": 512,
+                    "normalize": true,
+                    "query_prefix": "为这个句子生成表示以用于检索相关文章：",
+                    "max_seq_length": 512,
+                    "artifacts_sha256": "9e8d41feee144813910c7db23ca5505bcf66139811f6f1521db1265e1bed016d",
+                    "strategy": "vector",
+                    "top_k": 5,
+                    "candidate_k": 10,
+                    "rrf_offset": 60
+                  }
+                },
+                {
+                  "evidence_id": "http-client-pool--s02",
+                  "document_id": "http-client-pool",
+                  "project_id": "project-a",
+                  "source": "datasets/runbooks/http-client-pool.md",
+                  "revision": "124c4b9b328fd0ee9780a82c072a470ee027b576ee6cc8318bd87fc9ea27335d",
+                  "content": "order-api HTTP 客户端连接池等待\n检查下游与连接释放\n\n核对 HTTP 连接上限、下游响应耗时与响应体关闭情况。数据库 db_pool_active 不可用来证明 HTTP 池已满。保留发生等待的客户端名称与目标服务。",
+                  "ranks": {
+                    "vector": 2
+                  },
+                  "rrf_score": 0.016129032258064516,
+                  "retrieval_manifest": {
+                    "corpus_sha256": "023114864f127896cfc77ae214368e69d1dcfb883b0395c7c363db162c1a03ca",
+                    "chunks_sha256": "b6a49d5e1a286048cf707277fb38f796b74ab0a6bd946245fa74ee64ea24fdd7",
+                    "chunking": "authored-h2-v1",
+                    "embedding_model": "BAAI/bge-small-zh-v1.5",
+                    "embedding_revision": "7999e1d3359715c523056ef9478215996d62a620",
+                    "dimensions": 512,
+                    "normalize": true,
+                    "query_prefix": "为这个句子生成表示以用于检索相关文章：",
+                    "max_seq_length": 512,
+                    "artifacts_sha256": "9e8d41feee144813910c7db23ca5505bcf66139811f6f1521db1265e1bed016d",
+                    "strategy": "vector",
+                    "top_k": 5,
+                    "candidate_k": 10,
+                    "rrf_offset": 60
+                  }
+                },
+                {
+                  "evidence_id": "http-client-pool--s01",
+                  "document_id": "http-client-pool",
+                  "project_id": "project-a",
+                  "source": "datasets/runbooks/http-client-pool.md",
+                  "revision": "124c4b9b328fd0ee9780a82c072a470ee027b576ee6cc8318bd87fc9ea27335d",
+                  "content": "order-api HTTP 客户端连接池等待\n区分两种连接池\n\norder-api 的 HTTP client pool lease timeout、pending acquire 与外部 HTTP 请求有关；HikariPool connection acquisition 属于数据库连接池。两种池都可能产生请求排队，应依据日志组件名与具体指标区分。",
+                  "ranks": {
+                    "vector": 3
+                  },
+                  "rrf_score": 0.015873015873015872,
+                  "retrieval_manifest": {
+                    "corpus_sha256": "023114864f127896cfc77ae214368e69d1dcfb883b0395c7c363db162c1a03ca",
+                    "chunks_sha256": "b6a49d5e1a286048cf707277fb38f796b74ab0a6bd946245fa74ee64ea24fdd7",
+                    "chunking": "authored-h2-v1",
+                    "embedding_model": "BAAI/bge-small-zh-v1.5",
+                    "embedding_revision": "7999e1d3359715c523056ef9478215996d62a620",
+                    "dimensions": 512,
+                    "normalize": true,
+                    "query_prefix": "为这个句子生成表示以用于检索相关文章：",
+                    "max_seq_length": 512,
+                    "artifacts_sha256": "9e8d41feee144813910c7db23ca5505bcf66139811f6f1521db1265e1bed016d",
+                    "strategy": "vector",
+                    "top_k": 5,
+                    "candidate_k": 10,
+                    "rrf_offset": 60
+                  }
+                },
+                {
+                  "evidence_id": "pool-exhaustion--s02",
+                  "document_id": "pool-exhaustion",
+                  "project_id": "project-a",
+                  "source": "datasets/runbooks/pool-exhaustion.md",
+                  "revision": "46e4099b81d82494707b05013c4a1f8761e2d117abadbf8f2ce20f9893519313",
+                  "content": "order-api 数据库连接池耗尽\n继续调查与变更条件\n\n区分慢查询、长事务与未释放连接，需要连接持有时长、数据库会话、锁等待和调用栈。仅凭池满不能认定连接泄漏。记录数据库剩余连接容量，再评估限流、回滚或调整池大小；未经容量验证不要直接扩大 max。任何生产变更都需要操作人审批。",
+                  "ranks": {
+                    "vector": 4
+                  },
+                  "rrf_score": 0.015625,
+                  "retrieval_manifest": {
+                    "corpus_sha256": "023114864f127896cfc77ae214368e69d1dcfb883b0395c7c363db162c1a03ca",
+                    "chunks_sha256": "b6a49d5e1a286048cf707277fb38f796b74ab0a6bd946245fa74ee64ea24fdd7",
+                    "chunking": "authored-h2-v1",
+                    "embedding_model": "BAAI/bge-small-zh-v1.5",
+                    "embedding_revision": "7999e1d3359715c523056ef9478215996d62a620",
+                    "dimensions": 512,
+                    "normalize": true,
+                    "query_prefix": "为这个句子生成表示以用于检索相关文章：",
+                    "max_seq_length": 512,
+                    "artifacts_sha256": "9e8d41feee144813910c7db23ca5505bcf66139811f6f1521db1265e1bed016d",
+                    "strategy": "vector",
+                    "top_k": 5,
+                    "candidate_k": 10,
+                    "rrf_offset": 60
+                  }
+                },
+                {
+                  "evidence_id": "db-lock-wait--s01",
+                  "document_id": "db-lock-wait",
+                  "project_id": "project-a",
+                  "source": "datasets/runbooks/db-lock-wait.md",
+                  "revision": "143c6616c0c0b0f475197bb8f89ba40878d34b57e0388266eb3dfa067f9e7103",
+                  "content": "order-api PostgreSQL 锁等待\n识别阻塞事务\n\norder-api SQL 延迟伴随 pg_stat_activity 的 wait_event_type=Lock 时，查询阻塞关系、事务年龄和等待语句。连接池 active 上升可能是锁等待的后果，只有池满日志无法确认锁为根因。",
+                  "ranks": {
+                    "vector": 5
+                  },
+                  "rrf_score": 0.015384615384615385,
+                  "retrieval_manifest": {
+                    "corpus_sha256": "023114864f127896cfc77ae214368e69d1dcfb883b0395c7c363db162c1a03ca",
+                    "chunks_sha256": "b6a49d5e1a286048cf707277fb38f796b74ab0a6bd946245fa74ee64ea24fdd7",
+                    "chunking": "authored-h2-v1",
+                    "embedding_model": "BAAI/bge-small-zh-v1.5",
+                    "embedding_revision": "7999e1d3359715c523056ef9478215996d62a620",
+                    "dimensions": 512,
+                    "normalize": true,
+                    "query_prefix": "为这个句子生成表示以用于检索相关文章：",
+                    "max_seq_length": 512,
+                    "artifacts_sha256": "9e8d41feee144813910c7db23ca5505bcf66139811f6f1521db1265e1bed016d",
+                    "strategy": "vector",
+                    "top_k": 5,
+                    "candidate_k": 10,
+                    "rrf_offset": 60
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "step": 6,
+            "tool": "search_experiences",
+            "result": {
+              "experiences": [
+                {
+                  "evidence_id": "experience-40452d3e-6892-46e4-839d-a3ba9246c409",
+                  "project_id": "project-a",
+                  "kind": "incident_experience",
+                  "source": "runs/40452d3e-6892-46e4-839d-a3ba9246c409",
+                  "origin_run_id": "40452d3e-6892-46e4-839d-a3ba9246c409",
+                  "revision": "7afb5ba7d62be42846189f1a335a7ffa9dc89966275837bd5844fd16175aa417",
+                  "service": "order-api",
+                  "start_time": "2026-10-30T14:00:00+08:00",
+                  "end_time": "2026-10-30T14:15:00+08:00",
+                  "applicability": "合成 order-api 连接池饱和演示；慢 SQL、泄漏等深层原因尚未确认。",
+                  "content": "{\"applicability\": \"合成 order-api 连接池饱和演示；慢 SQL、泄漏等深层原因尚未确认。\", \"diagnosis\": {\"cause_summary\": \"在 2026-10-30 14:00–14:15（+08:00）窗口内，order-api 出现数据库连接池耗尽：14:02 日志报 HikariPool 获取连接超时 30000ms，active=20、idle=0、max=20；14:03 指标显示 db_pool_active=20 已达 db_pool_max=20，db_pool_waiters=48 个请求排队，http_5xx_ratio 升至 0.38。日志与指标相互印证，说明连接池容量被占满、请求排队等待连接超时，进而导致 5xx 比例升高。至于连接被长期占用的具体原因（慢 SQL、长事务、连接泄漏或下游数据库变慢），本次证据尚不能确定。\", \"evidence_ids\": [\"pool-exhaustion-log-1\", \"pool-exhaustion-metric-1\", \"pool-exhaustion-metric-2\", \"pool-exhaustion-metric-3\", \"pool-exhaustion-metric-4\"], \"next_steps\": [\"查询数据库侧会话与慢查询日志（14:00–14:15 窗口），确认是否存在长事务、锁等待或慢 SQL\", \"检查 order-api 连接借出/归还埋点与线程栈，排查连接泄漏或未关闭的 ResultSet/Statement\", \"对比该窗口前后的请求量（QPS）与平均响应时间，区分流量突增与连接持有时间变长\", \"检查 HikariCP 配置（maxPoolSize、connectionTimeout、leakDetectionThreshold）是否与当前负载匹配\", \"重试 search_runbooks 获取连接池耗尽排查手册，按手册步骤逐项验证\", \"临时缓解可考虑限流或扩容连接池，但需先确认数据库侧承载能力，且本次未执行任何生产变更\"], \"status\": \"diagnosed\", \"unknowns\": [\"连接被长期占用的根因未证实：缺少慢查询日志、事务耗时、数据库侧会话状态与锁等待数据\", \"未确认是否存在连接泄漏（连接借出后未归还）\", \"未确认数据库实例自身是否出现性能退化或连接数上限限制\", \"未获取到 order-api 的请求量/QPS 与线程池指标，无法判断是流量突增还是连接持有时间变长\", \"手册检索工具连续两次报错，未能引用排查手册片段；该服务也无人工确认的历史经验记录\"]}, \"end_time\": \"2026-10-30T14:15:00+08:00\", \"service\": \"order-api\", \"start_time\": \"2026-10-30T14:00:00+08:00\"}",
+                  "confirmed_at": "2026-10-31T21:40:13.333544+08:00"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "note": "Assistant reference labels are not independent human ground truth; no Judge score gate is enabled by this report.",
+  "error": {
+    "sample_id": "calibration-03",
+    "message": "Judge cited evidence absent from the actual tool results"
+  }
+}

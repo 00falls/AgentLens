@@ -1,0 +1,22 @@
+{
+  "passed": true,
+  "checks": {
+    "three_explicit_modes_visible": true,
+    "model_call_warning_visible": true,
+    "frozen_comparison_pass_visible": true,
+    "parameters_and_answers_visible": true,
+    "new_recording_is_selected": true,
+    "new_frozen_scenario_is_selected": true,
+    "failure_location_opens_source_step": true,
+    "mismatch_has_requested_and_recorded_arguments": true,
+    "mismatch_location_opens_failed_candidate_step": true,
+    "recording_and_scenario_project_scope": true,
+    "replay_cannot_be_recaptured_as_observation": true,
+    "project_switch_clears_comparison": true,
+    "mobile_no_page_overflow": true,
+    "no_browser_runtime_errors": true,
+    "history_and_ui_did_not_execute_models": true
+  },
+  "errors": [],
+  "provider_requests": 0
+}

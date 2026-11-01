@@ -1,0 +1,24 @@
+{
+  "tools": [
+    "echo_service"
+  ],
+  "result": {
+    "meta": {
+      "io.modelcontextprotocol/serverInfo": {
+        "name": "AgentLens week-one probe",
+        "version": ""
+      }
+    },
+    "content": [
+      {
+        "type": "text",
+        "text": "{\n  \"service\": \"order-api\",\n  \"probe\": true\n}",
+        "annotations": null,
+        "meta": null
+      }
+    ],
+    "structured_content": null,
+    "is_error": false,
+    "result_type": "complete"
+  }
+}

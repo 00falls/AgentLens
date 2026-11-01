@@ -1,0 +1,22 @@
+{
+  "passed": true,
+  "checks": {
+    "login_required": true,
+    "invalid_key_explicit_error": true,
+    "operations_loaded": true,
+    "project_is_bound": true,
+    "unknown_cost_not_zero": true,
+    "audit_actor_visible": true,
+    "key_not_persisted": true,
+    "history_loaded_with_auth": true,
+    "evaluations_loaded_with_auth": true,
+    "replays_loaded_with_auth": true,
+    "mobile_no_page_overflow": true,
+    "logout_clears_workspace": true,
+    "second_identity_project_b": true,
+    "no_new_model_runs": true,
+    "no_browser_errors": true
+  },
+  "errors": [],
+  "provider_requests": 0
+}

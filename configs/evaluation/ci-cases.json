@@ -1,0 +1,18 @@
+{
+  "version": "dev10-v1",
+  "dataset": "datasets/week6/dev.jsonl",
+  "dataset_sha256": "913c65c6994772b7060f31ae1f1ef446eedec0c3838a532119b3f8b897a5f3c3",
+  "case_ids": [
+    "pool-exhaustion-01",
+    "w6-pool-exhaustion-02",
+    "w6-downstream-timeout-01",
+    "w6-config-regression-01",
+    "w6-memory-pressure-01",
+    "w6-traffic-spike-01",
+    "w6-healthy-01",
+    "w6-insufficient-01",
+    "w6-db-lock-wait-01",
+    "w6-db-lock-wait-02"
+  ],
+  "note": "Ten synthetic development cases across eight families; remaining fifty are not evaluated."
+}

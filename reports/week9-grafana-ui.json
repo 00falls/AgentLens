@@ -1,0 +1,7 @@
+{
+  "passed": true,
+  "real_grafana_ui": true,
+  "known_and_unknown_cost_panels_visible": true,
+  "errors": [],
+  "provider_requests": 0
+}

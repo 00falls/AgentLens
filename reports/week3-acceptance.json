@@ -1,0 +1,18 @@
+{
+  "created_at": "2026-10-31T13:18:50.851483+00:00",
+  "status": "not_run_environment_gap",
+  "reason": "PostgreSQL 17.11 has no vector extension files; user chose to retain the current environment.",
+  "database": {
+    "server_version": "17.11",
+    "vector_available": false,
+    "migration": "0001_week1"
+  },
+  "chat_model_calls": 0,
+  "new_business_runs": 0,
+  "case_id": "pool-exhaustion-01",
+  "dataset": "datasets/week3.jsonl",
+  "test_result": "1 skipped in 1.08s",
+  "run": null,
+  "evaluation": null,
+  "command": "python -m pytest tests/test_week3_acceptance.py -q -rs"
+}

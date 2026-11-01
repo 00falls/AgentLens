@@ -1,0 +1,32 @@
+{
+  "date": "2026-11-01",
+  "environment_verified": true,
+  "pgvector_version": "0.8.7",
+  "knowledge_chunks": 36,
+  "dimensions": 512,
+  "real_mcp_retrieval_verified": true,
+  "selected_business_cases": 1,
+  "attempts": 2,
+  "first_attempt": "gateway DNS failure before model response, usage 0/0",
+  "business_acceptance_passed": false,
+  "business_checks_passed": 10,
+  "business_checks_total": 12,
+  "failure_reasons": [
+    "runbook_retrieved",
+    "runbook_cited"
+  ],
+  "run_id": "302c48a7-9420-4b60-9ee6-477f6da3e6f0",
+  "usage": {
+    "input_tokens": 11812,
+    "output_tokens": 1362
+  },
+  "known_quality_issue": "Generic model query retrieved no labeled relevant runbook; no relevant runbook citation",
+  "runtime_code_changed": false,
+  "prompt_changed": false,
+  "reports": [
+    "pgvector-setup.json",
+    "pgvector-retrieval.json",
+    "pgvector-first-attempt.json",
+    "pgvector-acceptance.json"
+  ]
+}

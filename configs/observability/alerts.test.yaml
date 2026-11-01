@@ -1,0 +1,35 @@
+rule_files: [alerts.yaml]
+evaluation_interval: 1m
+tests:
+  - name: tool-error-trigger-and-recover
+    interval: 1m
+    input_series:
+      - series: 'agentlens_tool_calls_total{job="demo",tool="search_logs",outcome="error"}'
+        values: '0+4x4 16+0x10'
+      - series: 'agentlens_tool_calls_total{job="demo",tool="search_logs",outcome="ok"}'
+        values: '0+1x4 5+5x10'
+    alert_rule_test:
+      - eval_time: 3m
+        alertname: AgentLensToolErrorRate
+        exp_alerts:
+          - exp_labels: {job: demo, severity: warning}
+            exp_annotations: {summary: 'Tool errors exceed 20% for one minute (at least 5 attempts in 5m)'}
+      - eval_time: 12m
+        alertname: AgentLensToolErrorRate
+        exp_alerts: []
+  - name: run-failure-trigger-and-recover
+    interval: 1m
+    input_series:
+      - series: 'agentlens_runs_total{job="demo",status="failed"}'
+        values: '0+4x5 20+0x10'
+      - series: 'agentlens_runs_total{job="demo",status="diagnosed"}'
+        values: '0+1x5 6+5x10'
+    alert_rule_test:
+      - eval_time: 4m
+        alertname: AgentLensSustainedRunFailures
+        exp_alerts:
+          - exp_labels: {job: demo, severity: warning}
+            exp_annotations: {summary: 'Failed executions exceed 50% for two minutes (at least 3 in 5m)'}
+      - eval_time: 13m
+        alertname: AgentLensSustainedRunFailures
+        exp_alerts: []

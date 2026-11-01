@@ -1,0 +1,39 @@
+{
+  "passed": true,
+  "engine": "official promtool 3.15.1",
+  "production_rules": "configs/observability/alerts.yaml",
+  "synthetic_timeseries": true,
+  "external_notifications_sent": false,
+  "checks": {
+    "tool_trigger_at_3m": true,
+    "tool_recovered_at_12m": true,
+    "run_trigger_at_4m": true,
+    "run_recovered_at_13m": true
+  },
+  "sha256": {
+    "configs/observability/alerts.yaml": "87dc10ed74e192ae2326e7734d586ca5730527d5893fa4f024a3ee0a0c459483",
+    "configs/observability/alerts.test.yaml": "ac0e6039a48e51fcf9937bc560beb40d79dd9505ff30a605c56fce47daefd32d"
+  },
+  "commands": [
+    {
+      "arguments": [
+        "check",
+        "rules",
+        "configs/observability/alerts.yaml"
+      ],
+      "exit_code": 0,
+      "stdout": "Checking configs/observability/alerts.yaml\n  SUCCESS: 2 rules found\n\n",
+      "stderr": ""
+    },
+    {
+      "arguments": [
+        "test",
+        "rules",
+        "configs/observability/alerts.test.yaml"
+      ],
+      "exit_code": 0,
+      "stdout": "  SUCCESS\n\n",
+      "stderr": ""
+    }
+  ]
+}

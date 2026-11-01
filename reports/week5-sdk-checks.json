@@ -1,0 +1,12 @@
+{
+  "passed": true,
+  "checks": {
+    "real_langchain_stream_consumed": true,
+    "stream_usage_preserved": true,
+    "official_openai_auto_span_created": true,
+    "prompt_and_key_absent_in_sdk_span": true
+  },
+  "provider_requests": 0,
+  "transport": "httpx.MockTransport",
+  "auto_span_count": 1
+}

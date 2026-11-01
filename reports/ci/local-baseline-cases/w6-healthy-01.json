@@ -1,0 +1,1534 @@
+{
+  "schema_version": 2,
+  "name": "dev10",
+  "started_at": "2026-11-01T10:17:57.181483+00:00",
+  "finished_at": "2026-11-01T10:18:03.932797+00:00",
+  "dataset_sha256": "913c65c6994772b7060f31ae1f1ef446eedec0c3838a532119b3f8b897a5f3c3",
+  "evaluator_sha256": "bc0b366ec248ee3f2ebf38498959647aa55b5170fa2e60174e8560c9096139e3",
+  "agentevals_version": "0.0.9",
+  "dataset_name": "dev.jsonl",
+  "judge_config": null,
+  "recorded_run": false,
+  "summary": {
+    "selected": 1,
+    "passed": 1,
+    "failed": 0,
+    "errors": 0,
+    "judge_errors": 0,
+    "complete": true,
+    "pass_rate": 1.0
+  },
+  "cases": [
+    {
+      "case_id": "w6-healthy-01",
+      "critical": false,
+      "scenario_group": "healthy",
+      "split": "dev",
+      "outcome": "passed",
+      "evaluation": {
+        "passed": true,
+        "checks": {
+          "project_scope": true,
+          "status": true,
+          "required_tools": true,
+          "query_scope": true,
+          "cause_terms": true,
+          "required_evidence": true,
+          "valid_citations": true,
+          "outside_window_excluded": true,
+          "token_usage_recorded": true,
+          "trajectory_required_tools": true,
+          "trajectory_forbidden_tools": true,
+          "trajectory_parameters": true,
+          "trajectory_order": true
+        },
+        "failure_reasons": [],
+        "dimensions": {
+          "trajectory": true,
+          "retrieval": null,
+          "root_cause": true,
+          "citations": true,
+          "task_completion": true
+        },
+        "trajectory": {
+          "checks": {
+            "trajectory_required_tools": true,
+            "trajectory_forbidden_tools": true,
+            "trajectory_parameters": true,
+            "trajectory_order": true
+          },
+          "matcher": "agentevals.trajectory.match",
+          "required_tool_match": {
+            "key": "trajectory_superset_match",
+            "score": true,
+            "comment": null,
+            "metadata": null
+          },
+          "parameter_match": {
+            "key": "trajectory_unordered_match",
+            "score": true,
+            "comment": null,
+            "metadata": null
+          },
+          "precedence": {}
+        }
+      },
+      "error": null,
+      "run": {
+        "run_id": "6704e201-52cc-4aea-9e75-08401f1d84be",
+        "thread_id": "db2d7168-835b-4e94-98fc-7e186cdd67aa",
+        "source_run_id": null,
+        "execution_mode": "live",
+        "recording_id": null,
+        "scenario_id": null,
+        "failure_detail": null,
+        "checkpoint_id": "1f1d5dd8-6151-6fab-8008-926cf469cd87",
+        "trace_id": "c570e7e2dcb48a4f54722b05b743972c",
+        "span_id": "c9ac9a1a0dc46dd5",
+        "request_span_id": null,
+        "interrupt": null,
+        "project_id": "project-a",
+        "status": "insufficient_evidence",
+        "input": "请调查 order-api 在 2026-11-07T08:00:00+08:00 至 2026-11-07T08:15:00+08:00（结束时间不包含）的异常，结合日志与指标，检索并引用支持建议的手册。",
+        "output": {
+          "status": "insufficient_evidence",
+          "cause_summary": "在 2026-11-07T08:00:00+08:00 至 2026-11-07T08:15:00+08:00（左闭右开）窗口内，order-api 未观察到异常：ERROR 级别日志为空；唯一日志为 replica-1 的 INFO 记录 status=200、duration_ms=42；指标 http_5xx_ratio=0.0、p95_latency_ms=72ms，均处于正常范围。手册 healthy--s01 指出，该情形应说明当前范围未发现异常，但单个正常请求不能证明所有实例健康。因此当前没有现场症状支持任何故障根因判断，不能预设故障类型；order-api 也没有可用的历史确认经验。",
+          "evidence_ids": [
+            "w6-healthy-01-log-1",
+            "w6-healthy-01-metric-1",
+            "w6-healthy-01-metric-2",
+            "healthy--s01",
+            "healthy--s02"
+          ],
+          "unknowns": [
+            "用户报告的具体异常现象（错误码、接口、影响范围）未知",
+            "日志仅覆盖 replica-1 一个实例，其他副本是否健康未证实",
+            "指标仅返回 08:03 单点聚合值，窗口内是否存在短时抖动未证实",
+            "是否存在下游依赖（如 payment-api）异常未检查",
+            "用户所述故障时间是否与本次查询窗口一致未证实"
+          ],
+          "next_steps": [
+            "请用户核对服务名、时区、实例与故障发生时间，并说明具体异常现象",
+            "按手册 healthy--s02 建议，如需扩大时间窗请明确新的查询范围，不要用窗口外错误替代本窗口证据",
+            "补充查询 order-api 各副本（replica-2 等）同窗口日志，确认日志覆盖实例范围",
+            "若怀疑下游问题，按 downstream-timeout--s02 获取 payment-api 同窗口日志、线程池与依赖指标，区分排队与处理缓慢",
+            "确认指标聚合范围与采样粒度，必要时查询更细粒度或更多指标项"
+          ]
+        },
+        "versions": {
+          "prompt_sha256": "b607124299c8683f22704cd8a32a2dd92c06469887a1aa89d10676128091bdbb",
+          "dataset_sha256": "46a32fe8ba9ef987f67732c38001ecd09abab8350f7bbd960a528beb704dc4c0",
+          "requested_model": "agentlens-agent",
+          "configured_upstream_model": "openai/deepseek-flash",
+          "tool_transport": "mcp/streamable-http",
+          "checkpointer": "AsyncPostgresSaver",
+          "graph_version": "week8-v1",
+          "actor": "local-cli",
+          "recording_sha256": null,
+          "scenario_manifest": null,
+          "tool_catalog": [
+            {
+              "name": "search_logs",
+              "description": "Query logs in the current project. Times include timezone; interval is [start, end).\n\n    Returns citeable evidence_id values. Limit is 1-200.\n    ",
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "service": {
+                    "title": "Service",
+                    "type": "string"
+                  },
+                  "start_time": {
+                    "format": "date-time",
+                    "title": "Start Time",
+                    "type": "string"
+                  },
+                  "end_time": {
+                    "format": "date-time",
+                    "title": "End Time",
+                    "type": "string"
+                  },
+                  "level": {
+                    "anyOf": [
+                      {
+                        "enum": [
+                          "INFO",
+                          "WARN",
+                          "ERROR"
+                        ],
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null,
+                    "title": "Level"
+                  },
+                  "limit": {
+                    "default": 50,
+                    "title": "Limit",
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "service",
+                  "start_time",
+                  "end_time"
+                ],
+                "title": "logsArguments"
+              }
+            },
+            {
+              "name": "query_metrics",
+              "description": "Query metrics in the current project and [start_time, end_time).\n\n    Leave metric_name unset to inspect available metrics. Returns citeable evidence. Limit is 1-300.\n    ",
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "service": {
+                    "title": "Service",
+                    "type": "string"
+                  },
+                  "start_time": {
+                    "format": "date-time",
+                    "title": "Start Time",
+                    "type": "string"
+                  },
+                  "end_time": {
+                    "format": "date-time",
+                    "title": "End Time",
+                    "type": "string"
+                  },
+                  "metric_name": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null,
+                    "title": "Metric Name"
+                  },
+                  "limit": {
+                    "default": 100,
+                    "title": "Limit",
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "service",
+                  "start_time",
+                  "end_time"
+                ],
+                "title": "metricsArguments"
+              }
+            },
+            {
+              "name": "search_runbooks",
+              "description": "Search the current project's troubleshooting handbooks using symptoms and error terms.\n\n    Use observed service/component names and error messages in query. Returns citeable chunk\n    evidence_id, source, revision and content. Handbooks guide checks; they are not live telemetry.\n    top_k is 1-10. Query is 1-2000 characters. Uses fixed BGE embeddings and pgvector cosine search.\n    ",
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "query": {
+                    "title": "Query",
+                    "type": "string"
+                  },
+                  "top_k": {
+                    "default": 3,
+                    "title": "Top K",
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "query"
+                ],
+                "title": "runbooksArguments"
+              }
+            },
+            {
+              "name": "search_experiences",
+              "description": "Find human-confirmed incident experience for a service in the current project.\n\n    Use for related past incidents and applicable investigation steps. Results are historical\n    knowledge, not live evidence for a new incident. Returns citeable IDs and original run/time.\n    Exact service match, latest confirmations first. Limit is 1-20.\n    ",
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "service": {
+                    "title": "Service",
+                    "type": "string"
+                  },
+                  "limit": {
+                    "default": 5,
+                    "title": "Limit",
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "service"
+                ],
+                "title": "experiencesArguments"
+              }
+            },
+            {
+              "name": "analyze_logs",
+              "description": "Run Python statistics on logs already retrieved in THIS run, using OpenShell only.\n\n    Use only when the user requests statistical analysis. logs is a list of authorized rows.\n    Print exactly one JSON value. No network, credentials, package installs or host files.\n    Maximum 100 log IDs, code 6000 chars, 8 seconds, 256MiB, output 64KiB.\n    Runtime absence is a tool error; never claim analysis succeeded without its result.\n    ",
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "evidence_ids": {
+                    "items": {
+                      "type": "string"
+                    },
+                    "title": "Evidence Ids",
+                    "type": "array"
+                  },
+                  "python_code": {
+                    "title": "Python Code",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "evidence_ids",
+                  "python_code"
+                ],
+                "title": "analyze_logsArguments"
+              }
+            }
+          ],
+          "tool_schemas_sha256": "d50be48bfae9c71d5645337a9cd10ff9580fc6da8f8e518898dc1ab5a0d5079b",
+          "retrieval": {
+            "corpus_sha256": "023114864f127896cfc77ae214368e69d1dcfb883b0395c7c363db162c1a03ca",
+            "chunks_sha256": "b6a49d5e1a286048cf707277fb38f796b74ab0a6bd946245fa74ee64ea24fdd7",
+            "chunking": "authored-h2-v1",
+            "embedding_model": "BAAI/bge-small-zh-v1.5",
+            "embedding_revision": "7999e1d3359715c523056ef9478215996d62a620",
+            "dimensions": 512,
+            "normalize": true,
+            "query_prefix": "为这个句子生成表示以用于检索相关文章：",
+            "max_seq_length": 512,
+            "artifacts_sha256": "9e8d41feee144813910c7db23ca5505bcf66139811f6f1521db1265e1bed016d",
+            "strategy": "vector",
+            "top_k": 3,
+            "candidate_k": 10,
+            "rrf_offset": 60
+          }
+        },
+        "usage": {
+          "input_tokens": 10053,
+          "output_tokens": 1120
+        },
+        "error": null,
+        "started_at": "2026-11-01T18:17:57.213936+08:00",
+        "finished_at": "2026-11-01T18:18:03.924125+08:00",
+        "steps": [
+          {
+            "sequence": 1,
+            "kind": "model",
+            "name": "agentlens-agent",
+            "input": {
+              "messages": [
+                {
+                  "content": "请调查 order-api 在 2026-11-07T08:00:00+08:00 至 2026-11-07T08:15:00+08:00（结束时间不包含）的异常，结合日志与指标，检索并引用支持建议的手册。",
+                  "additional_kwargs": {},
+                  "response_metadata": {},
+                  "type": "human",
+                  "name": null,
+                  "id": "454df678-8d0b-4e40-8d76-8c39c8f13c5e"
+                }
+              ]
+            },
+            "output": {
+              "content": "我先查询 order-api 在该时间窗内的日志和指标。",
+              "tool_calls": [
+                {
+                  "name": "search_logs",
+                  "args": {
+                    "service": "order-api",
+                    "start_time": "2026-11-07T08:00:00+08:00",
+                    "end_time": "2026-11-07T08:15:00+08:00",
+                    "level": "ERROR",
+                    "limit": 100
+                  },
+                  "id": "call_00_fzL1OPWKm9u2KXTmVxaL9029",
+                  "type": "tool_call"
+                },
+                {
+                  "name": "query_metrics",
+                  "args": {
+                    "service": "order-api",
+                    "start_time": "2026-11-07T08:00:00+08:00",
+                    "end_time": "2026-11-07T08:15:00+08:00",
+                    "limit": 100
+                  },
+                  "id": "call_01_76UxQtAhvlNtUuBZ76WR6158",
+                  "type": "tool_call"
+                }
+              ],
+              "usage": {
+                "input_tokens": 1533,
+                "output_tokens": 257,
+                "total_tokens": 1790,
+                "input_token_details": {
+                  "cache_read": 1280
+                },
+                "output_token_details": {}
+              },
+              "response_model": "agentlens-agent",
+              "billing": {
+                "currency": "USD",
+                "pricing_version": "deepseek-2026-11-01",
+                "pricing_sha256": "6a41970e9ba6f1c65aadd1eab8483e562cfa3abb7eecfe9dc78e264dc22f301d",
+                "source": "https://api-docs.deepseek.com/quick_start/pricing/",
+                "cost": "0.00019599",
+                "cache_read_tokens": 1280,
+                "reason": null,
+                "model_source": "local_gateway_configuration; response_contains_alias",
+                "gateway_config_sha256": "7defcb62e9bf9f418561063d1b4ccb9ed038bffc5c3921858278e02ec5c600de",
+                "priced_model": "deepseek-flash",
+                "rates_per_million": {
+                  "cache_hit": 0.003,
+                  "cache_miss": 0.15,
+                  "output": 0.6
+                }
+              }
+            },
+            "error": null,
+            "duration_ms": 1015.07,
+            "span_id": "dbd826ac44e379d2",
+            "source_step_sequence": null
+          },
+          {
+            "sequence": 2,
+            "kind": "tool",
+            "name": "search_logs",
+            "input": {
+              "service": "order-api",
+              "start_time": "2026-11-07T08:00:00+08:00",
+              "end_time": "2026-11-07T08:15:00+08:00",
+              "level": "ERROR",
+              "limit": 100
+            },
+            "output": {
+              "logs": []
+            },
+            "error": null,
+            "duration_ms": 15.67,
+            "span_id": "d4cb80d3edd19dda",
+            "source_step_sequence": null
+          },
+          {
+            "sequence": 3,
+            "kind": "tool",
+            "name": "query_metrics",
+            "input": {
+              "service": "order-api",
+              "start_time": "2026-11-07T08:00:00+08:00",
+              "end_time": "2026-11-07T08:15:00+08:00",
+              "limit": 100
+            },
+            "output": {
+              "metrics": [
+                {
+                  "evidence_id": "w6-healthy-01-metric-1",
+                  "timestamp": "2026-11-07T08:03:00+08:00",
+                  "service": "order-api",
+                  "name": "http_5xx_ratio",
+                  "value": 0.0,
+                  "unit": "ratio"
+                },
+                {
+                  "evidence_id": "w6-healthy-01-metric-2",
+                  "timestamp": "2026-11-07T08:03:00+08:00",
+                  "service": "order-api",
+                  "name": "p95_latency_ms",
+                  "value": 72.0,
+                  "unit": "ms"
+                }
+              ]
+            },
+            "error": null,
+            "duration_ms": 16.79,
+            "span_id": "d6d3aadd2a5ac810",
+            "source_step_sequence": null
+          },
+          {
+            "sequence": 4,
+            "kind": "model",
+            "name": "agentlens-agent",
+            "input": {
+              "messages": [
+                {
+                  "content": "请调查 order-api 在 2026-11-07T08:00:00+08:00 至 2026-11-07T08:15:00+08:00（结束时间不包含）的异常，结合日志与指标，检索并引用支持建议的手册。",
+                  "additional_kwargs": {},
+                  "response_metadata": {},
+                  "type": "human",
+                  "name": null,
+                  "id": "454df678-8d0b-4e40-8d76-8c39c8f13c5e"
+                },
+                {
+                  "content": "我先查询 order-api 在该时间窗内的日志和指标。",
+                  "additional_kwargs": {},
+                  "response_metadata": {
+                    "model_provider": "openai",
+                    "finish_reason": "tool_calls",
+                    "model_name": "agentlens-agent",
+                    "system_fingerprint": "bc19ba97cbe016479903222bb1578db6"
+                  },
+                  "type": "ai",
+                  "name": null,
+                  "id": "lc_run--01a1969d-a908-7341-85d5-bf2faf4383e3",
+                  "tool_calls": [
+                    {
+                      "name": "search_logs",
+                      "args": {
+                        "service": "order-api",
+                        "start_time": "2026-11-07T08:00:00+08:00",
+                        "end_time": "2026-11-07T08:15:00+08:00",
+                        "level": "ERROR",
+                        "limit": 100
+                      },
+                      "id": "call_00_fzL1OPWKm9u2KXTmVxaL9029",
+                      "type": "tool_call"
+                    },
+                    {
+                      "name": "query_metrics",
+                      "args": {
+                        "service": "order-api",
+                        "start_time": "2026-11-07T08:00:00+08:00",
+                        "end_time": "2026-11-07T08:15:00+08:00",
+                        "limit": 100
+                      },
+                      "id": "call_01_76UxQtAhvlNtUuBZ76WR6158",
+                      "type": "tool_call"
+                    }
+                  ],
+                  "invalid_tool_calls": [],
+                  "usage_metadata": {
+                    "input_tokens": 1533,
+                    "output_tokens": 257,
+                    "total_tokens": 1790,
+                    "input_token_details": {
+                      "cache_read": 1280
+                    },
+                    "output_token_details": {}
+                  }
+                },
+                {
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "{\n  \"logs\": []\n}",
+                      "id": "lc_3a592fe1-d3fa-4f68-be83-797df9bc66ac"
+                    }
+                  ],
+                  "additional_kwargs": {},
+                  "response_metadata": {},
+                  "type": "tool",
+                  "name": "search_logs",
+                  "id": "e4806695-5955-4522-a30d-c4eeca85f1b4",
+                  "tool_call_id": "call_00_fzL1OPWKm9u2KXTmVxaL9029",
+                  "artifact": {
+                    "structured_content": {
+                      "logs": []
+                    }
+                  },
+                  "status": "success"
+                },
+                {
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "{\n  \"metrics\": [\n    {\n      \"evidence_id\": \"w6-healthy-01-metric-1\",\n      \"timestamp\": \"2026-11-07T08:03:00+08:00\",\n      \"service\": \"order-api\",\n      \"name\": \"http_5xx_ratio\",\n      \"value\": 0.0,\n      \"unit\": \"ratio\"\n    },\n    {\n      \"evidence_id\": \"w6-healthy-01-metric-2\",\n      \"timestamp\": \"2026-11-07T08:03:00+08:00\",\n      \"service\": \"order-api\",\n      \"name\": \"p95_latency_ms\",\n      \"value\": 72.0,\n      \"unit\": \"ms\"\n    }\n  ]\n}",
+                      "id": "lc_064dc2d6-2ad0-49ab-9349-505821973b46"
+                    }
+                  ],
+                  "additional_kwargs": {},
+                  "response_metadata": {},
+                  "type": "tool",
+                  "name": "query_metrics",
+                  "id": "71ba8da0-7895-4664-a07e-a16411eff37f",
+                  "tool_call_id": "call_01_76UxQtAhvlNtUuBZ76WR6158",
+                  "artifact": {
+                    "structured_content": {
+                      "metrics": [
+                        {
+                          "evidence_id": "w6-healthy-01-metric-1",
+                          "timestamp": "2026-11-07T08:03:00+08:00",
+                          "service": "order-api",
+                          "name": "http_5xx_ratio",
+                          "value": 0.0,
+                          "unit": "ratio"
+                        },
+                        {
+                          "evidence_id": "w6-healthy-01-metric-2",
+                          "timestamp": "2026-11-07T08:03:00+08:00",
+                          "service": "order-api",
+                          "name": "p95_latency_ms",
+                          "value": 72.0,
+                          "unit": "ms"
+                        }
+                      ]
+                    }
+                  },
+                  "status": "success"
+                }
+              ]
+            },
+            "output": {
+              "content": "ERROR 日志为空，指标正常。我再检查 WARN/INFO 日志和更多指标，确认是否确实无异常。",
+              "tool_calls": [
+                {
+                  "name": "search_logs",
+                  "args": {
+                    "end_time": "2026-11-07T08:15:00+08:00",
+                    "limit": 100,
+                    "service": "order-api",
+                    "start_time": "2026-11-07T08:00:00+08:00"
+                  },
+                  "id": "call_00_LbxrmT6TY8hhR860fLYP5276",
+                  "type": "tool_call"
+                },
+                {
+                  "name": "query_metrics",
+                  "args": {
+                    "end_time": "2026-11-07T08:15:00+08:00",
+                    "limit": 300,
+                    "service": "order-api",
+                    "start_time": "2026-11-07T08:00:00+08:00",
+                    "metric_name": "http_5xx_ratio"
+                  },
+                  "id": "call_01_ObIzqjI2beC5zSW3yPhw3662",
+                  "type": "tool_call"
+                }
+              ],
+              "usage": {
+                "input_tokens": 1982,
+                "output_tokens": 276,
+                "total_tokens": 2258,
+                "input_token_details": {
+                  "cache_read": 1664
+                },
+                "output_token_details": {}
+              },
+              "response_model": "agentlens-agent",
+              "billing": {
+                "currency": "USD",
+                "pricing_version": "deepseek-2026-11-01",
+                "pricing_sha256": "6a41970e9ba6f1c65aadd1eab8483e562cfa3abb7eecfe9dc78e264dc22f301d",
+                "source": "https://api-docs.deepseek.com/quick_start/pricing/",
+                "cost": "0.000218292",
+                "cache_read_tokens": 1664,
+                "reason": null,
+                "model_source": "local_gateway_configuration; response_contains_alias",
+                "gateway_config_sha256": "7defcb62e9bf9f418561063d1b4ccb9ed038bffc5c3921858278e02ec5c600de",
+                "priced_model": "deepseek-flash",
+                "rates_per_million": {
+                  "cache_hit": 0.003,
+                  "cache_miss": 0.15,
+                  "output": 0.6
+                }
+              }
+            },
+            "error": null,
+            "duration_ms": 1176.98,
+            "span_id": "4800c7cb0c83bc07",
+            "source_step_sequence": null
+          },
+          {
+            "sequence": 5,
+            "kind": "tool",
+            "name": "search_logs",
+            "input": {
+              "end_time": "2026-11-07T08:15:00+08:00",
+              "limit": 100,
+              "service": "order-api",
+              "start_time": "2026-11-07T08:00:00+08:00"
+            },
+            "output": {
+              "logs": [
+                {
+                  "evidence_id": "w6-healthy-01-log-1",
+                  "timestamp": "2026-11-07T08:02:00+08:00",
+                  "service": "order-api",
+                  "level": "INFO",
+                  "message": "instance=replica-1; Request completed successfully: status=200 duration_ms=42"
+                }
+              ]
+            },
+            "error": null,
+            "duration_ms": 17.4,
+            "span_id": "480779976d91511e",
+            "source_step_sequence": null
+          },
+          {
+            "sequence": 6,
+            "kind": "tool",
+            "name": "query_metrics",
+            "input": {
+              "end_time": "2026-11-07T08:15:00+08:00",
+              "limit": 300,
+              "service": "order-api",
+              "start_time": "2026-11-07T08:00:00+08:00",
+              "metric_name": "http_5xx_ratio"
+            },
+            "output": {
+              "metrics": [
+                {
+                  "evidence_id": "w6-healthy-01-metric-1",
+                  "timestamp": "2026-11-07T08:03:00+08:00",
+                  "service": "order-api",
+                  "name": "http_5xx_ratio",
+                  "value": 0.0,
+                  "unit": "ratio"
+                }
+              ]
+            },
+            "error": null,
+            "duration_ms": 17.35,
+            "span_id": "6dd1b9bfc64f3c9c",
+            "source_step_sequence": null
+          },
+          {
+            "sequence": 7,
+            "kind": "model",
+            "name": "agentlens-agent",
+            "input": {
+              "messages": [
+                {
+                  "content": "请调查 order-api 在 2026-11-07T08:00:00+08:00 至 2026-11-07T08:15:00+08:00（结束时间不包含）的异常，结合日志与指标，检索并引用支持建议的手册。",
+                  "additional_kwargs": {},
+                  "response_metadata": {},
+                  "type": "human",
+                  "name": null,
+                  "id": "454df678-8d0b-4e40-8d76-8c39c8f13c5e"
+                },
+                {
+                  "content": "我先查询 order-api 在该时间窗内的日志和指标。",
+                  "additional_kwargs": {},
+                  "response_metadata": {
+                    "model_provider": "openai",
+                    "finish_reason": "tool_calls",
+                    "model_name": "agentlens-agent",
+                    "system_fingerprint": "bc19ba97cbe016479903222bb1578db6"
+                  },
+                  "type": "ai",
+                  "name": null,
+                  "id": "lc_run--01a1969d-a908-7341-85d5-bf2faf4383e3",
+                  "tool_calls": [
+                    {
+                      "name": "search_logs",
+                      "args": {
+                        "service": "order-api",
+                        "start_time": "2026-11-07T08:00:00+08:00",
+                        "end_time": "2026-11-07T08:15:00+08:00",
+                        "level": "ERROR",
+                        "limit": 100
+                      },
+                      "id": "call_00_fzL1OPWKm9u2KXTmVxaL9029",
+                      "type": "tool_call"
+                    },
+                    {
+                      "name": "query_metrics",
+                      "args": {
+                        "service": "order-api",
+                        "start_time": "2026-11-07T08:00:00+08:00",
+                        "end_time": "2026-11-07T08:15:00+08:00",
+                        "limit": 100
+                      },
+                      "id": "call_01_76UxQtAhvlNtUuBZ76WR6158",
+                      "type": "tool_call"
+                    }
+                  ],
+                  "invalid_tool_calls": [],
+                  "usage_metadata": {
+                    "input_tokens": 1533,
+                    "output_tokens": 257,
+                    "total_tokens": 1790,
+                    "input_token_details": {
+                      "cache_read": 1280
+                    },
+                    "output_token_details": {}
+                  }
+                },
+                {
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "{\n  \"logs\": []\n}",
+                      "id": "lc_3a592fe1-d3fa-4f68-be83-797df9bc66ac"
+                    }
+                  ],
+                  "additional_kwargs": {},
+                  "response_metadata": {},
+                  "type": "tool",
+                  "name": "search_logs",
+                  "id": "e4806695-5955-4522-a30d-c4eeca85f1b4",
+                  "tool_call_id": "call_00_fzL1OPWKm9u2KXTmVxaL9029",
+                  "artifact": {
+                    "structured_content": {
+                      "logs": []
+                    }
+                  },
+                  "status": "success"
+                },
+                {
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "{\n  \"metrics\": [\n    {\n      \"evidence_id\": \"w6-healthy-01-metric-1\",\n      \"timestamp\": \"2026-11-07T08:03:00+08:00\",\n      \"service\": \"order-api\",\n      \"name\": \"http_5xx_ratio\",\n      \"value\": 0.0,\n      \"unit\": \"ratio\"\n    },\n    {\n      \"evidence_id\": \"w6-healthy-01-metric-2\",\n      \"timestamp\": \"2026-11-07T08:03:00+08:00\",\n      \"service\": \"order-api\",\n      \"name\": \"p95_latency_ms\",\n      \"value\": 72.0,\n      \"unit\": \"ms\"\n    }\n  ]\n}",
+                      "id": "lc_064dc2d6-2ad0-49ab-9349-505821973b46"
+                    }
+                  ],
+                  "additional_kwargs": {},
+                  "response_metadata": {},
+                  "type": "tool",
+                  "name": "query_metrics",
+                  "id": "71ba8da0-7895-4664-a07e-a16411eff37f",
+                  "tool_call_id": "call_01_76UxQtAhvlNtUuBZ76WR6158",
+                  "artifact": {
+                    "structured_content": {
+                      "metrics": [
+                        {
+                          "evidence_id": "w6-healthy-01-metric-1",
+                          "timestamp": "2026-11-07T08:03:00+08:00",
+                          "service": "order-api",
+                          "name": "http_5xx_ratio",
+                          "value": 0.0,
+                          "unit": "ratio"
+                        },
+                        {
+                          "evidence_id": "w6-healthy-01-metric-2",
+                          "timestamp": "2026-11-07T08:03:00+08:00",
+                          "service": "order-api",
+                          "name": "p95_latency_ms",
+                          "value": 72.0,
+                          "unit": "ms"
+                        }
+                      ]
+                    }
+                  },
+                  "status": "success"
+                },
+                {
+                  "content": "ERROR 日志为空，指标正常。我再检查 WARN/INFO 日志和更多指标，确认是否确实无异常。",
+                  "additional_kwargs": {},
+                  "response_metadata": {
+                    "model_provider": "openai",
+                    "finish_reason": "tool_calls",
+                    "model_name": "agentlens-agent",
+                    "system_fingerprint": "bc19ba97cbe016479903222bb1578db6"
+                  },
+                  "type": "ai",
+                  "name": null,
+                  "id": "lc_run--01a1969d-ad2d-75b2-96fa-c8f92880be78",
+                  "tool_calls": [
+                    {
+                      "name": "search_logs",
+                      "args": {
+                        "end_time": "2026-11-07T08:15:00+08:00",
+                        "limit": 100,
+                        "service": "order-api",
+                        "start_time": "2026-11-07T08:00:00+08:00"
+                      },
+                      "id": "call_00_LbxrmT6TY8hhR860fLYP5276",
+                      "type": "tool_call"
+                    },
+                    {
+                      "name": "query_metrics",
+                      "args": {
+                        "end_time": "2026-11-07T08:15:00+08:00",
+                        "limit": 300,
+                        "service": "order-api",
+                        "start_time": "2026-11-07T08:00:00+08:00",
+                        "metric_name": "http_5xx_ratio"
+                      },
+                      "id": "call_01_ObIzqjI2beC5zSW3yPhw3662",
+                      "type": "tool_call"
+                    }
+                  ],
+                  "invalid_tool_calls": [],
+                  "usage_metadata": {
+                    "input_tokens": 1982,
+                    "output_tokens": 276,
+                    "total_tokens": 2258,
+                    "input_token_details": {
+                      "cache_read": 1664
+                    },
+                    "output_token_details": {}
+                  }
+                },
+                {
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "{\n  \"logs\": [\n    {\n      \"evidence_id\": \"w6-healthy-01-log-1\",\n      \"timestamp\": \"2026-11-07T08:02:00+08:00\",\n      \"service\": \"order-api\",\n      \"level\": \"INFO\",\n      \"message\": \"instance=replica-1; Request completed successfully: status=200 duration_ms=42\"\n    }\n  ]\n}",
+                      "id": "lc_8f5e0fda-b1f1-4ff4-a5ba-ac6319eff768"
+                    }
+                  ],
+                  "additional_kwargs": {},
+                  "response_metadata": {},
+                  "type": "tool",
+                  "name": "search_logs",
+                  "id": "f3d4e410-f784-4d10-9142-cf6375046bb9",
+                  "tool_call_id": "call_00_LbxrmT6TY8hhR860fLYP5276",
+                  "artifact": {
+                    "structured_content": {
+                      "logs": [
+                        {
+                          "evidence_id": "w6-healthy-01-log-1",
+                          "timestamp": "2026-11-07T08:02:00+08:00",
+                          "service": "order-api",
+                          "level": "INFO",
+                          "message": "instance=replica-1; Request completed successfully: status=200 duration_ms=42"
+                        }
+                      ]
+                    }
+                  },
+                  "status": "success"
+                },
+                {
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "{\n  \"metrics\": [\n    {\n      \"evidence_id\": \"w6-healthy-01-metric-1\",\n      \"timestamp\": \"2026-11-07T08:03:00+08:00\",\n      \"service\": \"order-api\",\n      \"name\": \"http_5xx_ratio\",\n      \"value\": 0.0,\n      \"unit\": \"ratio\"\n    }\n  ]\n}",
+                      "id": "lc_ad8a2e5a-2f8a-4a88-86d2-a75aac54dff6"
+                    }
+                  ],
+                  "additional_kwargs": {},
+                  "response_metadata": {},
+                  "type": "tool",
+                  "name": "query_metrics",
+                  "id": "352b67e5-69b2-49b7-be6f-5fa576638df7",
+                  "tool_call_id": "call_01_ObIzqjI2beC5zSW3yPhw3662",
+                  "artifact": {
+                    "structured_content": {
+                      "metrics": [
+                        {
+                          "evidence_id": "w6-healthy-01-metric-1",
+                          "timestamp": "2026-11-07T08:03:00+08:00",
+                          "service": "order-api",
+                          "name": "http_5xx_ratio",
+                          "value": 0.0,
+                          "unit": "ratio"
+                        }
+                      ]
+                    }
+                  },
+                  "status": "success"
+                }
+              ]
+            },
+            "output": {
+              "content": "现场证据显示无异常。我检索手册以确认健康基线的判读方法，并查询历史经验。",
+              "tool_calls": [
+                {
+                  "name": "search_runbooks",
+                  "args": {
+                    "query": "order-api http_5xx_ratio 0 p95_latency_ms 正常 无错误日志 健康基线确认",
+                    "top_k": 3
+                  },
+                  "id": "call_00_ni4IXD67cUBHBBWO3FT34454",
+                  "type": "tool_call"
+                },
+                {
+                  "name": "search_experiences",
+                  "args": {
+                    "service": "order-api",
+                    "limit": 5
+                  },
+                  "id": "call_01_uDgoYKJYHcU5qoYoy72J3776",
+                  "type": "tool_call"
+                }
+              ],
+              "usage": {
+                "input_tokens": 2454,
+                "output_tokens": 149,
+                "total_tokens": 2603,
+                "input_token_details": {
+                  "cache_read": 2176
+                },
+                "output_token_details": {}
+              },
+              "response_model": "agentlens-agent",
+              "billing": {
+                "currency": "USD",
+                "pricing_version": "deepseek-2026-11-01",
+                "pricing_sha256": "6a41970e9ba6f1c65aadd1eab8483e562cfa3abb7eecfe9dc78e264dc22f301d",
+                "source": "https://api-docs.deepseek.com/quick_start/pricing/",
+                "cost": "0.000137628",
+                "cache_read_tokens": 2176,
+                "reason": null,
+                "model_source": "local_gateway_configuration; response_contains_alias",
+                "gateway_config_sha256": "7defcb62e9bf9f418561063d1b4ccb9ed038bffc5c3921858278e02ec5c600de",
+                "priced_model": "deepseek-flash",
+                "rates_per_million": {
+                  "cache_hit": 0.003,
+                  "cache_miss": 0.15,
+                  "output": 0.6
+                }
+              }
+            },
+            "error": null,
+            "duration_ms": 1324.19,
+            "span_id": "f69c69948461dcd1",
+            "source_step_sequence": null
+          },
+          {
+            "sequence": 8,
+            "kind": "tool",
+            "name": "search_runbooks",
+            "input": {
+              "query": "order-api http_5xx_ratio 0 p95_latency_ms 正常 无错误日志 健康基线确认",
+              "top_k": 3
+            },
+            "output": {
+              "chunks": [
+                {
+                  "evidence_id": "healthy--s01",
+                  "document_id": "healthy",
+                  "project_id": "project-a",
+                  "source": "datasets/runbooks/healthy.md",
+                  "revision": "1ed1a923f462fa1ce383907ff5ee58dc0f13a7b7d5e0b7d92db5796b809897c2",
+                  "content": "order-api 当前窗口正常的调查方法\n检查观测范围\n\norder-api 在指定窗口只有 status=200，http_5xx_ratio=0 且 p95_latency_ms 正常时，应说明当前范围未发现异常。一个正常请求不能证明所有实例健康；确认日志覆盖实例与指标聚合范围。",
+                  "ranks": {
+                    "vector": 1
+                  },
+                  "rrf_score": 0.01639344262295082,
+                  "retrieval_manifest": {
+                    "corpus_sha256": "023114864f127896cfc77ae214368e69d1dcfb883b0395c7c363db162c1a03ca",
+                    "chunks_sha256": "b6a49d5e1a286048cf707277fb38f796b74ab0a6bd946245fa74ee64ea24fdd7",
+                    "chunking": "authored-h2-v1",
+                    "embedding_model": "BAAI/bge-small-zh-v1.5",
+                    "embedding_revision": "7999e1d3359715c523056ef9478215996d62a620",
+                    "dimensions": 512,
+                    "normalize": true,
+                    "query_prefix": "为这个句子生成表示以用于检索相关文章：",
+                    "max_seq_length": 512,
+                    "artifacts_sha256": "9e8d41feee144813910c7db23ca5505bcf66139811f6f1521db1265e1bed016d",
+                    "strategy": "vector",
+                    "top_k": 3,
+                    "candidate_k": 10,
+                    "rrf_offset": 60
+                  }
+                },
+                {
+                  "evidence_id": "healthy--s02",
+                  "document_id": "healthy",
+                  "project_id": "project-a",
+                  "source": "datasets/runbooks/healthy.md",
+                  "revision": "1ed1a923f462fa1ce383907ff5ee58dc0f13a7b7d5e0b7d92db5796b809897c2",
+                  "content": "order-api 当前窗口正常的调查方法\n补充问题\n\n请用户核对服务名、时区、实例与故障发生时间。扩大时间窗需要明确新的查询范围。不要使用窗口外的错误替代本窗口证据，也不要凭正常样本否定用户报告。",
+                  "ranks": {
+                    "vector": 2
+                  },
+                  "rrf_score": 0.016129032258064516,
+                  "retrieval_manifest": {
+                    "corpus_sha256": "023114864f127896cfc77ae214368e69d1dcfb883b0395c7c363db162c1a03ca",
+                    "chunks_sha256": "b6a49d5e1a286048cf707277fb38f796b74ab0a6bd946245fa74ee64ea24fdd7",
+                    "chunking": "authored-h2-v1",
+                    "embedding_model": "BAAI/bge-small-zh-v1.5",
+                    "embedding_revision": "7999e1d3359715c523056ef9478215996d62a620",
+                    "dimensions": 512,
+                    "normalize": true,
+                    "query_prefix": "为这个句子生成表示以用于检索相关文章：",
+                    "max_seq_length": 512,
+                    "artifacts_sha256": "9e8d41feee144813910c7db23ca5505bcf66139811f6f1521db1265e1bed016d",
+                    "strategy": "vector",
+                    "top_k": 3,
+                    "candidate_k": 10,
+                    "rrf_offset": 60
+                  }
+                },
+                {
+                  "evidence_id": "downstream-timeout--s02",
+                  "document_id": "downstream-timeout",
+                  "project_id": "project-a",
+                  "source": "datasets/runbooks/downstream-timeout.md",
+                  "revision": "171fed5ff5047abba1281eb01d2884610bdc737087d6873b9ba1223cafa24a6d",
+                  "content": "order-api 调用 payment-api 超时\n继续查询下游\n\n获取 payment-api 同窗口日志、线程池和依赖指标，区分排队与处理缓慢。重试会放大下游负载；建议前先确认现有重试次数、请求幂等性和总体超时预算。当前工具只有查询能力，建议不代表已经执行。",
+                  "ranks": {
+                    "vector": 3
+                  },
+                  "rrf_score": 0.015873015873015872,
+                  "retrieval_manifest": {
+                    "corpus_sha256": "023114864f127896cfc77ae214368e69d1dcfb883b0395c7c363db162c1a03ca",
+                    "chunks_sha256": "b6a49d5e1a286048cf707277fb38f796b74ab0a6bd946245fa74ee64ea24fdd7",
+                    "chunking": "authored-h2-v1",
+                    "embedding_model": "BAAI/bge-small-zh-v1.5",
+                    "embedding_revision": "7999e1d3359715c523056ef9478215996d62a620",
+                    "dimensions": 512,
+                    "normalize": true,
+                    "query_prefix": "为这个句子生成表示以用于检索相关文章：",
+                    "max_seq_length": 512,
+                    "artifacts_sha256": "9e8d41feee144813910c7db23ca5505bcf66139811f6f1521db1265e1bed016d",
+                    "strategy": "vector",
+                    "top_k": 3,
+                    "candidate_k": 10,
+                    "rrf_offset": 60
+                  }
+                }
+              ]
+            },
+            "error": null,
+            "duration_ms": 50.13,
+            "span_id": "3d3d5de9d45e023f",
+            "source_step_sequence": null
+          },
+          {
+            "sequence": 9,
+            "kind": "tool",
+            "name": "search_experiences",
+            "input": {
+              "service": "order-api",
+              "limit": 5
+            },
+            "output": {
+              "experiences": []
+            },
+            "error": null,
+            "duration_ms": 20.77,
+            "span_id": "766078d7989bc153",
+            "source_step_sequence": null
+          },
+          {
+            "sequence": 10,
+            "kind": "model",
+            "name": "agentlens-agent",
+            "input": {
+              "messages": [
+                {
+                  "content": "请调查 order-api 在 2026-11-07T08:00:00+08:00 至 2026-11-07T08:15:00+08:00（结束时间不包含）的异常，结合日志与指标，检索并引用支持建议的手册。",
+                  "additional_kwargs": {},
+                  "response_metadata": {},
+                  "type": "human",
+                  "name": null,
+                  "id": "454df678-8d0b-4e40-8d76-8c39c8f13c5e"
+                },
+                {
+                  "content": "我先查询 order-api 在该时间窗内的日志和指标。",
+                  "additional_kwargs": {},
+                  "response_metadata": {
+                    "model_provider": "openai",
+                    "finish_reason": "tool_calls",
+                    "model_name": "agentlens-agent",
+                    "system_fingerprint": "bc19ba97cbe016479903222bb1578db6"
+                  },
+                  "type": "ai",
+                  "name": null,
+                  "id": "lc_run--01a1969d-a908-7341-85d5-bf2faf4383e3",
+                  "tool_calls": [
+                    {
+                      "name": "search_logs",
+                      "args": {
+                        "service": "order-api",
+                        "start_time": "2026-11-07T08:00:00+08:00",
+                        "end_time": "2026-11-07T08:15:00+08:00",
+                        "level": "ERROR",
+                        "limit": 100
+                      },
+                      "id": "call_00_fzL1OPWKm9u2KXTmVxaL9029",
+                      "type": "tool_call"
+                    },
+                    {
+                      "name": "query_metrics",
+                      "args": {
+                        "service": "order-api",
+                        "start_time": "2026-11-07T08:00:00+08:00",
+                        "end_time": "2026-11-07T08:15:00+08:00",
+                        "limit": 100
+                      },
+                      "id": "call_01_76UxQtAhvlNtUuBZ76WR6158",
+                      "type": "tool_call"
+                    }
+                  ],
+                  "invalid_tool_calls": [],
+                  "usage_metadata": {
+                    "input_tokens": 1533,
+                    "output_tokens": 257,
+                    "total_tokens": 1790,
+                    "input_token_details": {
+                      "cache_read": 1280
+                    },
+                    "output_token_details": {}
+                  }
+                },
+                {
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "{\n  \"logs\": []\n}",
+                      "id": "lc_3a592fe1-d3fa-4f68-be83-797df9bc66ac"
+                    }
+                  ],
+                  "additional_kwargs": {},
+                  "response_metadata": {},
+                  "type": "tool",
+                  "name": "search_logs",
+                  "id": "e4806695-5955-4522-a30d-c4eeca85f1b4",
+                  "tool_call_id": "call_00_fzL1OPWKm9u2KXTmVxaL9029",
+                  "artifact": {
+                    "structured_content": {
+                      "logs": []
+                    }
+                  },
+                  "status": "success"
+                },
+                {
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "{\n  \"metrics\": [\n    {\n      \"evidence_id\": \"w6-healthy-01-metric-1\",\n      \"timestamp\": \"2026-11-07T08:03:00+08:00\",\n      \"service\": \"order-api\",\n      \"name\": \"http_5xx_ratio\",\n      \"value\": 0.0,\n      \"unit\": \"ratio\"\n    },\n    {\n      \"evidence_id\": \"w6-healthy-01-metric-2\",\n      \"timestamp\": \"2026-11-07T08:03:00+08:00\",\n      \"service\": \"order-api\",\n      \"name\": \"p95_latency_ms\",\n      \"value\": 72.0,\n      \"unit\": \"ms\"\n    }\n  ]\n}",
+                      "id": "lc_064dc2d6-2ad0-49ab-9349-505821973b46"
+                    }
+                  ],
+                  "additional_kwargs": {},
+                  "response_metadata": {},
+                  "type": "tool",
+                  "name": "query_metrics",
+                  "id": "71ba8da0-7895-4664-a07e-a16411eff37f",
+                  "tool_call_id": "call_01_76UxQtAhvlNtUuBZ76WR6158",
+                  "artifact": {
+                    "structured_content": {
+                      "metrics": [
+                        {
+                          "evidence_id": "w6-healthy-01-metric-1",
+                          "timestamp": "2026-11-07T08:03:00+08:00",
+                          "service": "order-api",
+                          "name": "http_5xx_ratio",
+                          "value": 0.0,
+                          "unit": "ratio"
+                        },
+                        {
+                          "evidence_id": "w6-healthy-01-metric-2",
+                          "timestamp": "2026-11-07T08:03:00+08:00",
+                          "service": "order-api",
+                          "name": "p95_latency_ms",
+                          "value": 72.0,
+                          "unit": "ms"
+                        }
+                      ]
+                    }
+                  },
+                  "status": "success"
+                },
+                {
+                  "content": "ERROR 日志为空，指标正常。我再检查 WARN/INFO 日志和更多指标，确认是否确实无异常。",
+                  "additional_kwargs": {},
+                  "response_metadata": {
+                    "model_provider": "openai",
+                    "finish_reason": "tool_calls",
+                    "model_name": "agentlens-agent",
+                    "system_fingerprint": "bc19ba97cbe016479903222bb1578db6"
+                  },
+                  "type": "ai",
+                  "name": null,
+                  "id": "lc_run--01a1969d-ad2d-75b2-96fa-c8f92880be78",
+                  "tool_calls": [
+                    {
+                      "name": "search_logs",
+                      "args": {
+                        "end_time": "2026-11-07T08:15:00+08:00",
+                        "limit": 100,
+                        "service": "order-api",
+                        "start_time": "2026-11-07T08:00:00+08:00"
+                      },
+                      "id": "call_00_LbxrmT6TY8hhR860fLYP5276",
+                      "type": "tool_call"
+                    },
+                    {
+                      "name": "query_metrics",
+                      "args": {
+                        "end_time": "2026-11-07T08:15:00+08:00",
+                        "limit": 300,
+                        "service": "order-api",
+                        "start_time": "2026-11-07T08:00:00+08:00",
+                        "metric_name": "http_5xx_ratio"
+                      },
+                      "id": "call_01_ObIzqjI2beC5zSW3yPhw3662",
+                      "type": "tool_call"
+                    }
+                  ],
+                  "invalid_tool_calls": [],
+                  "usage_metadata": {
+                    "input_tokens": 1982,
+                    "output_tokens": 276,
+                    "total_tokens": 2258,
+                    "input_token_details": {
+                      "cache_read": 1664
+                    },
+                    "output_token_details": {}
+                  }
+                },
+                {
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "{\n  \"logs\": [\n    {\n      \"evidence_id\": \"w6-healthy-01-log-1\",\n      \"timestamp\": \"2026-11-07T08:02:00+08:00\",\n      \"service\": \"order-api\",\n      \"level\": \"INFO\",\n      \"message\": \"instance=replica-1; Request completed successfully: status=200 duration_ms=42\"\n    }\n  ]\n}",
+                      "id": "lc_8f5e0fda-b1f1-4ff4-a5ba-ac6319eff768"
+                    }
+                  ],
+                  "additional_kwargs": {},
+                  "response_metadata": {},
+                  "type": "tool",
+                  "name": "search_logs",
+                  "id": "f3d4e410-f784-4d10-9142-cf6375046bb9",
+                  "tool_call_id": "call_00_LbxrmT6TY8hhR860fLYP5276",
+                  "artifact": {
+                    "structured_content": {
+                      "logs": [
+                        {
+                          "evidence_id": "w6-healthy-01-log-1",
+                          "timestamp": "2026-11-07T08:02:00+08:00",
+                          "service": "order-api",
+                          "level": "INFO",
+                          "message": "instance=replica-1; Request completed successfully: status=200 duration_ms=42"
+                        }
+                      ]
+                    }
+                  },
+                  "status": "success"
+                },
+                {
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "{\n  \"metrics\": [\n    {\n      \"evidence_id\": \"w6-healthy-01-metric-1\",\n      \"timestamp\": \"2026-11-07T08:03:00+08:00\",\n      \"service\": \"order-api\",\n      \"name\": \"http_5xx_ratio\",\n      \"value\": 0.0,\n      \"unit\": \"ratio\"\n    }\n  ]\n}",
+                      "id": "lc_ad8a2e5a-2f8a-4a88-86d2-a75aac54dff6"
+                    }
+                  ],
+                  "additional_kwargs": {},
+                  "response_metadata": {},
+                  "type": "tool",
+                  "name": "query_metrics",
+                  "id": "352b67e5-69b2-49b7-be6f-5fa576638df7",
+                  "tool_call_id": "call_01_ObIzqjI2beC5zSW3yPhw3662",
+                  "artifact": {
+                    "structured_content": {
+                      "metrics": [
+                        {
+                          "evidence_id": "w6-healthy-01-metric-1",
+                          "timestamp": "2026-11-07T08:03:00+08:00",
+                          "service": "order-api",
+                          "name": "http_5xx_ratio",
+                          "value": 0.0,
+                          "unit": "ratio"
+                        }
+                      ]
+                    }
+                  },
+                  "status": "success"
+                },
+                {
+                  "content": "现场证据显示无异常。我检索手册以确认健康基线的判读方法，并查询历史经验。",
+                  "additional_kwargs": {},
+                  "response_metadata": {
+                    "model_provider": "openai",
+                    "finish_reason": "tool_calls",
+                    "model_name": "agentlens-agent",
+                    "system_fingerprint": "bc19ba97cbe016479903222bb1578db6"
+                  },
+                  "type": "ai",
+                  "name": null,
+                  "id": "lc_run--01a1969d-b1f8-77ea-a7f7-ff1131e9a03b",
+                  "tool_calls": [
+                    {
+                      "name": "search_runbooks",
+                      "args": {
+                        "query": "order-api http_5xx_ratio 0 p95_latency_ms 正常 无错误日志 健康基线确认",
+                        "top_k": 3
+                      },
+                      "id": "call_00_ni4IXD67cUBHBBWO3FT34454",
+                      "type": "tool_call"
+                    },
+                    {
+                      "name": "search_experiences",
+                      "args": {
+                        "service": "order-api",
+                        "limit": 5
+                      },
+                      "id": "call_01_uDgoYKJYHcU5qoYoy72J3776",
+                      "type": "tool_call"
+                    }
+                  ],
+                  "invalid_tool_calls": [],
+                  "usage_metadata": {
+                    "input_tokens": 2454,
+                    "output_tokens": 149,
+                    "total_tokens": 2603,
+                    "input_token_details": {
+                      "cache_read": 2176
+                    },
+                    "output_token_details": {}
+                  }
+                },
+                {
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "{\n  \"chunks\": [\n    {\n      \"evidence_id\": \"healthy--s01\",\n      \"document_id\": \"healthy\",\n      \"project_id\": \"project-a\",\n      \"source\": \"datasets/runbooks/healthy.md\",\n      \"revision\": \"1ed1a923f462fa1ce383907ff5ee58dc0f13a7b7d5e0b7d92db5796b809897c2\",\n      \"content\": \"order-api 当前窗口正常的调查方法\\n检查观测范围\\n\\norder-api 在指定窗口只有 status=200，http_5xx_ratio=0 且 p95_latency_ms 正常时，应说明当前范围未发现异常。一个正常请求不能证明所有实例健康；确认日志覆盖实例与指标聚合范围。\",\n      \"ranks\": {\n        \"vector\": 1\n      },\n      \"rrf_score\": 0.01639344262295082,\n      \"retrieval_manifest\": {\n        \"corpus_sha256\": \"023114864f127896cfc77ae214368e69d1dcfb883b0395c7c363db162c1a03ca\",\n        \"chunks_sha256\": \"b6a49d5e1a286048cf707277fb38f796b74ab0a6bd946245fa74ee64ea24fdd7\",\n        \"chunking\": \"authored-h2-v1\",\n        \"embedding_model\": \"BAAI/bge-small-zh-v1.5\",\n        \"embedding_revision\": \"7999e1d3359715c523056ef9478215996d62a620\",\n        \"dimensions\": 512,\n        \"normalize\": true,\n        \"query_prefix\": \"为这个句子生成表示以用于检索相关文章：\",\n        \"max_seq_length\": 512,\n        \"artifacts_sha256\": \"9e8d41feee144813910c7db23ca5505bcf66139811f6f1521db1265e1bed016d\",\n        \"strategy\": \"vector\",\n        \"top_k\": 3,\n        \"candidate_k\": 10,\n        \"rrf_offset\": 60\n      }\n    },\n    {\n      \"evidence_id\": \"healthy--s02\",\n      \"document_id\": \"healthy\",\n      \"project_id\": \"project-a\",\n      \"source\": \"datasets/runbooks/healthy.md\",\n      \"revision\": \"1ed1a923f462fa1ce383907ff5ee58dc0f13a7b7d5e0b7d92db5796b809897c2\",\n      \"content\": \"order-api 当前窗口正常的调查方法\\n补充问题\\n\\n请用户核对服务名、时区、实例与故障发生时间。扩大时间窗需要明确新的查询范围。不要使用窗口外的错误替代本窗口证据，也不要凭正常样本否定用户报告。\",\n      \"ranks\": {\n        \"vector\": 2\n      },\n      \"rrf_score\": 0.016129032258064516,\n      \"retrieval_manifest\": {\n        \"corpus_sha256\": \"023114864f127896cfc77ae214368e69d1dcfb883b0395c7c363db162c1a03ca\",\n        \"chunks_sha256\": \"b6a49d5e1a286048cf707277fb38f796b74ab0a6bd946245fa74ee64ea24fdd7\",\n        \"chunking\": \"authored-h2-v1\",\n        \"embedding_model\": \"BAAI/bge-small-zh-v1.5\",\n        \"embedding_revision\": \"7999e1d3359715c523056ef9478215996d62a620\",\n        \"dimensions\": 512,\n        \"normalize\": true,\n        \"query_prefix\": \"为这个句子生成表示以用于检索相关文章：\",\n        \"max_seq_length\": 512,\n        \"artifacts_sha256\": \"9e8d41feee144813910c7db23ca5505bcf66139811f6f1521db1265e1bed016d\",\n        \"strategy\": \"vector\",\n        \"top_k\": 3,\n        \"candidate_k\": 10,\n        \"rrf_offset\": 60\n      }\n    },\n    {\n      \"evidence_id\": \"downstream-timeout--s02\",\n      \"document_id\": \"downstream-timeout\",\n      \"project_id\": \"project-a\",\n      \"source\": \"datasets/runbooks/downstream-timeout.md\",\n      \"revision\": \"171fed5ff5047abba1281eb01d2884610bdc737087d6873b9ba1223cafa24a6d\",\n      \"content\": \"order-api 调用 payment-api 超时\\n继续查询下游\\n\\n获取 payment-api 同窗口日志、线程池和依赖指标，区分排队与处理缓慢。重试会放大下游负载；建议前先确认现有重试次数、请求幂等性和总体超时预算。当前工具只有查询能力，建议不代表已经执行。\",\n      \"ranks\": {\n        \"vector\": 3\n      },\n      \"rrf_score\": 0.015873015873015872,\n      \"retrieval_manifest\": {\n        \"corpus_sha256\": \"023114864f127896cfc77ae214368e69d1dcfb883b0395c7c363db162c1a03ca\",\n        \"chunks_sha256\": \"b6a49d5e1a286048cf707277fb38f796b74ab0a6bd946245fa74ee64ea24fdd7\",\n        \"chunking\": \"authored-h2-v1\",\n        \"embedding_model\": \"BAAI/bge-small-zh-v1.5\",\n        \"embedding_revision\": \"7999e1d3359715c523056ef9478215996d62a620\",\n        \"dimensions\": 512,\n        \"normalize\": true,\n        \"query_prefix\": \"为这个句子生成表示以用于检索相关文章：\",\n        \"max_seq_length\": 512,\n        \"artifacts_sha256\": \"9e8d41feee144813910c7db23ca5505bcf66139811f6f1521db1265e1bed016d\",\n        \"strategy\": \"vector\",\n        \"top_k\": 3,\n        \"candidate_k\": 10,\n        \"rrf_offset\": 60\n      }\n    }\n  ]\n}",
+                      "id": "lc_8db25da8-7988-4b73-87d9-8b00c15b5f60"
+                    }
+                  ],
+                  "additional_kwargs": {},
+                  "response_metadata": {},
+                  "type": "tool",
+                  "name": "search_runbooks",
+                  "id": "8a06ce10-23bb-4839-9668-eba7602cb053",
+                  "tool_call_id": "call_00_ni4IXD67cUBHBBWO3FT34454",
+                  "artifact": {
+                    "structured_content": {
+                      "chunks": [
+                        {
+                          "evidence_id": "healthy--s01",
+                          "document_id": "healthy",
+                          "project_id": "project-a",
+                          "source": "datasets/runbooks/healthy.md",
+                          "revision": "1ed1a923f462fa1ce383907ff5ee58dc0f13a7b7d5e0b7d92db5796b809897c2",
+                          "content": "order-api 当前窗口正常的调查方法\n检查观测范围\n\norder-api 在指定窗口只有 status=200，http_5xx_ratio=0 且 p95_latency_ms 正常时，应说明当前范围未发现异常。一个正常请求不能证明所有实例健康；确认日志覆盖实例与指标聚合范围。",
+                          "ranks": {
+                            "vector": 1
+                          },
+                          "rrf_score": 0.01639344262295082,
+                          "retrieval_manifest": {
+                            "corpus_sha256": "023114864f127896cfc77ae214368e69d1dcfb883b0395c7c363db162c1a03ca",
+                            "chunks_sha256": "b6a49d5e1a286048cf707277fb38f796b74ab0a6bd946245fa74ee64ea24fdd7",
+                            "chunking": "authored-h2-v1",
+                            "embedding_model": "BAAI/bge-small-zh-v1.5",
+                            "embedding_revision": "7999e1d3359715c523056ef9478215996d62a620",
+                            "dimensions": 512,
+                            "normalize": true,
+                            "query_prefix": "为这个句子生成表示以用于检索相关文章：",
+                            "max_seq_length": 512,
+                            "artifacts_sha256": "9e8d41feee144813910c7db23ca5505bcf66139811f6f1521db1265e1bed016d",
+                            "strategy": "vector",
+                            "top_k": 3,
+                            "candidate_k": 10,
+                            "rrf_offset": 60
+                          }
+                        },
+                        {
+                          "evidence_id": "healthy--s02",
+                          "document_id": "healthy",
+                          "project_id": "project-a",
+                          "source": "datasets/runbooks/healthy.md",
+                          "revision": "1ed1a923f462fa1ce383907ff5ee58dc0f13a7b7d5e0b7d92db5796b809897c2",
+                          "content": "order-api 当前窗口正常的调查方法\n补充问题\n\n请用户核对服务名、时区、实例与故障发生时间。扩大时间窗需要明确新的查询范围。不要使用窗口外的错误替代本窗口证据，也不要凭正常样本否定用户报告。",
+                          "ranks": {
+                            "vector": 2
+                          },
+                          "rrf_score": 0.016129032258064516,
+                          "retrieval_manifest": {
+                            "corpus_sha256": "023114864f127896cfc77ae214368e69d1dcfb883b0395c7c363db162c1a03ca",
+                            "chunks_sha256": "b6a49d5e1a286048cf707277fb38f796b74ab0a6bd946245fa74ee64ea24fdd7",
+                            "chunking": "authored-h2-v1",
+                            "embedding_model": "BAAI/bge-small-zh-v1.5",
+                            "embedding_revision": "7999e1d3359715c523056ef9478215996d62a620",
+                            "dimensions": 512,
+                            "normalize": true,
+                            "query_prefix": "为这个句子生成表示以用于检索相关文章：",
+                            "max_seq_length": 512,
+                            "artifacts_sha256": "9e8d41feee144813910c7db23ca5505bcf66139811f6f1521db1265e1bed016d",
+                            "strategy": "vector",
+                            "top_k": 3,
+                            "candidate_k": 10,
+                            "rrf_offset": 60
+                          }
+                        },
+                        {
+                          "evidence_id": "downstream-timeout--s02",
+                          "document_id": "downstream-timeout",
+                          "project_id": "project-a",
+                          "source": "datasets/runbooks/downstream-timeout.md",
+                          "revision": "171fed5ff5047abba1281eb01d2884610bdc737087d6873b9ba1223cafa24a6d",
+                          "content": "order-api 调用 payment-api 超时\n继续查询下游\n\n获取 payment-api 同窗口日志、线程池和依赖指标，区分排队与处理缓慢。重试会放大下游负载；建议前先确认现有重试次数、请求幂等性和总体超时预算。当前工具只有查询能力，建议不代表已经执行。",
+                          "ranks": {
+                            "vector": 3
+                          },
+                          "rrf_score": 0.015873015873015872,
+                          "retrieval_manifest": {
+                            "corpus_sha256": "023114864f127896cfc77ae214368e69d1dcfb883b0395c7c363db162c1a03ca",
+                            "chunks_sha256": "b6a49d5e1a286048cf707277fb38f796b74ab0a6bd946245fa74ee64ea24fdd7",
+                            "chunking": "authored-h2-v1",
+                            "embedding_model": "BAAI/bge-small-zh-v1.5",
+                            "embedding_revision": "7999e1d3359715c523056ef9478215996d62a620",
+                            "dimensions": 512,
+                            "normalize": true,
+                            "query_prefix": "为这个句子生成表示以用于检索相关文章：",
+                            "max_seq_length": 512,
+                            "artifacts_sha256": "9e8d41feee144813910c7db23ca5505bcf66139811f6f1521db1265e1bed016d",
+                            "strategy": "vector",
+                            "top_k": 3,
+                            "candidate_k": 10,
+                            "rrf_offset": 60
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  "status": "success"
+                },
+                {
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "{\n  \"experiences\": []\n}",
+                      "id": "lc_5cbd0c21-5af0-48a3-bb23-499dff8d2637"
+                    }
+                  ],
+                  "additional_kwargs": {},
+                  "response_metadata": {},
+                  "type": "tool",
+                  "name": "search_experiences",
+                  "id": "c0f7c01f-517d-422a-be7f-d4fc85e22027",
+                  "tool_call_id": "call_01_uDgoYKJYHcU5qoYoy72J3776",
+                  "artifact": {
+                    "structured_content": {
+                      "experiences": []
+                    }
+                  },
+                  "status": "success"
+                }
+              ]
+            },
+            "output": {
+              "content": "{\"status\":\"insufficient_evidence\",\"cause_summary\":\"在 2026-11-07T08:00:00+08:00 至 2026-11-07T08:15:00+08:00（左闭右开）窗口内，order-api 未观察到异常：ERROR 级别日志为空；唯一日志为 replica-1 的 INFO 记录 status=200、duration_ms=42；指标 http_5xx_ratio=0.0、p95_latency_ms=72ms，均处于正常范围。手册 healthy--s01 指出，该情形应说明当前范围未发现异常，但单个正常请求不能证明所有实例健康。因此当前没有现场症状支持任何故障根因判断，不能预设故障类型；order-api 也没有可用的历史确认经验。\",\"evidence_ids\":[\"w6-healthy-01-log-1\",\"w6-healthy-01-metric-1\",\"w6-healthy-01-metric-2\",\"healthy--s01\",\"healthy--s02\"],\"unknowns\":[\"用户报告的具体异常现象（错误码、接口、影响范围）未知\",\"日志仅覆盖 replica-1 一个实例，其他副本是否健康未证实\",\"指标仅返回 08:03 单点聚合值，窗口内是否存在短时抖动未证实\",\"是否存在下游依赖（如 payment-api）异常未检查\",\"用户所述故障时间是否与本次查询窗口一致未证实\"],\"next_steps\":[\"请用户核对服务名、时区、实例与故障发生时间，并说明具体异常现象\",\"按手册 healthy--s02 建议，如需扩大时间窗请明确新的查询范围，不要用窗口外错误替代本窗口证据\",\"补充查询 order-api 各副本（replica-2 等）同窗口日志，确认日志覆盖实例范围\",\"若怀疑下游问题，按 downstream-timeout--s02 获取 payment-api 同窗口日志、线程池与依赖指标，区分排队与处理缓慢\",\"确认指标聚合范围与采样粒度，必要时查询更细粒度或更多指标项\"]}",
+              "tool_calls": [],
+              "usage": {
+                "input_tokens": 4084,
+                "output_tokens": 438,
+                "total_tokens": 4522,
+                "input_token_details": {
+                  "cache_read": 2560
+                },
+                "output_token_details": {
+                  "reasoning": 0
+                }
+              },
+              "response_model": "agentlens-agent",
+              "billing": {
+                "currency": "USD",
+                "pricing_version": "deepseek-2026-11-01",
+                "pricing_sha256": "6a41970e9ba6f1c65aadd1eab8483e562cfa3abb7eecfe9dc78e264dc22f301d",
+                "source": "https://api-docs.deepseek.com/quick_start/pricing/",
+                "cost": "0.00049908",
+                "cache_read_tokens": 2560,
+                "reason": null,
+                "model_source": "local_gateway_configuration; response_contains_alias",
+                "gateway_config_sha256": "7defcb62e9bf9f418561063d1b4ccb9ed038bffc5c3921858278e02ec5c600de",
+                "priced_model": "deepseek-flash",
+                "rates_per_million": {
+                  "cache_hit": 0.003,
+                  "cache_miss": 0.15,
+                  "output": 0.6
+                }
+              }
+            },
+            "error": null,
+            "duration_ms": 2957.07,
+            "span_id": "f765b6d189a0f5e3",
+            "source_step_sequence": null
+          }
+        ]
+      }
+    }
+  ]
+}

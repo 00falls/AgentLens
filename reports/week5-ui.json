@@ -1,0 +1,18 @@
+{
+  "passed": true,
+  "checks": {
+    "real_diagnosis_visible": true,
+    "real_trace_tree_visible": true,
+    "span_attributes_expand": true,
+    "citation_opens_tool_evidence": true,
+    "thread_filter_works": true,
+    "project_change_clears_previous_detail": true,
+    "cross_project_error_is_visible": true,
+    "mobile_no_page_overflow": true,
+    "no_browser_runtime_errors": true
+  },
+  "browser": "Microsoft Edge / Playwright",
+  "model_calls": 0,
+  "run_id": "880de1c6-5127-4f34-8e3b-b736d25fd0bb",
+  "errors": []
+}

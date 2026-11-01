@@ -1,0 +1,63 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "agentlens"
+version = "0.1.0"
+description = "An incident investigation agent with reproducible execution evidence."
+requires-python = ">=3.12,<3.13"
+dependencies = [
+  "fastapi>=0.115,<1",
+  "uvicorn>=0.30,<1",
+  "pydantic-settings>=2,<3",
+  "langgraph>=1,<2",
+  "langgraph-checkpoint-postgres>=3,<4",
+  "langchain[mcp]>=1.4,<2",
+  "langchain-openai>=1,<2",
+  "litellm[proxy]>=1.80,<2",
+  "sqlalchemy>=2,<3",
+  "psycopg[binary]>=3,<4",
+  "alembic>=1.14,<2",
+  "mcp>=2,<3",
+  "pgvector>=0.4,<1",
+  "sentence-transformers>=5,<6",
+  "torch==2.15.0",
+  "opentelemetry-sdk>=1.38,<2",
+  "opentelemetry-exporter-otlp-proto-http>=1.38,<2",
+  "opentelemetry-instrumentation-fastapi>=0.59b0,<1",
+  "opentelemetry-instrumentation-httpx>=0.59b0,<1",
+  "opentelemetry-instrumentation-openai-v2>=2,<3",
+  "opentelemetry-util-genai==0.4b0",
+  "agentevals>=0.0.9,<0.1",
+  "prometheus-client>=0.22,<1",
+  "pyyaml>=6,<7",
+]
+
+[dependency-groups]
+dev = ["httpx>=0.28,<1", "pytest>=8,<10", "ruff>=0.12,<1"]
+
+[project.scripts]
+agentlens = "agentlens.cli:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/agentlens"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+target-version = "py312"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP"]
+
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true
+
+[tool.uv.sources]
+torch = [{ index = "pytorch-cpu", marker = "sys_platform == 'linux' or sys_platform == 'win32'" }]
+

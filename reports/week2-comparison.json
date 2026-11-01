@@ -1,0 +1,16 @@
+{
+  "baseline": "week1-rescored",
+  "candidate": "week2-mcp-sse",
+  "cases": [
+    {
+      "case_id": "pool-exhaustion-01",
+      "change": "unchanged",
+      "baseline_outcome": "passed",
+      "candidate_outcome": "passed",
+      "baseline_run_id": "057292e4-d583-421d-9357-b04d5dce1dfb",
+      "candidate_run_id": "1a17ebce-1c7d-476b-8bed-c95f4070608c",
+      "input_token_delta": 48,
+      "output_token_delta": 28
+    }
+  ]
+}

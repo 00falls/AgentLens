@@ -1,0 +1,1 @@
+{"case_id": "pool-exhaustion-retrieval-01", "project_id": "project-a", "query": "order-api HikariPool connection acquisition timed out after 30000ms; active=20 idle=0 max=20，db_pool_waiters 升高，如何排查？", "relevant_chunk_ids": ["pool-exhaustion--s01", "pool-exhaustion--s02"]}

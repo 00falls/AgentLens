@@ -1,0 +1,1522 @@
+{
+  "schema_version": 2,
+  "name": "week6-baseline",
+  "started_at": "2026-11-01T02:58:51.560591+00:00",
+  "finished_at": "2026-11-01T02:58:57.212884+00:00",
+  "dataset_sha256": "913c65c6994772b7060f31ae1f1ef446eedec0c3838a532119b3f8b897a5f3c3",
+  "evaluator_sha256": "f67de48943e3d3325d968ba047724ca79b90b518ba330603ebac11bee7fe0612",
+  "agentevals_version": "0.0.9",
+  "dataset_name": "dev.jsonl",
+  "judge_config": {
+    "rubric_sha256": "f711e74bf81d25b25599775df4e98190786f3461d54905fbebcd122b7e104d3b",
+    "judge_code_sha256": "536d519e4fbd6301f9f4ef73e78fd4d5502e7473890840f2eef918be44a741b9",
+    "requested_model": "agentlens-agent",
+    "configured_upstream_model": "openai/deepseek-flash",
+    "temperature": 0,
+    "langchain_openai": "1.7.3",
+    "human_calibrated": false,
+    "role": "advisory"
+  },
+  "recorded_run": true,
+  "summary": {
+    "selected": 1,
+    "passed": 0,
+    "failed": 1,
+    "errors": 0,
+    "judge_errors": 0,
+    "complete": true,
+    "pass_rate": 0.0
+  },
+  "cases": [
+    {
+      "case_id": "pool-exhaustion-01",
+      "critical": true,
+      "scenario_group": "pool-exhaustion",
+      "split": "dev",
+      "outcome": "failed",
+      "evaluation": {
+        "passed": false,
+        "checks": {
+          "project_scope": true,
+          "status": true,
+          "required_tools": true,
+          "query_scope": true,
+          "cause_terms": true,
+          "required_evidence": true,
+          "valid_citations": true,
+          "outside_window_excluded": true,
+          "token_usage_recorded": true,
+          "runbook_retrieved": false,
+          "runbook_cited": false,
+          "knowledge_project_scope": true,
+          "trajectory_required_tools": true,
+          "trajectory_forbidden_tools": true,
+          "trajectory_parameters": true,
+          "trajectory_order": true
+        },
+        "failure_reasons": [
+          "runbook_retrieved",
+          "runbook_cited"
+        ],
+        "dimensions": {
+          "trajectory": true,
+          "retrieval": false,
+          "root_cause": true,
+          "citations": false,
+          "task_completion": true
+        },
+        "trajectory": {
+          "checks": {
+            "trajectory_required_tools": true,
+            "trajectory_forbidden_tools": true,
+            "trajectory_parameters": true,
+            "trajectory_order": true
+          },
+          "matcher": "agentevals.trajectory.match",
+          "required_tool_match": {
+            "key": "trajectory_superset_match",
+            "score": true,
+            "comment": null,
+            "metadata": null
+          },
+          "parameter_match": {
+            "key": "trajectory_unordered_match",
+            "score": true,
+            "comment": null,
+            "metadata": null
+          },
+          "precedence": {
+            "search_logs -> search_runbooks": true,
+            "query_metrics -> search_runbooks": true
+          }
+        }
+      },
+      "error": null,
+      "run": {
+        "run_id": "302c48a7-9420-4b60-9ee6-477f6da3e6f0",
+        "thread_id": "48a506d2-e377-4fec-b6ad-22aeeb1721c0",
+        "source_run_id": null,
+        "checkpoint_id": "1f1d59d9-ef42-6634-8006-ed56c80d954c",
+        "trace_id": "8251107124586263f3ceba36f2bf34c3",
+        "span_id": "3c17be045dab38a0",
+        "request_span_id": "5d4762f918e684d7",
+        "interrupt": null,
+        "project_id": "project-a",
+        "status": "diagnosed",
+        "input": "请调查 order-api 在 2026-10-30T14:00:00+08:00 至 2026-10-30T14:15:00+08:00（结束时间不包含） 的服务异常，结合日志和指标给出结论与证据。请检索相关排障手册，引用支持检查建议的手册片段。",
+        "output": {
+          "status": "diagnosed",
+          "cause_summary": "在 2026-10-30 14:00–14:15（+08:00）窗口内，order-api 出现数据库连接池耗尽：14:02 的 ERROR 日志显示 HikariPool 获取连接超时 30000ms，active=20、idle=0、max=20；14:03 的指标显示 db_pool_active=20 已达到 db_pool_max=20，db_pool_waiters=48 个请求在排队，http_5xx_ratio 升至 0.38。日志与指标相互印证，说明连接池容量被占满、请求排队等待连接并超时，进而导致 5xx 比例升高。至于连接被长期占用的具体原因（慢 SQL、长事务、连接泄漏或下游数据库变慢），本次证据尚不能确定；手册 db-lock-wait--s01 也明确指出，只有池满日志无法确认锁为根因，需要 pg_stat_activity 的 wait_event_type=Lock 等数据佐证。本次未观察到 payment-api 超时相关日志或 payment_api_p95_ms 指标，因此下游超时路径（downstream-timeout--s01）暂无现场证据支持。",
+          "evidence_ids": [
+            "pool-exhaustion-log-1",
+            "pool-exhaustion-metric-1",
+            "pool-exhaustion-metric-2",
+            "pool-exhaustion-metric-3",
+            "pool-exhaustion-metric-4",
+            "db-lock-wait--s01",
+            "downstream-timeout--s01",
+            "experience-40452d3e-6892-46e4-839d-a3ba9246c409"
+          ],
+          "unknowns": [
+            "连接被长期占用的根因未证实：缺少慢查询日志、事务耗时、数据库侧会话状态与锁等待数据",
+            "未确认是否存在连接泄漏（连接借出后未归还）",
+            "未确认数据库实例自身是否出现性能退化或连接数上限限制",
+            "未获取到 order-api 的请求量/QPS 与线程池指标，无法判断是流量突增还是连接持有时间变长",
+            "WARN 级别日志在窗口内为空，无法从日志侧观察排队或重试过程",
+            "历史经验 experience-40452d3e 为合成演示记录，其适用条件明确说明慢 SQL、泄漏等深层原因尚未确认，不能作为本次根因证据"
+          ],
+          "next_steps": [
+            "按手册 db-lock-wait--s01：查询 14:00–14:15 窗口 pg_stat_activity 的 wait_event_type、事务年龄与阻塞关系，确认是否存在锁等待",
+            "查询数据库侧慢查询日志与长事务，确认连接被长期占用的原因",
+            "检查 order-api 连接借出/归还埋点与线程栈，排查连接泄漏或未关闭的 ResultSet/Statement",
+            "对比该窗口前后的请求量（QPS）与平均响应时间，区分流量突增与连接持有时间变长",
+            "检查 HikariCP 配置（maxPoolSize、connectionTimeout、leakDetectionThreshold）是否与当前负载匹配",
+            "若怀疑下游影响，按手册 downstream-timeout--s01 获取 payment-api 同窗口日志与 payment_api_p95_ms 指标，对齐超时阈值与调用链",
+            "临时缓解可考虑限流或扩容连接池，但需先确认数据库侧承载能力；本次未执行任何生产变更"
+          ]
+        },
+        "versions": {
+          "prompt_sha256": "88f17f7391d6b81d4483b0d8a13afb16efe0e13ba4b527af8264ebb943530b88",
+          "dataset_sha256": "46a32fe8ba9ef987f67732c38001ecd09abab8350f7bbd960a528beb704dc4c0",
+          "requested_model": "agentlens-agent",
+          "configured_upstream_model": "openai/deepseek-flash",
+          "tool_transport": "mcp/streamable-http",
+          "checkpointer": "AsyncPostgresSaver",
+          "graph_version": "week4-v1",
+          "tool_schemas_sha256": "0309121ce71bf02ee65170bcba595d3d1ed9ae09909cef2fe471243a71aa8371",
+          "retrieval": {
+            "corpus_sha256": "023114864f127896cfc77ae214368e69d1dcfb883b0395c7c363db162c1a03ca",
+            "chunks_sha256": "b6a49d5e1a286048cf707277fb38f796b74ab0a6bd946245fa74ee64ea24fdd7",
+            "chunking": "authored-h2-v1",
+            "embedding_model": "BAAI/bge-small-zh-v1.5",
+            "embedding_revision": "7999e1d3359715c523056ef9478215996d62a620",
+            "dimensions": 512,
+            "normalize": true,
+            "query_prefix": "为这个句子生成表示以用于检索相关文章：",
+            "max_seq_length": 512,
+            "artifacts_sha256": "9e8d41feee144813910c7db23ca5505bcf66139811f6f1521db1265e1bed016d",
+            "strategy": "vector",
+            "top_k": 5,
+            "candidate_k": 10,
+            "rrf_offset": 60
+          }
+        },
+        "usage": {
+          "input_tokens": 11812,
+          "output_tokens": 1362
+        },
+        "error": null,
+        "started_at": "2026-11-01T10:40:20.864770+08:00",
+        "finished_at": "2026-11-01T10:40:37.863435+08:00",
+        "steps": [
+          {
+            "sequence": 1,
+            "kind": "model",
+            "name": "agentlens-agent",
+            "input": {
+              "messages": [
+                {
+                  "content": "请调查 order-api 在 2026-10-30T14:00:00+08:00 至 2026-10-30T14:15:00+08:00（结束时间不包含） 的服务异常，结合日志和指标给出结论与证据。请检索相关排障手册，引用支持检查建议的手册片段。",
+                  "additional_kwargs": {},
+                  "response_metadata": {},
+                  "type": "human",
+                  "name": null,
+                  "id": "fd271fe7-a0d6-4b58-a0bb-a9165128c89a"
+                }
+              ]
+            },
+            "output": {
+              "content": "我先并行查询 order-api 的日志、指标和排障手册。",
+              "tool_calls": [
+                {
+                  "name": "search_logs",
+                  "args": {
+                    "service": "order-api",
+                    "start_time": "2026-10-30T14:00:00+08:00",
+                    "end_time": "2026-10-30T14:15:00+08:00",
+                    "level": "ERROR",
+                    "limit": 100
+                  },
+                  "id": "call_00_QvmcOiAzyb2fQ5Y6uEYe5031",
+                  "type": "tool_call"
+                },
+                {
+                  "name": "query_metrics",
+                  "args": {
+                    "service": "order-api",
+                    "start_time": "2026-10-30T14:00:00+08:00",
+                    "end_time": "2026-10-30T14:15:00+08:00",
+                    "limit": 100
+                  },
+                  "id": "call_01_Xu0K8wscgLD5QRjnXeXc2319",
+                  "type": "tool_call"
+                },
+                {
+                  "name": "search_runbooks",
+                  "args": {
+                    "query": "order-api 服务异常 错误日志 排查",
+                    "top_k": 5
+                  },
+                  "id": "call_02_Ch60egWaaiEExkQeLSbt6675",
+                  "type": "tool_call"
+                }
+              ],
+              "usage": {
+                "input_tokens": 1301,
+                "output_tokens": 314,
+                "total_tokens": 1615,
+                "input_token_details": {
+                  "cache_read": 1152
+                },
+                "output_token_details": {}
+              },
+              "response_model": "agentlens-agent"
+            },
+            "error": null,
+            "duration_ms": 3076.13,
+            "span_id": "5bd8e295ace9ea31"
+          },
+          {
+            "sequence": 2,
+            "kind": "tool",
+            "name": "search_logs",
+            "input": {
+              "service": "order-api",
+              "start_time": "2026-10-30T14:00:00+08:00",
+              "end_time": "2026-10-30T14:15:00+08:00",
+              "level": "ERROR",
+              "limit": 100
+            },
+            "output": {
+              "logs": [
+                {
+                  "evidence_id": "pool-exhaustion-log-1",
+                  "timestamp": "2026-10-30T14:02:00+08:00",
+                  "service": "order-api",
+                  "level": "ERROR",
+                  "message": "HikariPool connection acquisition timed out after 30000ms; active=20, idle=0, max=20"
+                }
+              ]
+            },
+            "error": null,
+            "duration_ms": 167.93,
+            "span_id": "efdaac28b984c120"
+          },
+          {
+            "sequence": 3,
+            "kind": "tool",
+            "name": "query_metrics",
+            "input": {
+              "service": "order-api",
+              "start_time": "2026-10-30T14:00:00+08:00",
+              "end_time": "2026-10-30T14:15:00+08:00",
+              "limit": 100
+            },
+            "output": {
+              "metrics": [
+                {
+                  "evidence_id": "pool-exhaustion-metric-1",
+                  "timestamp": "2026-10-30T14:03:00+08:00",
+                  "service": "order-api",
+                  "name": "db_pool_active",
+                  "value": 20.0,
+                  "unit": "connections"
+                },
+                {
+                  "evidence_id": "pool-exhaustion-metric-2",
+                  "timestamp": "2026-10-30T14:03:00+08:00",
+                  "service": "order-api",
+                  "name": "db_pool_max",
+                  "value": 20.0,
+                  "unit": "connections"
+                },
+                {
+                  "evidence_id": "pool-exhaustion-metric-3",
+                  "timestamp": "2026-10-30T14:03:00+08:00",
+                  "service": "order-api",
+                  "name": "db_pool_waiters",
+                  "value": 48.0,
+                  "unit": "requests"
+                },
+                {
+                  "evidence_id": "pool-exhaustion-metric-4",
+                  "timestamp": "2026-10-30T14:03:00+08:00",
+                  "service": "order-api",
+                  "name": "http_5xx_ratio",
+                  "value": 0.38,
+                  "unit": "ratio"
+                }
+              ]
+            },
+            "error": null,
+            "duration_ms": 11.12,
+            "span_id": "b03139a56739e7bc"
+          },
+          {
+            "sequence": 4,
+            "kind": "tool",
+            "name": "search_runbooks",
+            "input": {
+              "query": "order-api 服务异常 错误日志 排查",
+              "top_k": 5
+            },
+            "output": {
+              "chunks": [
+                {
+                  "evidence_id": "healthy--s02",
+                  "document_id": "healthy",
+                  "project_id": "project-a",
+                  "source": "datasets/runbooks/healthy.md",
+                  "revision": "1ed1a923f462fa1ce383907ff5ee58dc0f13a7b7d5e0b7d92db5796b809897c2",
+                  "content": "order-api 当前窗口正常的调查方法\n补充问题\n\n请用户核对服务名、时区、实例与故障发生时间。扩大时间窗需要明确新的查询范围。不要使用窗口外的错误替代本窗口证据，也不要凭正常样本否定用户报告。",
+                  "ranks": {
+                    "vector": 1
+                  },
+                  "rrf_score": 0.01639344262295082,
+                  "retrieval_manifest": {
+                    "corpus_sha256": "023114864f127896cfc77ae214368e69d1dcfb883b0395c7c363db162c1a03ca",
+                    "chunks_sha256": "b6a49d5e1a286048cf707277fb38f796b74ab0a6bd946245fa74ee64ea24fdd7",
+                    "chunking": "authored-h2-v1",
+                    "embedding_model": "BAAI/bge-small-zh-v1.5",
+                    "embedding_revision": "7999e1d3359715c523056ef9478215996d62a620",
+                    "dimensions": 512,
+                    "normalize": true,
+                    "query_prefix": "为这个句子生成表示以用于检索相关文章：",
+                    "max_seq_length": 512,
+                    "artifacts_sha256": "9e8d41feee144813910c7db23ca5505bcf66139811f6f1521db1265e1bed016d",
+                    "strategy": "vector",
+                    "top_k": 5,
+                    "candidate_k": 10,
+                    "rrf_offset": 60
+                  }
+                },
+                {
+                  "evidence_id": "healthy--s01",
+                  "document_id": "healthy",
+                  "project_id": "project-a",
+                  "source": "datasets/runbooks/healthy.md",
+                  "revision": "1ed1a923f462fa1ce383907ff5ee58dc0f13a7b7d5e0b7d92db5796b809897c2",
+                  "content": "order-api 当前窗口正常的调查方法\n检查观测范围\n\norder-api 在指定窗口只有 status=200，http_5xx_ratio=0 且 p95_latency_ms 正常时，应说明当前范围未发现异常。一个正常请求不能证明所有实例健康；确认日志覆盖实例与指标聚合范围。",
+                  "ranks": {
+                    "vector": 2
+                  },
+                  "rrf_score": 0.016129032258064516,
+                  "retrieval_manifest": {
+                    "corpus_sha256": "023114864f127896cfc77ae214368e69d1dcfb883b0395c7c363db162c1a03ca",
+                    "chunks_sha256": "b6a49d5e1a286048cf707277fb38f796b74ab0a6bd946245fa74ee64ea24fdd7",
+                    "chunking": "authored-h2-v1",
+                    "embedding_model": "BAAI/bge-small-zh-v1.5",
+                    "embedding_revision": "7999e1d3359715c523056ef9478215996d62a620",
+                    "dimensions": 512,
+                    "normalize": true,
+                    "query_prefix": "为这个句子生成表示以用于检索相关文章：",
+                    "max_seq_length": 512,
+                    "artifacts_sha256": "9e8d41feee144813910c7db23ca5505bcf66139811f6f1521db1265e1bed016d",
+                    "strategy": "vector",
+                    "top_k": 5,
+                    "candidate_k": 10,
+                    "rrf_offset": 60
+                  }
+                },
+                {
+                  "evidence_id": "db-lock-wait--s01",
+                  "document_id": "db-lock-wait",
+                  "project_id": "project-a",
+                  "source": "datasets/runbooks/db-lock-wait.md",
+                  "revision": "143c6616c0c0b0f475197bb8f89ba40878d34b57e0388266eb3dfa067f9e7103",
+                  "content": "order-api PostgreSQL 锁等待\n识别阻塞事务\n\norder-api SQL 延迟伴随 pg_stat_activity 的 wait_event_type=Lock 时，查询阻塞关系、事务年龄和等待语句。连接池 active 上升可能是锁等待的后果，只有池满日志无法确认锁为根因。",
+                  "ranks": {
+                    "vector": 3
+                  },
+                  "rrf_score": 0.015873015873015872,
+                  "retrieval_manifest": {
+                    "corpus_sha256": "023114864f127896cfc77ae214368e69d1dcfb883b0395c7c363db162c1a03ca",
+                    "chunks_sha256": "b6a49d5e1a286048cf707277fb38f796b74ab0a6bd946245fa74ee64ea24fdd7",
+                    "chunking": "authored-h2-v1",
+                    "embedding_model": "BAAI/bge-small-zh-v1.5",
+                    "embedding_revision": "7999e1d3359715c523056ef9478215996d62a620",
+                    "dimensions": 512,
+                    "normalize": true,
+                    "query_prefix": "为这个句子生成表示以用于检索相关文章：",
+                    "max_seq_length": 512,
+                    "artifacts_sha256": "9e8d41feee144813910c7db23ca5505bcf66139811f6f1521db1265e1bed016d",
+                    "strategy": "vector",
+                    "top_k": 5,
+                    "candidate_k": 10,
+                    "rrf_offset": 60
+                  }
+                },
+                {
+                  "evidence_id": "downstream-timeout--s02",
+                  "document_id": "downstream-timeout",
+                  "project_id": "project-a",
+                  "source": "datasets/runbooks/downstream-timeout.md",
+                  "revision": "171fed5ff5047abba1281eb01d2884610bdc737087d6873b9ba1223cafa24a6d",
+                  "content": "order-api 调用 payment-api 超时\n继续查询下游\n\n获取 payment-api 同窗口日志、线程池和依赖指标，区分排队与处理缓慢。重试会放大下游负载；建议前先确认现有重试次数、请求幂等性和总体超时预算。当前工具只有查询能力，建议不代表已经执行。",
+                  "ranks": {
+                    "vector": 4
+                  },
+                  "rrf_score": 0.015625,
+                  "retrieval_manifest": {
+                    "corpus_sha256": "023114864f127896cfc77ae214368e69d1dcfb883b0395c7c363db162c1a03ca",
+                    "chunks_sha256": "b6a49d5e1a286048cf707277fb38f796b74ab0a6bd946245fa74ee64ea24fdd7",
+                    "chunking": "authored-h2-v1",
+                    "embedding_model": "BAAI/bge-small-zh-v1.5",
+                    "embedding_revision": "7999e1d3359715c523056ef9478215996d62a620",
+                    "dimensions": 512,
+                    "normalize": true,
+                    "query_prefix": "为这个句子生成表示以用于检索相关文章：",
+                    "max_seq_length": 512,
+                    "artifacts_sha256": "9e8d41feee144813910c7db23ca5505bcf66139811f6f1521db1265e1bed016d",
+                    "strategy": "vector",
+                    "top_k": 5,
+                    "candidate_k": 10,
+                    "rrf_offset": 60
+                  }
+                },
+                {
+                  "evidence_id": "downstream-timeout--s01",
+                  "document_id": "downstream-timeout",
+                  "project_id": "project-a",
+                  "source": "datasets/runbooks/downstream-timeout.md",
+                  "revision": "171fed5ff5047abba1281eb01d2884610bdc737087d6873b9ba1223cafa24a6d",
+                  "content": "order-api 调用 payment-api 超时\n识别依赖延迟\n\norder-api 的 HTTP 504、payment-api timed out 与 payment_api_p95_ms 同时上升，支持下游延迟影响上游。对齐请求时间、超时阈值和调用链，避免把上游错误率直接解释为数据库故障。",
+                  "ranks": {
+                    "vector": 5
+                  },
+                  "rrf_score": 0.015384615384615385,
+                  "retrieval_manifest": {
+                    "corpus_sha256": "023114864f127896cfc77ae214368e69d1dcfb883b0395c7c363db162c1a03ca",
+                    "chunks_sha256": "b6a49d5e1a286048cf707277fb38f796b74ab0a6bd946245fa74ee64ea24fdd7",
+                    "chunking": "authored-h2-v1",
+                    "embedding_model": "BAAI/bge-small-zh-v1.5",
+                    "embedding_revision": "7999e1d3359715c523056ef9478215996d62a620",
+                    "dimensions": 512,
+                    "normalize": true,
+                    "query_prefix": "为这个句子生成表示以用于检索相关文章：",
+                    "max_seq_length": 512,
+                    "artifacts_sha256": "9e8d41feee144813910c7db23ca5505bcf66139811f6f1521db1265e1bed016d",
+                    "strategy": "vector",
+                    "top_k": 5,
+                    "candidate_k": 10,
+                    "rrf_offset": 60
+                  }
+                }
+              ]
+            },
+            "error": null,
+            "duration_ms": 7827.13,
+            "span_id": "7c199a5027c263d8"
+          },
+          {
+            "sequence": 5,
+            "kind": "model",
+            "name": "agentlens-agent",
+            "input": {
+              "messages": [
+                {
+                  "content": "请调查 order-api 在 2026-10-30T14:00:00+08:00 至 2026-10-30T14:15:00+08:00（结束时间不包含） 的服务异常，结合日志和指标给出结论与证据。请检索相关排障手册，引用支持检查建议的手册片段。",
+                  "additional_kwargs": {},
+                  "response_metadata": {},
+                  "type": "human",
+                  "name": null,
+                  "id": "fd271fe7-a0d6-4b58-a0bb-a9165128c89a"
+                },
+                {
+                  "content": "我先并行查询 order-api 的日志、指标和排障手册。",
+                  "additional_kwargs": {},
+                  "response_metadata": {
+                    "model_provider": "openai",
+                    "finish_reason": "tool_calls",
+                    "model_name": "agentlens-agent",
+                    "system_fingerprint": "bc19ba97cbe016479903222bb1578db6"
+                  },
+                  "type": "ai",
+                  "name": null,
+                  "id": "lc_run--01a194fa-b5f9-7536-acfe-f7f4aef7fe28",
+                  "tool_calls": [
+                    {
+                      "name": "search_logs",
+                      "args": {
+                        "service": "order-api",
+                        "start_time": "2026-10-30T14:00:00+08:00",
+                        "end_time": "2026-10-30T14:15:00+08:00",
+                        "level": "ERROR",
+                        "limit": 100
+                      },
+                      "id": "call_00_QvmcOiAzyb2fQ5Y6uEYe5031",
+                      "type": "tool_call"
+                    },
+                    {
+                      "name": "query_metrics",
+                      "args": {
+                        "service": "order-api",
+                        "start_time": "2026-10-30T14:00:00+08:00",
+                        "end_time": "2026-10-30T14:15:00+08:00",
+                        "limit": 100
+                      },
+                      "id": "call_01_Xu0K8wscgLD5QRjnXeXc2319",
+                      "type": "tool_call"
+                    },
+                    {
+                      "name": "search_runbooks",
+                      "args": {
+                        "query": "order-api 服务异常 错误日志 排查",
+                        "top_k": 5
+                      },
+                      "id": "call_02_Ch60egWaaiEExkQeLSbt6675",
+                      "type": "tool_call"
+                    }
+                  ],
+                  "invalid_tool_calls": [],
+                  "usage_metadata": {
+                    "input_tokens": 1301,
+                    "output_tokens": 314,
+                    "total_tokens": 1615,
+                    "input_token_details": {
+                      "cache_read": 1152
+                    },
+                    "output_token_details": {}
+                  }
+                },
+                {
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "{\n  \"logs\": [\n    {\n      \"evidence_id\": \"pool-exhaustion-log-1\",\n      \"timestamp\": \"2026-10-30T14:02:00+08:00\",\n      \"service\": \"order-api\",\n      \"level\": \"ERROR\",\n      \"message\": \"HikariPool connection acquisition timed out after 30000ms; active=20, idle=0, max=20\"\n    }\n  ]\n}",
+                      "id": "lc_87a21482-b802-41fd-9f8a-e40cbc1150fa"
+                    }
+                  ],
+                  "additional_kwargs": {},
+                  "response_metadata": {},
+                  "type": "tool",
+                  "name": "search_logs",
+                  "id": "fdd6c1e5-ad10-4e35-87fc-19833d3892a5",
+                  "tool_call_id": "call_00_QvmcOiAzyb2fQ5Y6uEYe5031",
+                  "artifact": {
+                    "structured_content": {
+                      "logs": [
+                        {
+                          "evidence_id": "pool-exhaustion-log-1",
+                          "timestamp": "2026-10-30T14:02:00+08:00",
+                          "service": "order-api",
+                          "level": "ERROR",
+                          "message": "HikariPool connection acquisition timed out after 30000ms; active=20, idle=0, max=20"
+                        }
+                      ]
+                    }
+                  },
+                  "status": "success"
+                },
+                {
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "{\n  \"metrics\": [\n    {\n      \"evidence_id\": \"pool-exhaustion-metric-1\",\n      \"timestamp\": \"2026-10-30T14:03:00+08:00\",\n      \"service\": \"order-api\",\n      \"name\": \"db_pool_active\",\n      \"value\": 20.0,\n      \"unit\": \"connections\"\n    },\n    {\n      \"evidence_id\": \"pool-exhaustion-metric-2\",\n      \"timestamp\": \"2026-10-30T14:03:00+08:00\",\n      \"service\": \"order-api\",\n      \"name\": \"db_pool_max\",\n      \"value\": 20.0,\n      \"unit\": \"connections\"\n    },\n    {\n      \"evidence_id\": \"pool-exhaustion-metric-3\",\n      \"timestamp\": \"2026-10-30T14:03:00+08:00\",\n      \"service\": \"order-api\",\n      \"name\": \"db_pool_waiters\",\n      \"value\": 48.0,\n      \"unit\": \"requests\"\n    },\n    {\n      \"evidence_id\": \"pool-exhaustion-metric-4\",\n      \"timestamp\": \"2026-10-30T14:03:00+08:00\",\n      \"service\": \"order-api\",\n      \"name\": \"http_5xx_ratio\",\n      \"value\": 0.38,\n      \"unit\": \"ratio\"\n    }\n  ]\n}",
+                      "id": "lc_ae2dbf49-6ac5-4841-a0f0-6399cffc1f70"
+                    }
+                  ],
+                  "additional_kwargs": {},
+                  "response_metadata": {},
+                  "type": "tool",
+                  "name": "query_metrics",
+                  "id": "5a1bbfa4-dc8d-4252-a03f-4cff3f8bb725",
+                  "tool_call_id": "call_01_Xu0K8wscgLD5QRjnXeXc2319",
+                  "artifact": {
+                    "structured_content": {
+                      "metrics": [
+                        {
+                          "evidence_id": "pool-exhaustion-metric-1",
+                          "timestamp": "2026-10-30T14:03:00+08:00",
+                          "service": "order-api",
+                          "name": "db_pool_active",
+                          "value": 20.0,
+                          "unit": "connections"
+                        },
+                        {
+                          "evidence_id": "pool-exhaustion-metric-2",
+                          "timestamp": "2026-10-30T14:03:00+08:00",
+                          "service": "order-api",
+                          "name": "db_pool_max",
+                          "value": 20.0,
+                          "unit": "connections"
+                        },
+                        {
+                          "evidence_id": "pool-exhaustion-metric-3",
+                          "timestamp": "2026-10-30T14:03:00+08:00",
+                          "service": "order-api",
+                          "name": "db_pool_waiters",
+                          "value": 48.0,
+                          "unit": "requests"
+                        },
+                        {
+                          "evidence_id": "pool-exhaustion-metric-4",
+                          "timestamp": "2026-10-30T14:03:00+08:00",
+                          "service": "order-api",
+                          "name": "http_5xx_ratio",
+                          "value": 0.38,
+                          "unit": "ratio"
+                        }
+                      ]
+                    }
+                  },
+                  "status": "success"
+                },
+                {
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "{\n  \"chunks\": [\n    {\n      \"evidence_id\": \"healthy--s02\",\n      \"document_id\": \"healthy\",\n      \"project_id\": \"project-a\",\n      \"source\": \"datasets/runbooks/healthy.md\",\n      \"revision\": \"1ed1a923f462fa1ce383907ff5ee58dc0f13a7b7d5e0b7d92db5796b809897c2\",\n      \"content\": \"order-api 当前窗口正常的调查方法\\n补充问题\\n\\n请用户核对服务名、时区、实例与故障发生时间。扩大时间窗需要明确新的查询范围。不要使用窗口外的错误替代本窗口证据，也不要凭正常样本否定用户报告。\",\n      \"ranks\": {\n        \"vector\": 1\n      },\n      \"rrf_score\": 0.01639344262295082,\n      \"retrieval_manifest\": {\n        \"corpus_sha256\": \"023114864f127896cfc77ae214368e69d1dcfb883b0395c7c363db162c1a03ca\",\n        \"chunks_sha256\": \"b6a49d5e1a286048cf707277fb38f796b74ab0a6bd946245fa74ee64ea24fdd7\",\n        \"chunking\": \"authored-h2-v1\",\n        \"embedding_model\": \"BAAI/bge-small-zh-v1.5\",\n        \"embedding_revision\": \"7999e1d3359715c523056ef9478215996d62a620\",\n        \"dimensions\": 512,\n        \"normalize\": true,\n        \"query_prefix\": \"为这个句子生成表示以用于检索相关文章：\",\n        \"max_seq_length\": 512,\n        \"artifacts_sha256\": \"9e8d41feee144813910c7db23ca5505bcf66139811f6f1521db1265e1bed016d\",\n        \"strategy\": \"vector\",\n        \"top_k\": 5,\n        \"candidate_k\": 10,\n        \"rrf_offset\": 60\n      }\n    },\n    {\n      \"evidence_id\": \"healthy--s01\",\n      \"document_id\": \"healthy\",\n      \"project_id\": \"project-a\",\n      \"source\": \"datasets/runbooks/healthy.md\",\n      \"revision\": \"1ed1a923f462fa1ce383907ff5ee58dc0f13a7b7d5e0b7d92db5796b809897c2\",\n      \"content\": \"order-api 当前窗口正常的调查方法\\n检查观测范围\\n\\norder-api 在指定窗口只有 status=200，http_5xx_ratio=0 且 p95_latency_ms 正常时，应说明当前范围未发现异常。一个正常请求不能证明所有实例健康；确认日志覆盖实例与指标聚合范围。\",\n      \"ranks\": {\n        \"vector\": 2\n      },\n      \"rrf_score\": 0.016129032258064516,\n      \"retrieval_manifest\": {\n        \"corpus_sha256\": \"023114864f127896cfc77ae214368e69d1dcfb883b0395c7c363db162c1a03ca\",\n        \"chunks_sha256\": \"b6a49d5e1a286048cf707277fb38f796b74ab0a6bd946245fa74ee64ea24fdd7\",\n        \"chunking\": \"authored-h2-v1\",\n        \"embedding_model\": \"BAAI/bge-small-zh-v1.5\",\n        \"embedding_revision\": \"7999e1d3359715c523056ef9478215996d62a620\",\n        \"dimensions\": 512,\n        \"normalize\": true,\n        \"query_prefix\": \"为这个句子生成表示以用于检索相关文章：\",\n        \"max_seq_length\": 512,\n        \"artifacts_sha256\": \"9e8d41feee144813910c7db23ca5505bcf66139811f6f1521db1265e1bed016d\",\n        \"strategy\": \"vector\",\n        \"top_k\": 5,\n        \"candidate_k\": 10,\n        \"rrf_offset\": 60\n      }\n    },\n    {\n      \"evidence_id\": \"db-lock-wait--s01\",\n      \"document_id\": \"db-lock-wait\",\n      \"project_id\": \"project-a\",\n      \"source\": \"datasets/runbooks/db-lock-wait.md\",\n      \"revision\": \"143c6616c0c0b0f475197bb8f89ba40878d34b57e0388266eb3dfa067f9e7103\",\n      \"content\": \"order-api PostgreSQL 锁等待\\n识别阻塞事务\\n\\norder-api SQL 延迟伴随 pg_stat_activity 的 wait_event_type=Lock 时，查询阻塞关系、事务年龄和等待语句。连接池 active 上升可能是锁等待的后果，只有池满日志无法确认锁为根因。\",\n      \"ranks\": {\n        \"vector\": 3\n      },\n      \"rrf_score\": 0.015873015873015872,\n      \"retrieval_manifest\": {\n        \"corpus_sha256\": \"023114864f127896cfc77ae214368e69d1dcfb883b0395c7c363db162c1a03ca\",\n        \"chunks_sha256\": \"b6a49d5e1a286048cf707277fb38f796b74ab0a6bd946245fa74ee64ea24fdd7\",\n        \"chunking\": \"authored-h2-v1\",\n        \"embedding_model\": \"BAAI/bge-small-zh-v1.5\",\n        \"embedding_revision\": \"7999e1d3359715c523056ef9478215996d62a620\",\n        \"dimensions\": 512,\n        \"normalize\": true,\n        \"query_prefix\": \"为这个句子生成表示以用于检索相关文章：\",\n        \"max_seq_length\": 512,\n        \"artifacts_sha256\": \"9e8d41feee144813910c7db23ca5505bcf66139811f6f1521db1265e1bed016d\",\n        \"strategy\": \"vector\",\n        \"top_k\": 5,\n        \"candidate_k\": 10,\n        \"rrf_offset\": 60\n      }\n    },\n    {\n      \"evidence_id\": \"downstream-timeout--s02\",\n      \"document_id\": \"downstream-timeout\",\n      \"project_id\": \"project-a\",\n      \"source\": \"datasets/runbooks/downstream-timeout.md\",\n      \"revision\": \"171fed5ff5047abba1281eb01d2884610bdc737087d6873b9ba1223cafa24a6d\",\n      \"content\": \"order-api 调用 payment-api 超时\\n继续查询下游\\n\\n获取 payment-api 同窗口日志、线程池和依赖指标，区分排队与处理缓慢。重试会放大下游负载；建议前先确认现有重试次数、请求幂等性和总体超时预算。当前工具只有查询能力，建议不代表已经执行。\",\n      \"ranks\": {\n        \"vector\": 4\n      },\n      \"rrf_score\": 0.015625,\n      \"retrieval_manifest\": {\n        \"corpus_sha256\": \"023114864f127896cfc77ae214368e69d1dcfb883b0395c7c363db162c1a03ca\",\n        \"chunks_sha256\": \"b6a49d5e1a286048cf707277fb38f796b74ab0a6bd946245fa74ee64ea24fdd7\",\n        \"chunking\": \"authored-h2-v1\",\n        \"embedding_model\": \"BAAI/bge-small-zh-v1.5\",\n        \"embedding_revision\": \"7999e1d3359715c523056ef9478215996d62a620\",\n        \"dimensions\": 512,\n        \"normalize\": true,\n        \"query_prefix\": \"为这个句子生成表示以用于检索相关文章：\",\n        \"max_seq_length\": 512,\n        \"artifacts_sha256\": \"9e8d41feee144813910c7db23ca5505bcf66139811f6f1521db1265e1bed016d\",\n        \"strategy\": \"vector\",\n        \"top_k\": 5,\n        \"candidate_k\": 10,\n        \"rrf_offset\": 60\n      }\n    },\n    {\n      \"evidence_id\": \"downstream-timeout--s01\",\n      \"document_id\": \"downstream-timeout\",\n      \"project_id\": \"project-a\",\n      \"source\": \"datasets/runbooks/downstream-timeout.md\",\n      \"revision\": \"171fed5ff5047abba1281eb01d2884610bdc737087d6873b9ba1223cafa24a6d\",\n      \"content\": \"order-api 调用 payment-api 超时\\n识别依赖延迟\\n\\norder-api 的 HTTP 504、payment-api timed out 与 payment_api_p95_ms 同时上升，支持下游延迟影响上游。对齐请求时间、超时阈值和调用链，避免把上游错误率直接解释为数据库故障。\",\n      \"ranks\": {\n        \"vector\": 5\n      },\n      \"rrf_score\": 0.015384615384615385,\n      \"retrieval_manifest\": {\n        \"corpus_sha256\": \"023114864f127896cfc77ae214368e69d1dcfb883b0395c7c363db162c1a03ca\",\n        \"chunks_sha256\": \"b6a49d5e1a286048cf707277fb38f796b74ab0a6bd946245fa74ee64ea24fdd7\",\n        \"chunking\": \"authored-h2-v1\",\n        \"embedding_model\": \"BAAI/bge-small-zh-v1.5\",\n        \"embedding_revision\": \"7999e1d3359715c523056ef9478215996d62a620\",\n        \"dimensions\": 512,\n        \"normalize\": true,\n        \"query_prefix\": \"为这个句子生成表示以用于检索相关文章：\",\n        \"max_seq_length\": 512,\n        \"artifacts_sha256\": \"9e8d41feee144813910c7db23ca5505bcf66139811f6f1521db1265e1bed016d\",\n        \"strategy\": \"vector\",\n        \"top_k\": 5,\n        \"candidate_k\": 10,\n        \"rrf_offset\": 60\n      }\n    }\n  ]\n}",
+                      "id": "lc_a4d5b21b-ebfc-4f84-9d53-4e34ed974c70"
+                    }
+                  ],
+                  "additional_kwargs": {},
+                  "response_metadata": {},
+                  "type": "tool",
+                  "name": "search_runbooks",
+                  "id": "1840e92b-8129-468b-a89b-4fa2863c3fc8",
+                  "tool_call_id": "call_02_Ch60egWaaiEExkQeLSbt6675",
+                  "artifact": {
+                    "structured_content": {
+                      "chunks": [
+                        {
+                          "evidence_id": "healthy--s02",
+                          "document_id": "healthy",
+                          "project_id": "project-a",
+                          "source": "datasets/runbooks/healthy.md",
+                          "revision": "1ed1a923f462fa1ce383907ff5ee58dc0f13a7b7d5e0b7d92db5796b809897c2",
+                          "content": "order-api 当前窗口正常的调查方法\n补充问题\n\n请用户核对服务名、时区、实例与故障发生时间。扩大时间窗需要明确新的查询范围。不要使用窗口外的错误替代本窗口证据，也不要凭正常样本否定用户报告。",
+                          "ranks": {
+                            "vector": 1
+                          },
+                          "rrf_score": 0.01639344262295082,
+                          "retrieval_manifest": {
+                            "corpus_sha256": "023114864f127896cfc77ae214368e69d1dcfb883b0395c7c363db162c1a03ca",
+                            "chunks_sha256": "b6a49d5e1a286048cf707277fb38f796b74ab0a6bd946245fa74ee64ea24fdd7",
+                            "chunking": "authored-h2-v1",
+                            "embedding_model": "BAAI/bge-small-zh-v1.5",
+                            "embedding_revision": "7999e1d3359715c523056ef9478215996d62a620",
+                            "dimensions": 512,
+                            "normalize": true,
+                            "query_prefix": "为这个句子生成表示以用于检索相关文章：",
+                            "max_seq_length": 512,
+                            "artifacts_sha256": "9e8d41feee144813910c7db23ca5505bcf66139811f6f1521db1265e1bed016d",
+                            "strategy": "vector",
+                            "top_k": 5,
+                            "candidate_k": 10,
+                            "rrf_offset": 60
+                          }
+                        },
+                        {
+                          "evidence_id": "healthy--s01",
+                          "document_id": "healthy",
+                          "project_id": "project-a",
+                          "source": "datasets/runbooks/healthy.md",
+                          "revision": "1ed1a923f462fa1ce383907ff5ee58dc0f13a7b7d5e0b7d92db5796b809897c2",
+                          "content": "order-api 当前窗口正常的调查方法\n检查观测范围\n\norder-api 在指定窗口只有 status=200，http_5xx_ratio=0 且 p95_latency_ms 正常时，应说明当前范围未发现异常。一个正常请求不能证明所有实例健康；确认日志覆盖实例与指标聚合范围。",
+                          "ranks": {
+                            "vector": 2
+                          },
+                          "rrf_score": 0.016129032258064516,
+                          "retrieval_manifest": {
+                            "corpus_sha256": "023114864f127896cfc77ae214368e69d1dcfb883b0395c7c363db162c1a03ca",
+                            "chunks_sha256": "b6a49d5e1a286048cf707277fb38f796b74ab0a6bd946245fa74ee64ea24fdd7",
+                            "chunking": "authored-h2-v1",
+                            "embedding_model": "BAAI/bge-small-zh-v1.5",
+                            "embedding_revision": "7999e1d3359715c523056ef9478215996d62a620",
+                            "dimensions": 512,
+                            "normalize": true,
+                            "query_prefix": "为这个句子生成表示以用于检索相关文章：",
+                            "max_seq_length": 512,
+                            "artifacts_sha256": "9e8d41feee144813910c7db23ca5505bcf66139811f6f1521db1265e1bed016d",
+                            "strategy": "vector",
+                            "top_k": 5,
+                            "candidate_k": 10,
+                            "rrf_offset": 60
+                          }
+                        },
+                        {
+                          "evidence_id": "db-lock-wait--s01",
+                          "document_id": "db-lock-wait",
+                          "project_id": "project-a",
+                          "source": "datasets/runbooks/db-lock-wait.md",
+                          "revision": "143c6616c0c0b0f475197bb8f89ba40878d34b57e0388266eb3dfa067f9e7103",
+                          "content": "order-api PostgreSQL 锁等待\n识别阻塞事务\n\norder-api SQL 延迟伴随 pg_stat_activity 的 wait_event_type=Lock 时，查询阻塞关系、事务年龄和等待语句。连接池 active 上升可能是锁等待的后果，只有池满日志无法确认锁为根因。",
+                          "ranks": {
+                            "vector": 3
+                          },
+                          "rrf_score": 0.015873015873015872,
+                          "retrieval_manifest": {
+                            "corpus_sha256": "023114864f127896cfc77ae214368e69d1dcfb883b0395c7c363db162c1a03ca",
+                            "chunks_sha256": "b6a49d5e1a286048cf707277fb38f796b74ab0a6bd946245fa74ee64ea24fdd7",
+                            "chunking": "authored-h2-v1",
+                            "embedding_model": "BAAI/bge-small-zh-v1.5",
+                            "embedding_revision": "7999e1d3359715c523056ef9478215996d62a620",
+                            "dimensions": 512,
+                            "normalize": true,
+                            "query_prefix": "为这个句子生成表示以用于检索相关文章：",
+                            "max_seq_length": 512,
+                            "artifacts_sha256": "9e8d41feee144813910c7db23ca5505bcf66139811f6f1521db1265e1bed016d",
+                            "strategy": "vector",
+                            "top_k": 5,
+                            "candidate_k": 10,
+                            "rrf_offset": 60
+                          }
+                        },
+                        {
+                          "evidence_id": "downstream-timeout--s02",
+                          "document_id": "downstream-timeout",
+                          "project_id": "project-a",
+                          "source": "datasets/runbooks/downstream-timeout.md",
+                          "revision": "171fed5ff5047abba1281eb01d2884610bdc737087d6873b9ba1223cafa24a6d",
+                          "content": "order-api 调用 payment-api 超时\n继续查询下游\n\n获取 payment-api 同窗口日志、线程池和依赖指标，区分排队与处理缓慢。重试会放大下游负载；建议前先确认现有重试次数、请求幂等性和总体超时预算。当前工具只有查询能力，建议不代表已经执行。",
+                          "ranks": {
+                            "vector": 4
+                          },
+                          "rrf_score": 0.015625,
+                          "retrieval_manifest": {
+                            "corpus_sha256": "023114864f127896cfc77ae214368e69d1dcfb883b0395c7c363db162c1a03ca",
+                            "chunks_sha256": "b6a49d5e1a286048cf707277fb38f796b74ab0a6bd946245fa74ee64ea24fdd7",
+                            "chunking": "authored-h2-v1",
+                            "embedding_model": "BAAI/bge-small-zh-v1.5",
+                            "embedding_revision": "7999e1d3359715c523056ef9478215996d62a620",
+                            "dimensions": 512,
+                            "normalize": true,
+                            "query_prefix": "为这个句子生成表示以用于检索相关文章：",
+                            "max_seq_length": 512,
+                            "artifacts_sha256": "9e8d41feee144813910c7db23ca5505bcf66139811f6f1521db1265e1bed016d",
+                            "strategy": "vector",
+                            "top_k": 5,
+                            "candidate_k": 10,
+                            "rrf_offset": 60
+                          }
+                        },
+                        {
+                          "evidence_id": "downstream-timeout--s01",
+                          "document_id": "downstream-timeout",
+                          "project_id": "project-a",
+                          "source": "datasets/runbooks/downstream-timeout.md",
+                          "revision": "171fed5ff5047abba1281eb01d2884610bdc737087d6873b9ba1223cafa24a6d",
+                          "content": "order-api 调用 payment-api 超时\n识别依赖延迟\n\norder-api 的 HTTP 504、payment-api timed out 与 payment_api_p95_ms 同时上升，支持下游延迟影响上游。对齐请求时间、超时阈值和调用链，避免把上游错误率直接解释为数据库故障。",
+                          "ranks": {
+                            "vector": 5
+                          },
+                          "rrf_score": 0.015384615384615385,
+                          "retrieval_manifest": {
+                            "corpus_sha256": "023114864f127896cfc77ae214368e69d1dcfb883b0395c7c363db162c1a03ca",
+                            "chunks_sha256": "b6a49d5e1a286048cf707277fb38f796b74ab0a6bd946245fa74ee64ea24fdd7",
+                            "chunking": "authored-h2-v1",
+                            "embedding_model": "BAAI/bge-small-zh-v1.5",
+                            "embedding_revision": "7999e1d3359715c523056ef9478215996d62a620",
+                            "dimensions": 512,
+                            "normalize": true,
+                            "query_prefix": "为这个句子生成表示以用于检索相关文章：",
+                            "max_seq_length": 512,
+                            "artifacts_sha256": "9e8d41feee144813910c7db23ca5505bcf66139811f6f1521db1265e1bed016d",
+                            "strategy": "vector",
+                            "top_k": 5,
+                            "candidate_k": 10,
+                            "rrf_offset": 60
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  "status": "success"
+                }
+              ]
+            },
+            "output": {
+              "content": "日志和指标都指向连接池耗尽。我再补充查询 WARN 日志、全部指标以及历史经验，以判断根因是锁等待还是下游超时。",
+              "tool_calls": [
+                {
+                  "name": "search_logs",
+                  "args": {
+                    "end_time": "2026-10-30T14:15:00+08:00",
+                    "level": "WARN",
+                    "limit": 100,
+                    "service": "order-api",
+                    "start_time": "2026-10-30T14:00:00+08:00"
+                  },
+                  "id": "call_00_EuOatpELi2idL0B88owb2421",
+                  "type": "tool_call"
+                },
+                {
+                  "name": "query_metrics",
+                  "args": {
+                    "end_time": "2026-10-30T14:15:00+08:00",
+                    "limit": 100,
+                    "service": "order-api",
+                    "start_time": "2026-10-30T14:00:00+08:00"
+                  },
+                  "id": "call_01_KORKKcKbrpu7YsqrJitL7702",
+                  "type": "tool_call"
+                },
+                {
+                  "name": "search_experiences",
+                  "args": {
+                    "service": "order-api",
+                    "limit": 5
+                  },
+                  "id": "call_02_sF7wmIHOHpYAEAOvfghD8686",
+                  "type": "tool_call"
+                }
+              ],
+              "usage": {
+                "input_tokens": 4472,
+                "output_tokens": 327,
+                "total_tokens": 4799,
+                "input_token_details": {
+                  "cache_read": 1536
+                },
+                "output_token_details": {}
+              },
+              "response_model": "agentlens-agent"
+            },
+            "error": null,
+            "duration_ms": 1773.61,
+            "span_id": "55d8e780ae55a1c9"
+          },
+          {
+            "sequence": 6,
+            "kind": "tool",
+            "name": "search_logs",
+            "input": {
+              "end_time": "2026-10-30T14:15:00+08:00",
+              "level": "WARN",
+              "limit": 100,
+              "service": "order-api",
+              "start_time": "2026-10-30T14:00:00+08:00"
+            },
+            "output": {
+              "logs": []
+            },
+            "error": null,
+            "duration_ms": 10.9,
+            "span_id": "dea21795eb73bebd"
+          },
+          {
+            "sequence": 7,
+            "kind": "tool",
+            "name": "query_metrics",
+            "input": {
+              "end_time": "2026-10-30T14:15:00+08:00",
+              "limit": 100,
+              "service": "order-api",
+              "start_time": "2026-10-30T14:00:00+08:00"
+            },
+            "output": {
+              "metrics": [
+                {
+                  "evidence_id": "pool-exhaustion-metric-1",
+                  "timestamp": "2026-10-30T14:03:00+08:00",
+                  "service": "order-api",
+                  "name": "db_pool_active",
+                  "value": 20.0,
+                  "unit": "connections"
+                },
+                {
+                  "evidence_id": "pool-exhaustion-metric-2",
+                  "timestamp": "2026-10-30T14:03:00+08:00",
+                  "service": "order-api",
+                  "name": "db_pool_max",
+                  "value": 20.0,
+                  "unit": "connections"
+                },
+                {
+                  "evidence_id": "pool-exhaustion-metric-3",
+                  "timestamp": "2026-10-30T14:03:00+08:00",
+                  "service": "order-api",
+                  "name": "db_pool_waiters",
+                  "value": 48.0,
+                  "unit": "requests"
+                },
+                {
+                  "evidence_id": "pool-exhaustion-metric-4",
+                  "timestamp": "2026-10-30T14:03:00+08:00",
+                  "service": "order-api",
+                  "name": "http_5xx_ratio",
+                  "value": 0.38,
+                  "unit": "ratio"
+                }
+              ]
+            },
+            "error": null,
+            "duration_ms": 8.38,
+            "span_id": "8a5aa493a96e73f5"
+          },
+          {
+            "sequence": 8,
+            "kind": "tool",
+            "name": "search_experiences",
+            "input": {
+              "service": "order-api",
+              "limit": 5
+            },
+            "output": {
+              "experiences": [
+                {
+                  "evidence_id": "experience-40452d3e-6892-46e4-839d-a3ba9246c409",
+                  "project_id": "project-a",
+                  "kind": "incident_experience",
+                  "source": "runs/40452d3e-6892-46e4-839d-a3ba9246c409",
+                  "origin_run_id": "40452d3e-6892-46e4-839d-a3ba9246c409",
+                  "revision": "7afb5ba7d62be42846189f1a335a7ffa9dc89966275837bd5844fd16175aa417",
+                  "service": "order-api",
+                  "start_time": "2026-10-30T14:00:00+08:00",
+                  "end_time": "2026-10-30T14:15:00+08:00",
+                  "applicability": "合成 order-api 连接池饱和演示；慢 SQL、泄漏等深层原因尚未确认。",
+                  "content": "{\"applicability\": \"合成 order-api 连接池饱和演示；慢 SQL、泄漏等深层原因尚未确认。\", \"diagnosis\": {\"cause_summary\": \"在 2026-10-30 14:00–14:15（+08:00）窗口内，order-api 出现数据库连接池耗尽：14:02 日志报 HikariPool 获取连接超时 30000ms，active=20、idle=0、max=20；14:03 指标显示 db_pool_active=20 已达 db_pool_max=20，db_pool_waiters=48 个请求排队，http_5xx_ratio 升至 0.38。日志与指标相互印证，说明连接池容量被占满、请求排队等待连接超时，进而导致 5xx 比例升高。至于连接被长期占用的具体原因（慢 SQL、长事务、连接泄漏或下游数据库变慢），本次证据尚不能确定。\", \"evidence_ids\": [\"pool-exhaustion-log-1\", \"pool-exhaustion-metric-1\", \"pool-exhaustion-metric-2\", \"pool-exhaustion-metric-3\", \"pool-exhaustion-metric-4\"], \"next_steps\": [\"查询数据库侧会话与慢查询日志（14:00–14:15 窗口），确认是否存在长事务、锁等待或慢 SQL\", \"检查 order-api 连接借出/归还埋点与线程栈，排查连接泄漏或未关闭的 ResultSet/Statement\", \"对比该窗口前后的请求量（QPS）与平均响应时间，区分流量突增与连接持有时间变长\", \"检查 HikariCP 配置（maxPoolSize、connectionTimeout、leakDetectionThreshold）是否与当前负载匹配\", \"重试 search_runbooks 获取连接池耗尽排查手册，按手册步骤逐项验证\", \"临时缓解可考虑限流或扩容连接池，但需先确认数据库侧承载能力，且本次未执行任何生产变更\"], \"status\": \"diagnosed\", \"unknowns\": [\"连接被长期占用的根因未证实：缺少慢查询日志、事务耗时、数据库侧会话状态与锁等待数据\", \"未确认是否存在连接泄漏（连接借出后未归还）\", \"未确认数据库实例自身是否出现性能退化或连接数上限限制\", \"未获取到 order-api 的请求量/QPS 与线程池指标，无法判断是流量突增还是连接持有时间变长\", \"手册检索工具连续两次报错，未能引用排查手册片段；该服务也无人工确认的历史经验记录\"]}, \"end_time\": \"2026-10-30T14:15:00+08:00\", \"service\": \"order-api\", \"start_time\": \"2026-10-30T14:00:00+08:00\"}",
+                  "confirmed_at": "2026-10-31T21:40:13.333544+08:00"
+                }
+              ]
+            },
+            "error": null,
+            "duration_ms": 10.46,
+            "span_id": "143b836541dfa126"
+          },
+          {
+            "sequence": 9,
+            "kind": "model",
+            "name": "agentlens-agent",
+            "input": {
+              "messages": [
+                {
+                  "content": "请调查 order-api 在 2026-10-30T14:00:00+08:00 至 2026-10-30T14:15:00+08:00（结束时间不包含） 的服务异常，结合日志和指标给出结论与证据。请检索相关排障手册，引用支持检查建议的手册片段。",
+                  "additional_kwargs": {},
+                  "response_metadata": {},
+                  "type": "human",
+                  "name": null,
+                  "id": "fd271fe7-a0d6-4b58-a0bb-a9165128c89a"
+                },
+                {
+                  "content": "我先并行查询 order-api 的日志、指标和排障手册。",
+                  "additional_kwargs": {},
+                  "response_metadata": {
+                    "model_provider": "openai",
+                    "finish_reason": "tool_calls",
+                    "model_name": "agentlens-agent",
+                    "system_fingerprint": "bc19ba97cbe016479903222bb1578db6"
+                  },
+                  "type": "ai",
+                  "name": null,
+                  "id": "lc_run--01a194fa-b5f9-7536-acfe-f7f4aef7fe28",
+                  "tool_calls": [
+                    {
+                      "name": "search_logs",
+                      "args": {
+                        "service": "order-api",
+                        "start_time": "2026-10-30T14:00:00+08:00",
+                        "end_time": "2026-10-30T14:15:00+08:00",
+                        "level": "ERROR",
+                        "limit": 100
+                      },
+                      "id": "call_00_QvmcOiAzyb2fQ5Y6uEYe5031",
+                      "type": "tool_call"
+                    },
+                    {
+                      "name": "query_metrics",
+                      "args": {
+                        "service": "order-api",
+                        "start_time": "2026-10-30T14:00:00+08:00",
+                        "end_time": "2026-10-30T14:15:00+08:00",
+                        "limit": 100
+                      },
+                      "id": "call_01_Xu0K8wscgLD5QRjnXeXc2319",
+                      "type": "tool_call"
+                    },
+                    {
+                      "name": "search_runbooks",
+                      "args": {
+                        "query": "order-api 服务异常 错误日志 排查",
+                        "top_k": 5
+                      },
+                      "id": "call_02_Ch60egWaaiEExkQeLSbt6675",
+                      "type": "tool_call"
+                    }
+                  ],
+                  "invalid_tool_calls": [],
+                  "usage_metadata": {
+                    "input_tokens": 1301,
+                    "output_tokens": 314,
+                    "total_tokens": 1615,
+                    "input_token_details": {
+                      "cache_read": 1152
+                    },
+                    "output_token_details": {}
+                  }
+                },
+                {
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "{\n  \"logs\": [\n    {\n      \"evidence_id\": \"pool-exhaustion-log-1\",\n      \"timestamp\": \"2026-10-30T14:02:00+08:00\",\n      \"service\": \"order-api\",\n      \"level\": \"ERROR\",\n      \"message\": \"HikariPool connection acquisition timed out after 30000ms; active=20, idle=0, max=20\"\n    }\n  ]\n}",
+                      "id": "lc_87a21482-b802-41fd-9f8a-e40cbc1150fa"
+                    }
+                  ],
+                  "additional_kwargs": {},
+                  "response_metadata": {},
+                  "type": "tool",
+                  "name": "search_logs",
+                  "id": "fdd6c1e5-ad10-4e35-87fc-19833d3892a5",
+                  "tool_call_id": "call_00_QvmcOiAzyb2fQ5Y6uEYe5031",
+                  "artifact": {
+                    "structured_content": {
+                      "logs": [
+                        {
+                          "evidence_id": "pool-exhaustion-log-1",
+                          "timestamp": "2026-10-30T14:02:00+08:00",
+                          "service": "order-api",
+                          "level": "ERROR",
+                          "message": "HikariPool connection acquisition timed out after 30000ms; active=20, idle=0, max=20"
+                        }
+                      ]
+                    }
+                  },
+                  "status": "success"
+                },
+                {
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "{\n  \"metrics\": [\n    {\n      \"evidence_id\": \"pool-exhaustion-metric-1\",\n      \"timestamp\": \"2026-10-30T14:03:00+08:00\",\n      \"service\": \"order-api\",\n      \"name\": \"db_pool_active\",\n      \"value\": 20.0,\n      \"unit\": \"connections\"\n    },\n    {\n      \"evidence_id\": \"pool-exhaustion-metric-2\",\n      \"timestamp\": \"2026-10-30T14:03:00+08:00\",\n      \"service\": \"order-api\",\n      \"name\": \"db_pool_max\",\n      \"value\": 20.0,\n      \"unit\": \"connections\"\n    },\n    {\n      \"evidence_id\": \"pool-exhaustion-metric-3\",\n      \"timestamp\": \"2026-10-30T14:03:00+08:00\",\n      \"service\": \"order-api\",\n      \"name\": \"db_pool_waiters\",\n      \"value\": 48.0,\n      \"unit\": \"requests\"\n    },\n    {\n      \"evidence_id\": \"pool-exhaustion-metric-4\",\n      \"timestamp\": \"2026-10-30T14:03:00+08:00\",\n      \"service\": \"order-api\",\n      \"name\": \"http_5xx_ratio\",\n      \"value\": 0.38,\n      \"unit\": \"ratio\"\n    }\n  ]\n}",
+                      "id": "lc_ae2dbf49-6ac5-4841-a0f0-6399cffc1f70"
+                    }
+                  ],
+                  "additional_kwargs": {},
+                  "response_metadata": {},
+                  "type": "tool",
+                  "name": "query_metrics",
+                  "id": "5a1bbfa4-dc8d-4252-a03f-4cff3f8bb725",
+                  "tool_call_id": "call_01_Xu0K8wscgLD5QRjnXeXc2319",
+                  "artifact": {
+                    "structured_content": {
+                      "metrics": [
+                        {
+                          "evidence_id": "pool-exhaustion-metric-1",
+                          "timestamp": "2026-10-30T14:03:00+08:00",
+                          "service": "order-api",
+                          "name": "db_pool_active",
+                          "value": 20.0,
+                          "unit": "connections"
+                        },
+                        {
+                          "evidence_id": "pool-exhaustion-metric-2",
+                          "timestamp": "2026-10-30T14:03:00+08:00",
+                          "service": "order-api",
+                          "name": "db_pool_max",
+                          "value": 20.0,
+                          "unit": "connections"
+                        },
+                        {
+                          "evidence_id": "pool-exhaustion-metric-3",
+                          "timestamp": "2026-10-30T14:03:00+08:00",
+                          "service": "order-api",
+                          "name": "db_pool_waiters",
+                          "value": 48.0,
+                          "unit": "requests"
+                        },
+                        {
+                          "evidence_id": "pool-exhaustion-metric-4",
+                          "timestamp": "2026-10-30T14:03:00+08:00",
+                          "service": "order-api",
+                          "name": "http_5xx_ratio",
+                          "value": 0.38,
+                          "unit": "ratio"
+                        }
+                      ]
+                    }
+                  },
+                  "status": "success"
+                },
+                {
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "{\n  \"chunks\": [\n    {\n      \"evidence_id\": \"healthy--s02\",\n      \"document_id\": \"healthy\",\n      \"project_id\": \"project-a\",\n      \"source\": \"datasets/runbooks/healthy.md\",\n      \"revision\": \"1ed1a923f462fa1ce383907ff5ee58dc0f13a7b7d5e0b7d92db5796b809897c2\",\n      \"content\": \"order-api 当前窗口正常的调查方法\\n补充问题\\n\\n请用户核对服务名、时区、实例与故障发生时间。扩大时间窗需要明确新的查询范围。不要使用窗口外的错误替代本窗口证据，也不要凭正常样本否定用户报告。\",\n      \"ranks\": {\n        \"vector\": 1\n      },\n      \"rrf_score\": 0.01639344262295082,\n      \"retrieval_manifest\": {\n        \"corpus_sha256\": \"023114864f127896cfc77ae214368e69d1dcfb883b0395c7c363db162c1a03ca\",\n        \"chunks_sha256\": \"b6a49d5e1a286048cf707277fb38f796b74ab0a6bd946245fa74ee64ea24fdd7\",\n        \"chunking\": \"authored-h2-v1\",\n        \"embedding_model\": \"BAAI/bge-small-zh-v1.5\",\n        \"embedding_revision\": \"7999e1d3359715c523056ef9478215996d62a620\",\n        \"dimensions\": 512,\n        \"normalize\": true,\n        \"query_prefix\": \"为这个句子生成表示以用于检索相关文章：\",\n        \"max_seq_length\": 512,\n        \"artifacts_sha256\": \"9e8d41feee144813910c7db23ca5505bcf66139811f6f1521db1265e1bed016d\",\n        \"strategy\": \"vector\",\n        \"top_k\": 5,\n        \"candidate_k\": 10,\n        \"rrf_offset\": 60\n      }\n    },\n    {\n      \"evidence_id\": \"healthy--s01\",\n      \"document_id\": \"healthy\",\n      \"project_id\": \"project-a\",\n      \"source\": \"datasets/runbooks/healthy.md\",\n      \"revision\": \"1ed1a923f462fa1ce383907ff5ee58dc0f13a7b7d5e0b7d92db5796b809897c2\",\n      \"content\": \"order-api 当前窗口正常的调查方法\\n检查观测范围\\n\\norder-api 在指定窗口只有 status=200，http_5xx_ratio=0 且 p95_latency_ms 正常时，应说明当前范围未发现异常。一个正常请求不能证明所有实例健康；确认日志覆盖实例与指标聚合范围。\",\n      \"ranks\": {\n        \"vector\": 2\n      },\n      \"rrf_score\": 0.016129032258064516,\n      \"retrieval_manifest\": {\n        \"corpus_sha256\": \"023114864f127896cfc77ae214368e69d1dcfb883b0395c7c363db162c1a03ca\",\n        \"chunks_sha256\": \"b6a49d5e1a286048cf707277fb38f796b74ab0a6bd946245fa74ee64ea24fdd7\",\n        \"chunking\": \"authored-h2-v1\",\n        \"embedding_model\": \"BAAI/bge-small-zh-v1.5\",\n        \"embedding_revision\": \"7999e1d3359715c523056ef9478215996d62a620\",\n        \"dimensions\": 512,\n        \"normalize\": true,\n        \"query_prefix\": \"为这个句子生成表示以用于检索相关文章：\",\n        \"max_seq_length\": 512,\n        \"artifacts_sha256\": \"9e8d41feee144813910c7db23ca5505bcf66139811f6f1521db1265e1bed016d\",\n        \"strategy\": \"vector\",\n        \"top_k\": 5,\n        \"candidate_k\": 10,\n        \"rrf_offset\": 60\n      }\n    },\n    {\n      \"evidence_id\": \"db-lock-wait--s01\",\n      \"document_id\": \"db-lock-wait\",\n      \"project_id\": \"project-a\",\n      \"source\": \"datasets/runbooks/db-lock-wait.md\",\n      \"revision\": \"143c6616c0c0b0f475197bb8f89ba40878d34b57e0388266eb3dfa067f9e7103\",\n      \"content\": \"order-api PostgreSQL 锁等待\\n识别阻塞事务\\n\\norder-api SQL 延迟伴随 pg_stat_activity 的 wait_event_type=Lock 时，查询阻塞关系、事务年龄和等待语句。连接池 active 上升可能是锁等待的后果，只有池满日志无法确认锁为根因。\",\n      \"ranks\": {\n        \"vector\": 3\n      },\n      \"rrf_score\": 0.015873015873015872,\n      \"retrieval_manifest\": {\n        \"corpus_sha256\": \"023114864f127896cfc77ae214368e69d1dcfb883b0395c7c363db162c1a03ca\",\n        \"chunks_sha256\": \"b6a49d5e1a286048cf707277fb38f796b74ab0a6bd946245fa74ee64ea24fdd7\",\n        \"chunking\": \"authored-h2-v1\",\n        \"embedding_model\": \"BAAI/bge-small-zh-v1.5\",\n        \"embedding_revision\": \"7999e1d3359715c523056ef9478215996d62a620\",\n        \"dimensions\": 512,\n        \"normalize\": true,\n        \"query_prefix\": \"为这个句子生成表示以用于检索相关文章：\",\n        \"max_seq_length\": 512,\n        \"artifacts_sha256\": \"9e8d41feee144813910c7db23ca5505bcf66139811f6f1521db1265e1bed016d\",\n        \"strategy\": \"vector\",\n        \"top_k\": 5,\n        \"candidate_k\": 10,\n        \"rrf_offset\": 60\n      }\n    },\n    {\n      \"evidence_id\": \"downstream-timeout--s02\",\n      \"document_id\": \"downstream-timeout\",\n      \"project_id\": \"project-a\",\n      \"source\": \"datasets/runbooks/downstream-timeout.md\",\n      \"revision\": \"171fed5ff5047abba1281eb01d2884610bdc737087d6873b9ba1223cafa24a6d\",\n      \"content\": \"order-api 调用 payment-api 超时\\n继续查询下游\\n\\n获取 payment-api 同窗口日志、线程池和依赖指标，区分排队与处理缓慢。重试会放大下游负载；建议前先确认现有重试次数、请求幂等性和总体超时预算。当前工具只有查询能力，建议不代表已经执行。\",\n      \"ranks\": {\n        \"vector\": 4\n      },\n      \"rrf_score\": 0.015625,\n      \"retrieval_manifest\": {\n        \"corpus_sha256\": \"023114864f127896cfc77ae214368e69d1dcfb883b0395c7c363db162c1a03ca\",\n        \"chunks_sha256\": \"b6a49d5e1a286048cf707277fb38f796b74ab0a6bd946245fa74ee64ea24fdd7\",\n        \"chunking\": \"authored-h2-v1\",\n        \"embedding_model\": \"BAAI/bge-small-zh-v1.5\",\n        \"embedding_revision\": \"7999e1d3359715c523056ef9478215996d62a620\",\n        \"dimensions\": 512,\n        \"normalize\": true,\n        \"query_prefix\": \"为这个句子生成表示以用于检索相关文章：\",\n        \"max_seq_length\": 512,\n        \"artifacts_sha256\": \"9e8d41feee144813910c7db23ca5505bcf66139811f6f1521db1265e1bed016d\",\n        \"strategy\": \"vector\",\n        \"top_k\": 5,\n        \"candidate_k\": 10,\n        \"rrf_offset\": 60\n      }\n    },\n    {\n      \"evidence_id\": \"downstream-timeout--s01\",\n      \"document_id\": \"downstream-timeout\",\n      \"project_id\": \"project-a\",\n      \"source\": \"datasets/runbooks/downstream-timeout.md\",\n      \"revision\": \"171fed5ff5047abba1281eb01d2884610bdc737087d6873b9ba1223cafa24a6d\",\n      \"content\": \"order-api 调用 payment-api 超时\\n识别依赖延迟\\n\\norder-api 的 HTTP 504、payment-api timed out 与 payment_api_p95_ms 同时上升，支持下游延迟影响上游。对齐请求时间、超时阈值和调用链，避免把上游错误率直接解释为数据库故障。\",\n      \"ranks\": {\n        \"vector\": 5\n      },\n      \"rrf_score\": 0.015384615384615385,\n      \"retrieval_manifest\": {\n        \"corpus_sha256\": \"023114864f127896cfc77ae214368e69d1dcfb883b0395c7c363db162c1a03ca\",\n        \"chunks_sha256\": \"b6a49d5e1a286048cf707277fb38f796b74ab0a6bd946245fa74ee64ea24fdd7\",\n        \"chunking\": \"authored-h2-v1\",\n        \"embedding_model\": \"BAAI/bge-small-zh-v1.5\",\n        \"embedding_revision\": \"7999e1d3359715c523056ef9478215996d62a620\",\n        \"dimensions\": 512,\n        \"normalize\": true,\n        \"query_prefix\": \"为这个句子生成表示以用于检索相关文章：\",\n        \"max_seq_length\": 512,\n        \"artifacts_sha256\": \"9e8d41feee144813910c7db23ca5505bcf66139811f6f1521db1265e1bed016d\",\n        \"strategy\": \"vector\",\n        \"top_k\": 5,\n        \"candidate_k\": 10,\n        \"rrf_offset\": 60\n      }\n    }\n  ]\n}",
+                      "id": "lc_a4d5b21b-ebfc-4f84-9d53-4e34ed974c70"
+                    }
+                  ],
+                  "additional_kwargs": {},
+                  "response_metadata": {},
+                  "type": "tool",
+                  "name": "search_runbooks",
+                  "id": "1840e92b-8129-468b-a89b-4fa2863c3fc8",
+                  "tool_call_id": "call_02_Ch60egWaaiEExkQeLSbt6675",
+                  "artifact": {
+                    "structured_content": {
+                      "chunks": [
+                        {
+                          "evidence_id": "healthy--s02",
+                          "document_id": "healthy",
+                          "project_id": "project-a",
+                          "source": "datasets/runbooks/healthy.md",
+                          "revision": "1ed1a923f462fa1ce383907ff5ee58dc0f13a7b7d5e0b7d92db5796b809897c2",
+                          "content": "order-api 当前窗口正常的调查方法\n补充问题\n\n请用户核对服务名、时区、实例与故障发生时间。扩大时间窗需要明确新的查询范围。不要使用窗口外的错误替代本窗口证据，也不要凭正常样本否定用户报告。",
+                          "ranks": {
+                            "vector": 1
+                          },
+                          "rrf_score": 0.01639344262295082,
+                          "retrieval_manifest": {
+                            "corpus_sha256": "023114864f127896cfc77ae214368e69d1dcfb883b0395c7c363db162c1a03ca",
+                            "chunks_sha256": "b6a49d5e1a286048cf707277fb38f796b74ab0a6bd946245fa74ee64ea24fdd7",
+                            "chunking": "authored-h2-v1",
+                            "embedding_model": "BAAI/bge-small-zh-v1.5",
+                            "embedding_revision": "7999e1d3359715c523056ef9478215996d62a620",
+                            "dimensions": 512,
+                            "normalize": true,
+                            "query_prefix": "为这个句子生成表示以用于检索相关文章：",
+                            "max_seq_length": 512,
+                            "artifacts_sha256": "9e8d41feee144813910c7db23ca5505bcf66139811f6f1521db1265e1bed016d",
+                            "strategy": "vector",
+                            "top_k": 5,
+                            "candidate_k": 10,
+                            "rrf_offset": 60
+                          }
+                        },
+                        {
+                          "evidence_id": "healthy--s01",
+                          "document_id": "healthy",
+                          "project_id": "project-a",
+                          "source": "datasets/runbooks/healthy.md",
+                          "revision": "1ed1a923f462fa1ce383907ff5ee58dc0f13a7b7d5e0b7d92db5796b809897c2",
+                          "content": "order-api 当前窗口正常的调查方法\n检查观测范围\n\norder-api 在指定窗口只有 status=200，http_5xx_ratio=0 且 p95_latency_ms 正常时，应说明当前范围未发现异常。一个正常请求不能证明所有实例健康；确认日志覆盖实例与指标聚合范围。",
+                          "ranks": {
+                            "vector": 2
+                          },
+                          "rrf_score": 0.016129032258064516,
+                          "retrieval_manifest": {
+                            "corpus_sha256": "023114864f127896cfc77ae214368e69d1dcfb883b0395c7c363db162c1a03ca",
+                            "chunks_sha256": "b6a49d5e1a286048cf707277fb38f796b74ab0a6bd946245fa74ee64ea24fdd7",
+                            "chunking": "authored-h2-v1",
+                            "embedding_model": "BAAI/bge-small-zh-v1.5",
+                            "embedding_revision": "7999e1d3359715c523056ef9478215996d62a620",
+                            "dimensions": 512,
+                            "normalize": true,
+                            "query_prefix": "为这个句子生成表示以用于检索相关文章：",
+                            "max_seq_length": 512,
+                            "artifacts_sha256": "9e8d41feee144813910c7db23ca5505bcf66139811f6f1521db1265e1bed016d",
+                            "strategy": "vector",
+                            "top_k": 5,
+                            "candidate_k": 10,
+                            "rrf_offset": 60
+                          }
+                        },
+                        {
+                          "evidence_id": "db-lock-wait--s01",
+                          "document_id": "db-lock-wait",
+                          "project_id": "project-a",
+                          "source": "datasets/runbooks/db-lock-wait.md",
+                          "revision": "143c6616c0c0b0f475197bb8f89ba40878d34b57e0388266eb3dfa067f9e7103",
+                          "content": "order-api PostgreSQL 锁等待\n识别阻塞事务\n\norder-api SQL 延迟伴随 pg_stat_activity 的 wait_event_type=Lock 时，查询阻塞关系、事务年龄和等待语句。连接池 active 上升可能是锁等待的后果，只有池满日志无法确认锁为根因。",
+                          "ranks": {
+                            "vector": 3
+                          },
+                          "rrf_score": 0.015873015873015872,
+                          "retrieval_manifest": {
+                            "corpus_sha256": "023114864f127896cfc77ae214368e69d1dcfb883b0395c7c363db162c1a03ca",
+                            "chunks_sha256": "b6a49d5e1a286048cf707277fb38f796b74ab0a6bd946245fa74ee64ea24fdd7",
+                            "chunking": "authored-h2-v1",
+                            "embedding_model": "BAAI/bge-small-zh-v1.5",
+                            "embedding_revision": "7999e1d3359715c523056ef9478215996d62a620",
+                            "dimensions": 512,
+                            "normalize": true,
+                            "query_prefix": "为这个句子生成表示以用于检索相关文章：",
+                            "max_seq_length": 512,
+                            "artifacts_sha256": "9e8d41feee144813910c7db23ca5505bcf66139811f6f1521db1265e1bed016d",
+                            "strategy": "vector",
+                            "top_k": 5,
+                            "candidate_k": 10,
+                            "rrf_offset": 60
+                          }
+                        },
+                        {
+                          "evidence_id": "downstream-timeout--s02",
+                          "document_id": "downstream-timeout",
+                          "project_id": "project-a",
+                          "source": "datasets/runbooks/downstream-timeout.md",
+                          "revision": "171fed5ff5047abba1281eb01d2884610bdc737087d6873b9ba1223cafa24a6d",
+                          "content": "order-api 调用 payment-api 超时\n继续查询下游\n\n获取 payment-api 同窗口日志、线程池和依赖指标，区分排队与处理缓慢。重试会放大下游负载；建议前先确认现有重试次数、请求幂等性和总体超时预算。当前工具只有查询能力，建议不代表已经执行。",
+                          "ranks": {
+                            "vector": 4
+                          },
+                          "rrf_score": 0.015625,
+                          "retrieval_manifest": {
+                            "corpus_sha256": "023114864f127896cfc77ae214368e69d1dcfb883b0395c7c363db162c1a03ca",
+                            "chunks_sha256": "b6a49d5e1a286048cf707277fb38f796b74ab0a6bd946245fa74ee64ea24fdd7",
+                            "chunking": "authored-h2-v1",
+                            "embedding_model": "BAAI/bge-small-zh-v1.5",
+                            "embedding_revision": "7999e1d3359715c523056ef9478215996d62a620",
+                            "dimensions": 512,
+                            "normalize": true,
+                            "query_prefix": "为这个句子生成表示以用于检索相关文章：",
+                            "max_seq_length": 512,
+                            "artifacts_sha256": "9e8d41feee144813910c7db23ca5505bcf66139811f6f1521db1265e1bed016d",
+                            "strategy": "vector",
+                            "top_k": 5,
+                            "candidate_k": 10,
+                            "rrf_offset": 60
+                          }
+                        },
+                        {
+                          "evidence_id": "downstream-timeout--s01",
+                          "document_id": "downstream-timeout",
+                          "project_id": "project-a",
+                          "source": "datasets/runbooks/downstream-timeout.md",
+                          "revision": "171fed5ff5047abba1281eb01d2884610bdc737087d6873b9ba1223cafa24a6d",
+                          "content": "order-api 调用 payment-api 超时\n识别依赖延迟\n\norder-api 的 HTTP 504、payment-api timed out 与 payment_api_p95_ms 同时上升，支持下游延迟影响上游。对齐请求时间、超时阈值和调用链，避免把上游错误率直接解释为数据库故障。",
+                          "ranks": {
+                            "vector": 5
+                          },
+                          "rrf_score": 0.015384615384615385,
+                          "retrieval_manifest": {
+                            "corpus_sha256": "023114864f127896cfc77ae214368e69d1dcfb883b0395c7c363db162c1a03ca",
+                            "chunks_sha256": "b6a49d5e1a286048cf707277fb38f796b74ab0a6bd946245fa74ee64ea24fdd7",
+                            "chunking": "authored-h2-v1",
+                            "embedding_model": "BAAI/bge-small-zh-v1.5",
+                            "embedding_revision": "7999e1d3359715c523056ef9478215996d62a620",
+                            "dimensions": 512,
+                            "normalize": true,
+                            "query_prefix": "为这个句子生成表示以用于检索相关文章：",
+                            "max_seq_length": 512,
+                            "artifacts_sha256": "9e8d41feee144813910c7db23ca5505bcf66139811f6f1521db1265e1bed016d",
+                            "strategy": "vector",
+                            "top_k": 5,
+                            "candidate_k": 10,
+                            "rrf_offset": 60
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  "status": "success"
+                },
+                {
+                  "content": "日志和指标都指向连接池耗尽。我再补充查询 WARN 日志、全部指标以及历史经验，以判断根因是锁等待还是下游超时。",
+                  "additional_kwargs": {},
+                  "response_metadata": {
+                    "model_provider": "openai",
+                    "finish_reason": "tool_calls",
+                    "model_name": "agentlens-agent",
+                    "system_fingerprint": "bc19ba97cbe016479903222bb1578db6"
+                  },
+                  "type": "ai",
+                  "name": null,
+                  "id": "lc_run--01a194fa-e158-7133-b5ae-a9bbea02882b",
+                  "tool_calls": [
+                    {
+                      "name": "search_logs",
+                      "args": {
+                        "end_time": "2026-10-30T14:15:00+08:00",
+                        "level": "WARN",
+                        "limit": 100,
+                        "service": "order-api",
+                        "start_time": "2026-10-30T14:00:00+08:00"
+                      },
+                      "id": "call_00_EuOatpELi2idL0B88owb2421",
+                      "type": "tool_call"
+                    },
+                    {
+                      "name": "query_metrics",
+                      "args": {
+                        "end_time": "2026-10-30T14:15:00+08:00",
+                        "limit": 100,
+                        "service": "order-api",
+                        "start_time": "2026-10-30T14:00:00+08:00"
+                      },
+                      "id": "call_01_KORKKcKbrpu7YsqrJitL7702",
+                      "type": "tool_call"
+                    },
+                    {
+                      "name": "search_experiences",
+                      "args": {
+                        "service": "order-api",
+                        "limit": 5
+                      },
+                      "id": "call_02_sF7wmIHOHpYAEAOvfghD8686",
+                      "type": "tool_call"
+                    }
+                  ],
+                  "invalid_tool_calls": [],
+                  "usage_metadata": {
+                    "input_tokens": 4472,
+                    "output_tokens": 327,
+                    "total_tokens": 4799,
+                    "input_token_details": {
+                      "cache_read": 1536
+                    },
+                    "output_token_details": {}
+                  }
+                },
+                {
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "{\n  \"logs\": []\n}",
+                      "id": "lc_2a71c7f6-1582-4f72-993f-bfb80a90f169"
+                    }
+                  ],
+                  "additional_kwargs": {},
+                  "response_metadata": {},
+                  "type": "tool",
+                  "name": "search_logs",
+                  "id": "b07198dc-0787-49cf-9aef-f1a5f7c1430c",
+                  "tool_call_id": "call_00_EuOatpELi2idL0B88owb2421",
+                  "artifact": {
+                    "structured_content": {
+                      "logs": []
+                    }
+                  },
+                  "status": "success"
+                },
+                {
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "{\n  \"metrics\": [\n    {\n      \"evidence_id\": \"pool-exhaustion-metric-1\",\n      \"timestamp\": \"2026-10-30T14:03:00+08:00\",\n      \"service\": \"order-api\",\n      \"name\": \"db_pool_active\",\n      \"value\": 20.0,\n      \"unit\": \"connections\"\n    },\n    {\n      \"evidence_id\": \"pool-exhaustion-metric-2\",\n      \"timestamp\": \"2026-10-30T14:03:00+08:00\",\n      \"service\": \"order-api\",\n      \"name\": \"db_pool_max\",\n      \"value\": 20.0,\n      \"unit\": \"connections\"\n    },\n    {\n      \"evidence_id\": \"pool-exhaustion-metric-3\",\n      \"timestamp\": \"2026-10-30T14:03:00+08:00\",\n      \"service\": \"order-api\",\n      \"name\": \"db_pool_waiters\",\n      \"value\": 48.0,\n      \"unit\": \"requests\"\n    },\n    {\n      \"evidence_id\": \"pool-exhaustion-metric-4\",\n      \"timestamp\": \"2026-10-30T14:03:00+08:00\",\n      \"service\": \"order-api\",\n      \"name\": \"http_5xx_ratio\",\n      \"value\": 0.38,\n      \"unit\": \"ratio\"\n    }\n  ]\n}",
+                      "id": "lc_3e49e99a-6a72-4a05-bfc2-298196a7377c"
+                    }
+                  ],
+                  "additional_kwargs": {},
+                  "response_metadata": {},
+                  "type": "tool",
+                  "name": "query_metrics",
+                  "id": "fb0d9af1-c695-4dcb-aec7-b8bc26348b6c",
+                  "tool_call_id": "call_01_KORKKcKbrpu7YsqrJitL7702",
+                  "artifact": {
+                    "structured_content": {
+                      "metrics": [
+                        {
+                          "evidence_id": "pool-exhaustion-metric-1",
+                          "timestamp": "2026-10-30T14:03:00+08:00",
+                          "service": "order-api",
+                          "name": "db_pool_active",
+                          "value": 20.0,
+                          "unit": "connections"
+                        },
+                        {
+                          "evidence_id": "pool-exhaustion-metric-2",
+                          "timestamp": "2026-10-30T14:03:00+08:00",
+                          "service": "order-api",
+                          "name": "db_pool_max",
+                          "value": 20.0,
+                          "unit": "connections"
+                        },
+                        {
+                          "evidence_id": "pool-exhaustion-metric-3",
+                          "timestamp": "2026-10-30T14:03:00+08:00",
+                          "service": "order-api",
+                          "name": "db_pool_waiters",
+                          "value": 48.0,
+                          "unit": "requests"
+                        },
+                        {
+                          "evidence_id": "pool-exhaustion-metric-4",
+                          "timestamp": "2026-10-30T14:03:00+08:00",
+                          "service": "order-api",
+                          "name": "http_5xx_ratio",
+                          "value": 0.38,
+                          "unit": "ratio"
+                        }
+                      ]
+                    }
+                  },
+                  "status": "success"
+                },
+                {
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "{\n  \"experiences\": [\n    {\n      \"evidence_id\": \"experience-40452d3e-6892-46e4-839d-a3ba9246c409\",\n      \"project_id\": \"project-a\",\n      \"kind\": \"incident_experience\",\n      \"source\": \"runs/40452d3e-6892-46e4-839d-a3ba9246c409\",\n      \"origin_run_id\": \"40452d3e-6892-46e4-839d-a3ba9246c409\",\n      \"revision\": \"7afb5ba7d62be42846189f1a335a7ffa9dc89966275837bd5844fd16175aa417\",\n      \"service\": \"order-api\",\n      \"start_time\": \"2026-10-30T14:00:00+08:00\",\n      \"end_time\": \"2026-10-30T14:15:00+08:00\",\n      \"applicability\": \"合成 order-api 连接池饱和演示；慢 SQL、泄漏等深层原因尚未确认。\",\n      \"content\": \"{\\\"applicability\\\": \\\"合成 order-api 连接池饱和演示；慢 SQL、泄漏等深层原因尚未确认。\\\", \\\"diagnosis\\\": {\\\"cause_summary\\\": \\\"在 2026-10-30 14:00–14:15（+08:00）窗口内，order-api 出现数据库连接池耗尽：14:02 日志报 HikariPool 获取连接超时 30000ms，active=20、idle=0、max=20；14:03 指标显示 db_pool_active=20 已达 db_pool_max=20，db_pool_waiters=48 个请求排队，http_5xx_ratio 升至 0.38。日志与指标相互印证，说明连接池容量被占满、请求排队等待连接超时，进而导致 5xx 比例升高。至于连接被长期占用的具体原因（慢 SQL、长事务、连接泄漏或下游数据库变慢），本次证据尚不能确定。\\\", \\\"evidence_ids\\\": [\\\"pool-exhaustion-log-1\\\", \\\"pool-exhaustion-metric-1\\\", \\\"pool-exhaustion-metric-2\\\", \\\"pool-exhaustion-metric-3\\\", \\\"pool-exhaustion-metric-4\\\"], \\\"next_steps\\\": [\\\"查询数据库侧会话与慢查询日志（14:00–14:15 窗口），确认是否存在长事务、锁等待或慢 SQL\\\", \\\"检查 order-api 连接借出/归还埋点与线程栈，排查连接泄漏或未关闭的 ResultSet/Statement\\\", \\\"对比该窗口前后的请求量（QPS）与平均响应时间，区分流量突增与连接持有时间变长\\\", \\\"检查 HikariCP 配置（maxPoolSize、connectionTimeout、leakDetectionThreshold）是否与当前负载匹配\\\", \\\"重试 search_runbooks 获取连接池耗尽排查手册，按手册步骤逐项验证\\\", \\\"临时缓解可考虑限流或扩容连接池，但需先确认数据库侧承载能力，且本次未执行任何生产变更\\\"], \\\"status\\\": \\\"diagnosed\\\", \\\"unknowns\\\": [\\\"连接被长期占用的根因未证实：缺少慢查询日志、事务耗时、数据库侧会话状态与锁等待数据\\\", \\\"未确认是否存在连接泄漏（连接借出后未归还）\\\", \\\"未确认数据库实例自身是否出现性能退化或连接数上限限制\\\", \\\"未获取到 order-api 的请求量/QPS 与线程池指标，无法判断是流量突增还是连接持有时间变长\\\", \\\"手册检索工具连续两次报错，未能引用排查手册片段；该服务也无人工确认的历史经验记录\\\"]}, \\\"end_time\\\": \\\"2026-10-30T14:15:00+08:00\\\", \\\"service\\\": \\\"order-api\\\", \\\"start_time\\\": \\\"2026-10-30T14:00:00+08:00\\\"}\",\n      \"confirmed_at\": \"2026-10-31T21:40:13.333544+08:00\"\n    }\n  ]\n}",
+                      "id": "lc_d06d4107-fdfa-46d3-8869-40040999b955"
+                    }
+                  ],
+                  "additional_kwargs": {},
+                  "response_metadata": {},
+                  "type": "tool",
+                  "name": "search_experiences",
+                  "id": "14ce6561-d971-4756-955f-4442a8fd01d5",
+                  "tool_call_id": "call_02_sF7wmIHOHpYAEAOvfghD8686",
+                  "artifact": {
+                    "structured_content": {
+                      "experiences": [
+                        {
+                          "evidence_id": "experience-40452d3e-6892-46e4-839d-a3ba9246c409",
+                          "project_id": "project-a",
+                          "kind": "incident_experience",
+                          "source": "runs/40452d3e-6892-46e4-839d-a3ba9246c409",
+                          "origin_run_id": "40452d3e-6892-46e4-839d-a3ba9246c409",
+                          "revision": "7afb5ba7d62be42846189f1a335a7ffa9dc89966275837bd5844fd16175aa417",
+                          "service": "order-api",
+                          "start_time": "2026-10-30T14:00:00+08:00",
+                          "end_time": "2026-10-30T14:15:00+08:00",
+                          "applicability": "合成 order-api 连接池饱和演示；慢 SQL、泄漏等深层原因尚未确认。",
+                          "content": "{\"applicability\": \"合成 order-api 连接池饱和演示；慢 SQL、泄漏等深层原因尚未确认。\", \"diagnosis\": {\"cause_summary\": \"在 2026-10-30 14:00–14:15（+08:00）窗口内，order-api 出现数据库连接池耗尽：14:02 日志报 HikariPool 获取连接超时 30000ms，active=20、idle=0、max=20；14:03 指标显示 db_pool_active=20 已达 db_pool_max=20，db_pool_waiters=48 个请求排队，http_5xx_ratio 升至 0.38。日志与指标相互印证，说明连接池容量被占满、请求排队等待连接超时，进而导致 5xx 比例升高。至于连接被长期占用的具体原因（慢 SQL、长事务、连接泄漏或下游数据库变慢），本次证据尚不能确定。\", \"evidence_ids\": [\"pool-exhaustion-log-1\", \"pool-exhaustion-metric-1\", \"pool-exhaustion-metric-2\", \"pool-exhaustion-metric-3\", \"pool-exhaustion-metric-4\"], \"next_steps\": [\"查询数据库侧会话与慢查询日志（14:00–14:15 窗口），确认是否存在长事务、锁等待或慢 SQL\", \"检查 order-api 连接借出/归还埋点与线程栈，排查连接泄漏或未关闭的 ResultSet/Statement\", \"对比该窗口前后的请求量（QPS）与平均响应时间，区分流量突增与连接持有时间变长\", \"检查 HikariCP 配置（maxPoolSize、connectionTimeout、leakDetectionThreshold）是否与当前负载匹配\", \"重试 search_runbooks 获取连接池耗尽排查手册，按手册步骤逐项验证\", \"临时缓解可考虑限流或扩容连接池，但需先确认数据库侧承载能力，且本次未执行任何生产变更\"], \"status\": \"diagnosed\", \"unknowns\": [\"连接被长期占用的根因未证实：缺少慢查询日志、事务耗时、数据库侧会话状态与锁等待数据\", \"未确认是否存在连接泄漏（连接借出后未归还）\", \"未确认数据库实例自身是否出现性能退化或连接数上限限制\", \"未获取到 order-api 的请求量/QPS 与线程池指标，无法判断是流量突增还是连接持有时间变长\", \"手册检索工具连续两次报错，未能引用排查手册片段；该服务也无人工确认的历史经验记录\"]}, \"end_time\": \"2026-10-30T14:15:00+08:00\", \"service\": \"order-api\", \"start_time\": \"2026-10-30T14:00:00+08:00\"}",
+                          "confirmed_at": "2026-10-31T21:40:13.333544+08:00"
+                        }
+                      ]
+                    }
+                  },
+                  "status": "success"
+                }
+              ]
+            },
+            "output": {
+              "content": "{\"status\":\"diagnosed\",\"cause_summary\":\"在 2026-10-30 14:00–14:15（+08:00）窗口内，order-api 出现数据库连接池耗尽：14:02 的 ERROR 日志显示 HikariPool 获取连接超时 30000ms，active=20、idle=0、max=20；14:03 的指标显示 db_pool_active=20 已达到 db_pool_max=20，db_pool_waiters=48 个请求在排队，http_5xx_ratio 升至 0.38。日志与指标相互印证，说明连接池容量被占满、请求排队等待连接并超时，进而导致 5xx 比例升高。至于连接被长期占用的具体原因（慢 SQL、长事务、连接泄漏或下游数据库变慢），本次证据尚不能确定；手册 db-lock-wait--s01 也明确指出，只有池满日志无法确认锁为根因，需要 pg_stat_activity 的 wait_event_type=Lock 等数据佐证。本次未观察到 payment-api 超时相关日志或 payment_api_p95_ms 指标，因此下游超时路径（downstream-timeout--s01）暂无现场证据支持。\",\"evidence_ids\":[\"pool-exhaustion-log-1\",\"pool-exhaustion-metric-1\",\"pool-exhaustion-metric-2\",\"pool-exhaustion-metric-3\",\"pool-exhaustion-metric-4\",\"db-lock-wait--s01\",\"downstream-timeout--s01\",\"experience-40452d3e-6892-46e4-839d-a3ba9246c409\"],\"unknowns\":[\"连接被长期占用的根因未证实：缺少慢查询日志、事务耗时、数据库侧会话状态与锁等待数据\",\"未确认是否存在连接泄漏（连接借出后未归还）\",\"未确认数据库实例自身是否出现性能退化或连接数上限限制\",\"未获取到 order-api 的请求量/QPS 与线程池指标，无法判断是流量突增还是连接持有时间变长\",\"WARN 级别日志在窗口内为空，无法从日志侧观察排队或重试过程\",\"历史经验 experience-40452d3e 为合成演示记录，其适用条件明确说明慢 SQL、泄漏等深层原因尚未确认，不能作为本次根因证据\"],\"next_steps\":[\"按手册 db-lock-wait--s01：查询 14:00–14:15 窗口 pg_stat_activity 的 wait_event_type、事务年龄与阻塞关系，确认是否存在锁等待\",\"查询数据库侧慢查询日志与长事务，确认连接被长期占用的原因\",\"检查 order-api 连接借出/归还埋点与线程栈，排查连接泄漏或未关闭的 ResultSet/Statement\",\"对比该窗口前后的请求量（QPS）与平均响应时间，区分流量突增与连接持有时间变长\",\"检查 HikariCP 配置（maxPoolSize、connectionTimeout、leakDetectionThreshold）是否与当前负载匹配\",\"若怀疑下游影响，按手册 downstream-timeout--s01 获取 payment-api 同窗口日志与 payment_api_p95_ms 指标，对齐超时阈值与调用链\",\"临时缓解可考虑限流或扩容连接池，但需先确认数据库侧承载能力；本次未执行任何生产变更\"]}",
+              "tool_calls": [],
+              "usage": {
+                "input_tokens": 6039,
+                "output_tokens": 721,
+                "total_tokens": 6760,
+                "input_token_details": {
+                  "cache_read": 4736
+                },
+                "output_token_details": {
+                  "reasoning": 0
+                }
+              },
+              "response_model": "agentlens-agent"
+            },
+            "error": null,
+            "duration_ms": 3941.15,
+            "span_id": "e41e5ce7a33c52ee"
+          }
+        ]
+      },
+      "judge": {
+        "status": "complete",
+        "version": {
+          "rubric_sha256": "f711e74bf81d25b25599775df4e98190786f3461d54905fbebcd122b7e104d3b",
+          "judge_code_sha256": "536d519e4fbd6301f9f4ef73e78fd4d5502e7473890840f2eef918be44a741b9",
+          "requested_model": "agentlens-agent",
+          "configured_upstream_model": "openai/deepseek-flash",
+          "temperature": 0,
+          "langchain_openai": "1.7.3",
+          "human_calibrated": false,
+          "role": "advisory"
+        },
+        "scores": {
+          "root_cause": {
+            "score": 2,
+            "reason": "结论由现场日志与指标直接支持：14:02 ERROR 日志显示 HikariPool 获取连接超时 30000ms、active=20/idle=0/max=20；14:03 指标 db_pool_active=20 等于 db_pool_max=20、db_pool_waiters=48、http_5xx_ratio=0.38，日志与指标相互印证连接池耗尽并导致 5xx。答案明确拒绝推断慢 SQL、长事务、泄漏等深层原因，符合证据边界。",
+            "evidence_ids": [
+              "pool-exhaustion-log-1",
+              "pool-exhaustion-metric-1",
+              "pool-exhaustion-metric-2",
+              "pool-exhaustion-metric-3",
+              "pool-exhaustion-metric-4"
+            ]
+          },
+          "citations": {
+            "score": 2,
+            "reason": "引用的现场证据 ID 均真实存在且支持对应主张；db-lock-wait--s01 被正确用于说明池满日志不能确认锁为根因，downstream-timeout--s01 被正确用于说明缺少 payment-api 证据时不能推断下游超时路径，手册用于检查建议而非诊断根因，引用与主张匹配。",
+            "evidence_ids": [
+              "pool-exhaustion-log-1",
+              "pool-exhaustion-metric-1",
+              "pool-exhaustion-metric-2",
+              "pool-exhaustion-metric-3",
+              "pool-exhaustion-metric-4",
+              "db-lock-wait--s01",
+              "downstream-timeout--s01"
+            ]
+          },
+          "task_completion": {
+            "score": 2,
+            "reason": "回答了用户问题，给出窗口内结论与证据，区分了已证实事实（连接池耗尽）与未证实深层原因，列出 unknowns 与 next_steps，并明确本次未执行生产变更；对历史经验 experience-40452d3e 也正确标注为合成演示记录、不能作为根因证据。",
+            "evidence_ids": [
+              "pool-exhaustion-log-1",
+              "pool-exhaustion-metric-1",
+              "pool-exhaustion-metric-2",
+              "pool-exhaustion-metric-3",
+              "pool-exhaustion-metric-4",
+              "experience-40452d3e-6892-46e4-839d-a3ba9246c409"
+            ]
+          },
+          "grounded_actions": {
+            "score": 2,
+            "reason": "后续建议均有依据：按 db-lock-wait--s01 查询 pg_stat_activity 锁等待、按 downstream-timeout--s01 获取 payment-api 日志与 payment_api_p95_ms、检查连接借出/归还与 HikariCP 配置等，均对应现场证据缺口；临时缓解明确需先确认数据库承载能力，且声明本次未执行任何生产变更，未虚构已执行修复，也未把未证实深层原因写成事实。",
+            "evidence_ids": [
+              "db-lock-wait--s01",
+              "downstream-timeout--s01",
+              "pool-exhaustion-log-1",
+              "pool-exhaustion-metric-1",
+              "pool-exhaustion-metric-2",
+              "pool-exhaustion-metric-3",
+              "pool-exhaustion-metric-4"
+            ]
+          }
+        },
+        "usage": {
+          "input_tokens": 4983,
+          "output_tokens": 702,
+          "total_tokens": 5685,
+          "input_token_details": {
+            "cache_read": 0
+          },
+          "output_token_details": {}
+        },
+        "input_sha256": "d8a462ab2df0696afdc474380bdce5a4e340844f747345e75d4fde0cd875291f"
+      }
+    }
+  ]
+}

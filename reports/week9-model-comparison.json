@@ -1,0 +1,92 @@
+{
+  "case_id": "pool-exhaustion-01",
+  "scenario_id": "a0fd28db-8206-4c88-bcb2-bbf15460da52",
+  "samples_per_configuration": 1,
+  "judge_requests": 0,
+  "configurations": [
+    {
+      "alias": "agentlens-agent",
+      "run_id": "3928c20b-ddda-4a74-b8ee-91642f953870",
+      "quality_passed": true,
+      "quality_checks": {
+        "project_scope": true,
+        "status": true,
+        "required_tools": true,
+        "query_scope": true,
+        "cause_terms": true,
+        "required_evidence": true,
+        "valid_citations": true,
+        "outside_window_excluded": true,
+        "token_usage_recorded": true,
+        "runbook_retrieved": true,
+        "runbook_cited": true,
+        "knowledge_project_scope": true,
+        "trajectory_required_tools": true,
+        "trajectory_forbidden_tools": true,
+        "trajectory_parameters": true,
+        "trajectory_order": true
+      },
+      "duration_seconds": 15.232651,
+      "usage": {
+        "input_tokens": 9535,
+        "output_tokens": 1096
+      },
+      "observed_cache_read_tokens": 5120,
+      "cost_usd": "0.001335210",
+      "latency_budget": true,
+      "cost_budget": true,
+      "pricing_model_sources": [
+        "local_gateway_configuration; response_contains_alias"
+      ]
+    },
+    {
+      "alias": "agentlens-candidate",
+      "run_id": "7ce0a761-70b1-4218-8c7b-85ace73466d0",
+      "quality_passed": true,
+      "quality_checks": {
+        "project_scope": true,
+        "status": true,
+        "required_tools": true,
+        "query_scope": true,
+        "cause_terms": true,
+        "required_evidence": true,
+        "valid_citations": true,
+        "outside_window_excluded": true,
+        "token_usage_recorded": true,
+        "runbook_retrieved": true,
+        "runbook_cited": true,
+        "knowledge_project_scope": true,
+        "trajectory_required_tools": true,
+        "trajectory_forbidden_tools": true,
+        "trajectory_parameters": true,
+        "trajectory_order": true
+      },
+      "duration_seconds": 11.462518,
+      "usage": {
+        "input_tokens": 16939,
+        "output_tokens": 1019
+      },
+      "observed_cache_read_tokens": 9856,
+      "cost_usd": "0.006909232",
+      "latency_budget": true,
+      "cost_budget": true,
+      "pricing_model_sources": [
+        "local_gateway_configuration; response_contains_alias"
+      ]
+    }
+  ],
+  "budget": {
+    "version": "week9-single-case-observation-v1",
+    "scope": "pool-exhaustion-01 only; advisory until repeated representative measurements",
+    "based_on": "reports/week89-acceptance.json",
+    "max_duration_seconds": 30,
+    "max_cost_usd": "0.01",
+    "hard_gate": false,
+    "note": "Rounded headroom above the observed 15.23s and $0.00691; not a production SLO. Unknown cost cannot pass a cost budget."
+  },
+  "limitations": [
+    "One synthetic case, one observation each; no stable latency or quality ranking.",
+    "Provider-observed cache hits; no controlled cold/warm A/B or speedup claim.",
+    "Price estimate from cache usage and local gateway mapping, not provider invoice."
+  ]
+}

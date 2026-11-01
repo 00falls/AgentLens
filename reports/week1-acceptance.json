@@ -1,0 +1,312 @@
+{
+  "case_id": "pool-exhaustion-01",
+  "real_model": true,
+  "model_transport": "streaming through configured gateway",
+  "database": "PostgreSQL",
+  "evaluation": {
+    "passed": true,
+    "checks": {
+      "status": true,
+      "required_tools": true,
+      "query_scope": true,
+      "cause_terms": true,
+      "required_evidence": true,
+      "valid_citations": true,
+      "outside_window_excluded": true,
+      "token_usage_recorded": true
+    }
+  },
+  "dependencies": {
+    "langgraph": "1.2.19",
+    "langchain-openai": "1.7.3",
+    "litellm": "1.106.6",
+    "sqlalchemy": "2.1.6",
+    "mcp": "2.3.0"
+  },
+  "run": {
+    "run_id": "057292e4-d583-421d-9357-b04d5dce1dfb",
+    "project_id": "project-a",
+    "status": "diagnosed",
+    "input": "请调查 order-api 在 2026-10-30T14:00:00+08:00 至 2026-10-30T14:15:00+08:00（结束时间不包含） 的服务异常，结合日志和指标给出结论与证据。",
+    "output": {
+      "status": "diagnosed",
+      "cause_summary": "order-api 在 2026-10-30 14:00–14:15（+08:00）期间出现数据库连接池耗尽：14:02 日志显示 HikariPool 获取连接超时 30000ms，active=20、idle=0、max=20；14:03 指标交叉验证 db_pool_active=20 已达 db_pool_max=20，db_pool_waiters=48 个请求排队等待连接，同时 http_5xx_ratio 升至 0.38，说明连接池饱和导致请求排队超时并转化为大量 5xx 响应。",
+      "evidence_ids": [
+        "pool-exhaustion-log-1",
+        "pool-exhaustion-metric-1",
+        "pool-exhaustion-metric-2",
+        "pool-exhaustion-metric-3",
+        "pool-exhaustion-metric-4"
+      ],
+      "unknowns": [
+        "连接池被长时间占用的具体原因尚未证实：可能是慢 SQL、长事务、下游数据库响应变慢或连接泄漏",
+        "数据库侧（DB 实例）的负载、锁等待与慢查询指标未查询，无法判断瓶颈在应用侧还是数据库侧",
+        "14:00 之前连接池使用率的基线水平未知，无法确认是否为突发流量导致",
+        "是否存在特定接口或租户贡献了主要流量，日志中未体现"
+      ],
+      "next_steps": [
+        "查询数据库侧指标（连接数、慢查询、锁等待、CPU/IO）以确认是否为数据库瓶颈",
+        "检查 order-api 中持有连接时间最长的 SQL 与事务，排查慢查询或未提交事务",
+        "对比 13:45–14:00 的 db_pool_active/db_pool_waiters 基线，判断是否为流量突增",
+        "检查应用侧是否存在连接未关闭（泄漏）的代码路径，必要时抓取线程栈查看阻塞点",
+        "评估连接池上限与超时配置是否与当前负载匹配（仅建议，未执行任何变更）"
+      ]
+    },
+    "versions": {
+      "prompt_sha256": "aef89bd396c14d101cfd6bbd79a8fac01819423e86db8f435f5565035c6ab09d",
+      "dataset_sha256": "46a32fe8ba9ef987f67732c38001ecd09abab8350f7bbd960a528beb704dc4c0",
+      "requested_model": "agentlens-agent"
+    },
+    "usage": {
+      "input_tokens": 2332,
+      "output_tokens": 660
+    },
+    "error": null,
+    "started_at": "2026-10-31T20:26:15.592489+08:00",
+    "finished_at": "2026-10-31T20:26:43.011210+08:00",
+    "steps": [
+      {
+        "sequence": 1,
+        "kind": "model",
+        "name": "agentlens-agent",
+        "input": {
+          "messages": [
+            {
+              "content": "请调查 order-api 在 2026-10-30T14:00:00+08:00 至 2026-10-30T14:15:00+08:00（结束时间不包含） 的服务异常，结合日志和指标给出结论与证据。",
+              "additional_kwargs": {},
+              "response_metadata": {},
+              "type": "human",
+              "name": null,
+              "id": "d52dcaf6-bf65-4c2f-875e-65e131b4aa08"
+            }
+          ]
+        },
+        "output": {
+          "content": "我会并行查询 order-api 的日志和指标。",
+          "tool_calls": [
+            {
+              "name": "search_logs",
+              "args": {
+                "service": "order-api",
+                "start_time": "2026-10-30T14:00:00+08:00",
+                "end_time": "2026-10-30T14:15:00+08:00",
+                "level": "ERROR",
+                "limit": 100
+              },
+              "id": "call_00_7asyyhGyNjkf2VOxqTYt7588",
+              "type": "tool_call"
+            },
+            {
+              "name": "query_metrics",
+              "args": {
+                "service": "order-api",
+                "start_time": "2026-10-30T14:00:00+08:00",
+                "end_time": "2026-10-30T14:15:00+08:00"
+              },
+              "id": "call_01_wfMUNevBP84tafknQyPH3531",
+              "type": "tool_call"
+            }
+          ],
+          "usage": {
+            "input_tokens": 861,
+            "output_tokens": 239,
+            "total_tokens": 1100,
+            "input_token_details": {
+              "cache_read": 0
+            },
+            "output_token_details": {}
+          },
+          "response_model": "agentlens-agent"
+        },
+        "error": null,
+        "duration_ms": 22375.65
+      },
+      {
+        "sequence": 2,
+        "kind": "tool",
+        "name": "search_logs",
+        "input": {
+          "service": "order-api",
+          "start_time": "2026-10-30T14:00:00+08:00",
+          "end_time": "2026-10-30T14:15:00+08:00",
+          "level": "ERROR",
+          "limit": 100
+        },
+        "output": {
+          "logs": [
+            {
+              "evidence_id": "pool-exhaustion-log-1",
+              "timestamp": "2026-10-30T14:02:00+08:00",
+              "service": "order-api",
+              "level": "ERROR",
+              "message": "HikariPool connection acquisition timed out after 30000ms; active=20, idle=0, max=20"
+            }
+          ]
+        },
+        "error": null,
+        "duration_ms": 4.5
+      },
+      {
+        "sequence": 3,
+        "kind": "tool",
+        "name": "query_metrics",
+        "input": {
+          "service": "order-api",
+          "start_time": "2026-10-30T14:00:00+08:00",
+          "end_time": "2026-10-30T14:15:00+08:00"
+        },
+        "output": {
+          "metrics": [
+            {
+              "evidence_id": "pool-exhaustion-metric-1",
+              "timestamp": "2026-10-30T14:03:00+08:00",
+              "service": "order-api",
+              "name": "db_pool_active",
+              "value": 20.0,
+              "unit": "connections"
+            },
+            {
+              "evidence_id": "pool-exhaustion-metric-2",
+              "timestamp": "2026-10-30T14:03:00+08:00",
+              "service": "order-api",
+              "name": "db_pool_max",
+              "value": 20.0,
+              "unit": "connections"
+            },
+            {
+              "evidence_id": "pool-exhaustion-metric-3",
+              "timestamp": "2026-10-30T14:03:00+08:00",
+              "service": "order-api",
+              "name": "db_pool_waiters",
+              "value": 48.0,
+              "unit": "requests"
+            },
+            {
+              "evidence_id": "pool-exhaustion-metric-4",
+              "timestamp": "2026-10-30T14:03:00+08:00",
+              "service": "order-api",
+              "name": "http_5xx_ratio",
+              "value": 0.38,
+              "unit": "ratio"
+            }
+          ]
+        },
+        "error": null,
+        "duration_ms": 2.73
+      },
+      {
+        "sequence": 4,
+        "kind": "model",
+        "name": "agentlens-agent",
+        "input": {
+          "messages": [
+            {
+              "content": "请调查 order-api 在 2026-10-30T14:00:00+08:00 至 2026-10-30T14:15:00+08:00（结束时间不包含） 的服务异常，结合日志和指标给出结论与证据。",
+              "additional_kwargs": {},
+              "response_metadata": {},
+              "type": "human",
+              "name": null,
+              "id": "d52dcaf6-bf65-4c2f-875e-65e131b4aa08"
+            },
+            {
+              "content": "我会并行查询 order-api 的日志和指标。",
+              "additional_kwargs": {},
+              "response_metadata": {
+                "model_provider": "openai",
+                "finish_reason": "tool_calls",
+                "model_name": "agentlens-agent",
+                "system_fingerprint": "bc19ba97cbe016479903222bb1578db6"
+              },
+              "type": "ai",
+              "name": null,
+              "id": "lc_run--01a191ec-caa3-7188-a41b-a3fad4b9251a",
+              "tool_calls": [
+                {
+                  "name": "search_logs",
+                  "args": {
+                    "service": "order-api",
+                    "start_time": "2026-10-30T14:00:00+08:00",
+                    "end_time": "2026-10-30T14:15:00+08:00",
+                    "level": "ERROR",
+                    "limit": 100
+                  },
+                  "id": "call_00_7asyyhGyNjkf2VOxqTYt7588",
+                  "type": "tool_call"
+                },
+                {
+                  "name": "query_metrics",
+                  "args": {
+                    "service": "order-api",
+                    "start_time": "2026-10-30T14:00:00+08:00",
+                    "end_time": "2026-10-30T14:15:00+08:00"
+                  },
+                  "id": "call_01_wfMUNevBP84tafknQyPH3531",
+                  "type": "tool_call"
+                }
+              ],
+              "invalid_tool_calls": [],
+              "usage_metadata": {
+                "input_tokens": 861,
+                "output_tokens": 239,
+                "total_tokens": 1100,
+                "input_token_details": {
+                  "cache_read": 0
+                },
+                "output_token_details": {}
+              }
+            },
+            {
+              "content": "{\"logs\": [{\"evidence_id\": \"pool-exhaustion-log-1\", \"timestamp\": \"2026-10-30T14:02:00+08:00\", \"service\": \"order-api\", \"level\": \"ERROR\", \"message\": \"HikariPool connection acquisition timed out after 30000ms; active=20, idle=0, max=20\"}]}",
+              "additional_kwargs": {},
+              "response_metadata": {},
+              "type": "tool",
+              "name": null,
+              "id": "62a746ee-c2f7-4de4-91ad-3e9c422aa368",
+              "tool_call_id": "call_00_7asyyhGyNjkf2VOxqTYt7588",
+              "artifact": null,
+              "status": "success"
+            },
+            {
+              "content": "{\"metrics\": [{\"evidence_id\": \"pool-exhaustion-metric-1\", \"timestamp\": \"2026-10-30T14:03:00+08:00\", \"service\": \"order-api\", \"name\": \"db_pool_active\", \"value\": 20.0, \"unit\": \"connections\"}, {\"evidence_id\": \"pool-exhaustion-metric-2\", \"timestamp\": \"2026-10-30T14:03:00+08:00\", \"service\": \"order-api\", \"name\": \"db_pool_max\", \"value\": 20.0, \"unit\": \"connections\"}, {\"evidence_id\": \"pool-exhaustion-metric-3\", \"timestamp\": \"2026-10-30T14:03:00+08:00\", \"service\": \"order-api\", \"name\": \"db_pool_waiters\", \"value\": 48.0, \"unit\": \"requests\"}, {\"evidence_id\": \"pool-exhaustion-metric-4\", \"timestamp\": \"2026-10-30T14:03:00+08:00\", \"service\": \"order-api\", \"name\": \"http_5xx_ratio\", \"value\": 0.38, \"unit\": \"ratio\"}]}",
+              "additional_kwargs": {},
+              "response_metadata": {},
+              "type": "tool",
+              "name": null,
+              "id": "daaca6a1-3eea-46b1-9a7b-b5b7be23e89f",
+              "tool_call_id": "call_01_wfMUNevBP84tafknQyPH3531",
+              "artifact": null,
+              "status": "success"
+            }
+          ]
+        },
+        "output": {
+          "content": "{\"status\":\"diagnosed\",\"cause_summary\":\"order-api 在 2026-10-30 14:00–14:15（+08:00）期间出现数据库连接池耗尽：14:02 日志显示 HikariPool 获取连接超时 30000ms，active=20、idle=0、max=20；14:03 指标交叉验证 db_pool_active=20 已达 db_pool_max=20，db_pool_waiters=48 个请求排队等待连接，同时 http_5xx_ratio 升至 0.38，说明连接池饱和导致请求排队超时并转化为大量 5xx 响应。\",\"evidence_ids\":[\"pool-exhaustion-log-1\",\"pool-exhaustion-metric-1\",\"pool-exhaustion-metric-2\",\"pool-exhaustion-metric-3\",\"pool-exhaustion-metric-4\"],\"unknowns\":[\"连接池被长时间占用的具体原因尚未证实：可能是慢 SQL、长事务、下游数据库响应变慢或连接泄漏\",\"数据库侧（DB 实例）的负载、锁等待与慢查询指标未查询，无法判断瓶颈在应用侧还是数据库侧\",\"14:00 之前连接池使用率的基线水平未知，无法确认是否为突发流量导致\",\"是否存在特定接口或租户贡献了主要流量，日志中未体现\"],\"next_steps\":[\"查询数据库侧指标（连接数、慢查询、锁等待、CPU/IO）以确认是否为数据库瓶颈\",\"检查 order-api 中持有连接时间最长的 SQL 与事务，排查慢查询或未提交事务\",\"对比 13:45–14:00 的 db_pool_active/db_pool_waiters 基线，判断是否为流量突增\",\"检查应用侧是否存在连接未关闭（泄漏）的代码路径，必要时抓取线程栈查看阻塞点\",\"评估连接池上限与超时配置是否与当前负载匹配（仅建议，未执行任何变更）\"]}",
+          "tool_calls": [],
+          "usage": {
+            "input_tokens": 1471,
+            "output_tokens": 421,
+            "total_tokens": 1892,
+            "input_token_details": {
+              "cache_read": 1024
+            },
+            "output_token_details": {
+              "reasoning": 0
+            }
+          },
+          "response_model": "agentlens-agent"
+        },
+        "error": null,
+        "duration_ms": 3490.42
+      }
+    ]
+  },
+  "artifact_notes": [
+    "Copied from the successful single-case acceptance; no model rerun.",
+    "Gateway returned a model alias. Upstream configuration was checked separately via /model/info."
+  ],
+  "gateway_observation": {
+    "alias": "agentlens-agent",
+    "configured_upstream_model": "openai/deepseek-flash",
+    "provider_snapshot_observed": false
+  }
+}

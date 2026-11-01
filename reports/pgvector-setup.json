@@ -1,0 +1,41 @@
+{
+  "date": "2026-11-01",
+  "postgres_version": "17.11",
+  "pgvector_version": "0.8.7",
+  "migrations": [
+    "0004_vectors",
+    "0005_observability"
+  ],
+  "knowledge_chunks": 36,
+  "vector_dimensions": [
+    512
+  ],
+  "existing_counts_before": {
+    "runs": 40,
+    "run_steps": 82,
+    "threads": 22,
+    "knowledge_documents": 1,
+    "trace_spans": 115
+  },
+  "counts_after_import": {
+    "runs": 40,
+    "run_steps": 82,
+    "threads": 22,
+    "knowledge_documents": 19,
+    "trace_spans": 115
+  },
+  "existing_experiences": 1,
+  "existing_records_preserved": true,
+  "build": {
+    "pgvector_source_tag": "v0.8.7",
+    "postgres_archive_url": "https://get.enterprisedb.com/postgresql/postgresql-17.11-1-windows-x64-binaries.zip",
+    "postgres_archive_sha256": "6eabdf00d2893713b75db4336a23c3fdf505f056e217ec6e2e95d901750cfea3",
+    "pgvector_source_url": "https://codeload.github.com/pgvector/pgvector/zip/refs/tags/v0.8.7",
+    "pgvector_source_sha256": "7b3b8188a5cc0aa96db3c8f3fca1e78a8a612c46545065490c76448705c6b29e",
+    "installed_vector_dll_sha256": "d11bc5d9edc8bdfbab0c47fd8b3b0abc3046378a45e799027e93b9a7a851d405",
+    "compiler_installation": "D:/Microsoft_visual_studio/BuildTools2026",
+    "architecture": "x64",
+    "nmake_exit_code": 0,
+    "backup": "reports/local/pgvector-setup/before-pgvector.dump"
+  }
+}

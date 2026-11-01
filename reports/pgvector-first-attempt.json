@@ -1,0 +1,58 @@
+{
+  "status": "failed",
+  "reason": "gateway DNS getaddrinfo failed before model response",
+  "run": {
+    "run_id": "3ee0392d-1e50-4a8f-ae8c-f030f0440e69",
+    "thread_id": "e2ade72a-714f-42fb-abea-83e69acbbb21",
+    "source_run_id": null,
+    "checkpoint_id": null,
+    "trace_id": "ca89eb6d26665b0d835f5daa4abe76ac",
+    "span_id": "8a1dbaa1fc67abb8",
+    "request_span_id": "6e8069636495ac70",
+    "interrupt": null,
+    "project_id": "project-a",
+    "status": "failed",
+    "input": "请调查 order-api 在 2026-10-30T14:00:00+08:00 至 2026-10-30T14:15:00+08:00（结束时间不包含） 的服务异常，结合日志和指标给出结论与证据。请检索相关排障手册，引用支持检查建议的手册片段。",
+    "output": null,
+    "versions": {
+      "prompt_sha256": "88f17f7391d6b81d4483b0d8a13afb16efe0e13ba4b527af8264ebb943530b88",
+      "dataset_sha256": "46a32fe8ba9ef987f67732c38001ecd09abab8350f7bbd960a528beb704dc4c0",
+      "requested_model": "agentlens-agent",
+      "configured_upstream_model": "openai/deepseek-flash",
+      "tool_transport": "mcp/streamable-http",
+      "checkpointer": "AsyncPostgresSaver",
+      "graph_version": "week4-v1",
+      "tool_schemas_sha256": "0309121ce71bf02ee65170bcba595d3d1ed9ae09909cef2fe471243a71aa8371"
+    },
+    "usage": {
+      "input_tokens": 0,
+      "output_tokens": 0
+    },
+    "error": "OpenAIAPIError: Error code: 500 - {'error': {'message': \"litellm.InternalServerError: InternalServerError: OpenAIException - Connection error.\\n\\nLiteLLM: model group 'agentlens-agent' failed with the error above. No fallback was attempted.\", 'type': 'internal_server_error', 'param': None, 'code': '500'}}",
+    "started_at": "2026-11-01T10:38:16.861748+08:00",
+    "finished_at": "2026-11-01T10:38:25.953964+08:00",
+    "steps": [
+      {
+        "sequence": 1,
+        "kind": "model",
+        "name": "agentlens-agent",
+        "input": {
+          "messages": [
+            {
+              "content": "请调查 order-api 在 2026-10-30T14:00:00+08:00 至 2026-10-30T14:15:00+08:00（结束时间不包含） 的服务异常，结合日志和指标给出结论与证据。请检索相关排障手册，引用支持检查建议的手册片段。",
+              "additional_kwargs": {},
+              "response_metadata": {},
+              "type": "human",
+              "name": null,
+              "id": "e5c285b0-2450-46ee-a919-9d6c20c86806"
+            }
+          ]
+        },
+        "output": null,
+        "error": "OpenAIAPIError: Error code: 500 - {'error': {'message': \"litellm.InternalServerError: InternalServerError: OpenAIException - Connection error.\\n\\nLiteLLM: model group 'agentlens-agent' failed with the error above. No fallback was attempted.\", 'type': 'internal_server_error', 'param': None, 'code': '500'}}",
+        "duration_ms": 8955.42,
+        "span_id": "2b5dbb888d680bde"
+      }
+    ]
+  }
+}

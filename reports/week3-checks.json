@@ -1,0 +1,44 @@
+{
+  "status": "checks_passed",
+  "checks": {
+    "18_documents_36_chunks": true,
+    "unique_chunk_ids": true,
+    "chunk_documents_exist": true,
+    "relevance_labels_exist": true,
+    "no_embedding_truncation": true,
+    "real_bge_512_finite_normalized": true,
+    "postgres_vector_scope_sql_compiles": true,
+    "historical_run_still_scores": true,
+    "handbook_rows_are_not_time_window_rows": true,
+    "fabricated_citation_fails_scoring": true,
+    "cross_project_handbook_fails_scoring": true,
+    "retrieval_metric_contract": true,
+    "query_boundary_rejects_invalid_input": true,
+    "three_mcp_tools_discovered": true,
+    "project_hidden_from_model": true,
+    "invalid_query_rejected_over_mcp": true,
+    "missing_scope_rejected": true,
+    "postgres_keyword_rank_works": true
+  },
+  "chat_model_calls": 0,
+  "new_business_runs": 0,
+  "corpus_manifest": {
+    "corpus_sha256": "023114864f127896cfc77ae214368e69d1dcfb883b0395c7c363db162c1a03ca",
+    "chunks_sha256": "b6a49d5e1a286048cf707277fb38f796b74ab0a6bd946245fa74ee64ea24fdd7",
+    "chunking": "authored-h2-v1",
+    "embedding_model": "BAAI/bge-small-zh-v1.5",
+    "embedding_revision": "7999e1d3359715c523056ef9478215996d62a620",
+    "dimensions": 512,
+    "normalize": true,
+    "query_prefix": "为这个句子生成表示以用于检索相关文章：",
+    "max_seq_length": 512
+  },
+  "maximum_section_tokens": 132,
+  "database": {
+    "server_version": "17.11",
+    "vector_available": false,
+    "migration": "0001_week1"
+  },
+  "pgvector_query_executed": false,
+  "note": "Evaluator fixtures are mutated copies, not new Agent runs or quality results."
+}

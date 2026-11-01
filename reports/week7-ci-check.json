@@ -1,0 +1,20 @@
+{
+  "date": "2026-11-01",
+  "workflow": ".github/workflows/quality.yml",
+  "yaml_parse": "passed",
+  "configured_jobs": [
+    "deterministic",
+    "real-one-case"
+  ],
+  "remote_actions_run": false,
+  "linux_container_job_verified": false,
+  "local_contract_tests": 27,
+  "local_component_tests": 4,
+  "local_frontend_build": "passed",
+  "real_job_requires_manual_run_real": true,
+  "selected_business_cases": 1,
+  "real_model_execution_modes": [
+    "recorded_replay",
+    "frozen_scenario"
+  ]
+}

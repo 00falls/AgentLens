@@ -1,0 +1,3 @@
+{"passed": true, "failures": []}
+C:\Users\lenovo\Desktop\所有项目\AgentLens\src\agentlens\graph.py:8: LangChainBetaWarning: `langchain.mcp` is in beta. It is actively being worked on, so the API may change.
+  from langchain.mcp import MCPAdapter

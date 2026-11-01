@@ -1,0 +1,59 @@
+{
+  "synthetic": true,
+  "documents": [
+    {"id":"pool-exhaustion","project_id":"project-a","title":"order-api 数据库连接池耗尽","sections":[
+      {"heading":"识别连接获取等待","text":"order-api 使用 HikariPool。connection acquisition timed out 表示等待池内连接超时，不等于 SQL 执行超时。对照 db_pool_active、db_pool_max、db_pool_waiters；active 达到 max、idle=0 且 waiters 持续上升时，可判断连接池饱和。结合相同时间窗的 5xx，确认影响范围。"},
+      {"heading":"继续调查与变更条件","text":"区分慢查询、长事务与未释放连接，需要连接持有时长、数据库会话、锁等待和调用栈。仅凭池满不能认定连接泄漏。记录数据库剩余连接容量，再评估限流、回滚或调整池大小；未经容量验证不要直接扩大 max。任何生产变更都需要操作人审批。"}]},
+    {"id":"downstream-timeout","project_id":"project-a","title":"order-api 调用 payment-api 超时","sections":[
+      {"heading":"识别依赖延迟","text":"order-api 的 HTTP 504、payment-api timed out 与 payment_api_p95_ms 同时上升，支持下游延迟影响上游。对齐请求时间、超时阈值和调用链，避免把上游错误率直接解释为数据库故障。"},
+      {"heading":"继续查询下游","text":"获取 payment-api 同窗口日志、线程池和依赖指标，区分排队与处理缓慢。重试会放大下游负载；建议前先确认现有重试次数、请求幂等性和总体超时预算。当前工具只有查询能力，建议不代表已经执行。"}]},
+    {"id":"config-regression","project_id":"project-a","title":"payment-api 发布后数据库 DNS 配置错误","sections":[
+      {"heading":"定位 NXDOMAIN","text":"payment-api 发布后出现 NXDOMAIN、cannot be resolved 时，核对数据库主机名的拼写与配置来源。pg-paymnt.internal 与预期数据库域名不一致时，保留配置差异、发布时间和解析错误作为证据。NXDOMAIN 与连接拒绝是不同阶段的故障。"},
+      {"heading":"确认配置来源","text":"检查 deployment 环境变量、配置文件与 DNS 记录的实际生效版本。多个实例是否一起失败有助区分配置回归与单实例缓存。向操作人建议回滚前，确认上一版本配置可用；本助手不修改部署。"}]},
+    {"id":"memory-pressure","project_id":"project-b","title":"inventory-api OOMKilled 与内存压力","sections":[
+      {"heading":"核对容器内存限制","text":"inventory-api 出现 OOMKilled、exitCode=137 时，对照 memory_working_set_mb、memory_limit_mb 与 container_restarts。工作集逼近容器限制并伴随重启，支持内存压力判断；137 单独出现也可能是其他 SIGKILL，不能只按退出码断定内存泄漏。"},
+      {"heading":"区分容量与泄漏","text":"比较重启前增长趋势、请求体大小、缓存大小和堆转储。持续增长与突发大对象是不同路径；缺少堆证据时标注未知。扩容或调整内存上限应先评估节点剩余容量，不从一次 OOM 直接推荐无限扩容。"}]},
+    {"id":"traffic-spike","project_id":"project-b","title":"inventory-api 流量突增与队列饱和","sections":[
+      {"heading":"识别过载","text":"inventory-api 的 Worker queue full、HTTP 503 与 queue_length 上升时，对比 request_rate、baseline_request_rate 和 worker_cpu_percent。流量显著超过基线且队列与 CPU 同时饱和，支持处理能力不足。"},
+      {"heading":"确定流量来源","text":"按调用方、路径和时间统计流量，排查批处理、热点请求或重试放大。没有来源证据不能断言攻击。可建议限流与扩容评估，但需要确认业务优先级、丢弃策略和节点容量。"}]},
+    {"id":"healthy","project_id":"project-a","title":"order-api 当前窗口正常的调查方法","sections":[
+      {"heading":"检查观测范围","text":"order-api 在指定窗口只有 status=200，http_5xx_ratio=0 且 p95_latency_ms 正常时，应说明当前范围未发现异常。一个正常请求不能证明所有实例健康；确认日志覆盖实例与指标聚合范围。"},
+      {"heading":"补充问题","text":"请用户核对服务名、时区、实例与故障发生时间。扩大时间窗需要明确新的查询范围。不要使用窗口外的错误替代本窗口证据，也不要凭正常样本否定用户报告。"}]},
+    {"id":"insufficient","project_id":"project-b","title":"payment-api 遥测缺失","sections":[
+      {"heading":"区分无数据与无故障","text":"payment-api 查询同时缺少日志和指标时，应返回证据不足。空结果可能来自时间、服务名、采集链路或保留期问题，不能解释为零错误率或健康。"},
+      {"heading":"恢复观测","text":"核对时区与实例标签，检查采集代理、抓取目标与数据保留期。向用户列出需要补充的遥测；未取得现场数据前不要把排障手册当作故障已经发生的证据。"}]},
+    {"id":"db-lock-wait","project_id":"project-a","title":"order-api PostgreSQL 锁等待","sections":[
+      {"heading":"识别阻塞事务","text":"order-api SQL 延迟伴随 pg_stat_activity 的 wait_event_type=Lock 时，查询阻塞关系、事务年龄和等待语句。连接池 active 上升可能是锁等待的后果，只有池满日志无法确认锁为根因。"},
+      {"heading":"处理前记录证据","text":"保留阻塞 PID、事务开始时间、涉及表与发布记录。终止事务可能回滚业务操作，需要操作人确认。对照慢查询与连接获取时间，分别标注数据库执行阶段与应用池等待阶段。"}]},
+    {"id":"db-connection-refused","project_id":"project-a","title":"payment-api 数据库连接被拒绝","sections":[
+      {"heading":"区分 TCP 与 DNS","text":"payment-api 报 ECONNREFUSED 或 connection refused 时，说明已尝试连接目标地址，但目标端口拒绝。核对数据库监听端口、地址与服务状态。它与 NXDOMAIN 的域名解析失败不同，也与 HikariPool 池内等待不同。"},
+      {"heading":"验证网络路径","text":"在允许的网络诊断环境检查目标端口与实例健康，核对部署前后连接地址。不要未经证据将连接拒绝解释为密码错误；认证失败发生在不同连接阶段。"}]},
+    {"id":"db-authentication","project_id":"project-a","title":"payment-api 数据库认证失败","sections":[
+      {"heading":"识别认证错误","text":"payment-api 出现 SQLSTATE 28P01 或 password authentication failed 时，数据库服务已经响应认证请求。对照凭证轮换时间和数据库用户配置，区分认证失败与 DNS、TCP 连接失败。"},
+      {"heading":"凭证核对边界","text":"核对凭证版本编号和生效实例，不把密码写入日志或诊断答案。由授权操作人检查秘密管理配置。仅报告认证失败及其影响，不在工具请求中要求用户粘贴凭证。"}]},
+    {"id":"http-client-pool","project_id":"project-a","title":"order-api HTTP 客户端连接池等待","sections":[
+      {"heading":"区分两种连接池","text":"order-api 的 HTTP client pool lease timeout、pending acquire 与外部 HTTP 请求有关；HikariPool connection acquisition 属于数据库连接池。两种池都可能产生请求排队，应依据日志组件名与具体指标区分。"},
+      {"heading":"检查下游与连接释放","text":"核对 HTTP 连接上限、下游响应耗时与响应体关闭情况。数据库 db_pool_active 不可用来证明 HTTP 池已满。保留发生等待的客户端名称与目标服务。"}]},
+    {"id":"rate-limit","project_id":"project-a","title":"payment-api 请求限流 HTTP 429","sections":[
+      {"heading":"识别配额限制","text":"payment-api 返回 HTTP 429、rate limit exceeded 时，检查调用方配额、限流窗口和 Retry-After。429 与下游 504、服务过载 503 应分开统计。"},
+      {"heading":"评估请求节奏","text":"核对请求峰值、批量任务与 SDK 重试。遵守服务返回的重试提示，避免立即重复请求。提高配额前需要容量与业务优先级依据，不假设服务已经宕机。"}]},
+    {"id":"tls-expired","project_id":"project-a","title":"payment-api TLS 证书过期","sections":[
+      {"heading":"识别握手失败","text":"payment-api 调用外部服务出现 certificate has expired 或 CERT_HAS_EXPIRED 时，核对证书有效期、主机时钟与域名。TLS 握手发生在 HTTP 状态码之前，不能按普通 5xx 判断应用根因。"},
+      {"heading":"核验证书链","text":"由授权操作人检查证书链、更新记录和实例差异。建议更新证书并验证，不建议关闭证书校验。输出只记录域名和有效期等非秘密信息。"}]},
+    {"id":"disk-full","project_id":"project-b","title":"inventory-api 磁盘空间不足","sections":[
+      {"heading":"识别写入失败","text":"inventory-api 出现 ENOSPC、No space left on device 时，对照磁盘使用率与 inode 数。磁盘字节未满仍可能 inode 耗尽；它与内存 OOMKilled 是不同资源问题。"},
+      {"heading":"定位增长来源","text":"区分日志、临时文件与业务数据目录，检查挂载卷与保留策略。删除数据前由操作人确认保留要求，本助手只列出待检查目录与证据，不自动清理。"}]},
+    {"id":"cpu-throttling","project_id":"project-b","title":"inventory-api CPU 配额节流","sections":[
+      {"heading":"识别 CPU throttling","text":"inventory-api 延迟升高时，对照 container_cpu_cfs_throttled_seconds_total、CPU limit 和队列。受 CPU 配额限制时，节点总体 CPU 仍可能空闲。不能只用 worker_cpu_percent 推断节点算力不足。"},
+      {"heading":"继续定位","text":"比较发布前后单位请求 CPU、请求量与热点堆栈。区分流量增长和代码回归后再建议调整配额。内存与 CPU 指标需要分别判断，不把所有资源故障混为一类。"}]},
+    {"id":"cache-miss","project_id":"project-b","title":"inventory-api 缓存命中率下降","sections":[
+      {"heading":"识别缓存穿透到数据库","text":"inventory-api cache_hit_ratio 下降并伴随 db_query_rate 上升时，核对缓存过期时间、键空间与发布变更。下游数据库压力可能是缓存失效的后果，不能只据数据库变慢推断连接泄漏。"},
+      {"heading":"确认影响范围","text":"检查热点键、缓存错误与容量淘汰，区分批量过期和连接失败。建议预热或修改过期策略前，评估回源负载和数据一致性要求。"}]},
+    {"id":"queue-backlog","project_id":"project-b","title":"inventory-api 消费积压","sections":[
+      {"heading":"区分消费积压与 HTTP 队列","text":"inventory-api 消费者 lag、oldest_message_age 上升时，对照生产速率、消费速率与失败重试。消息积压与 HTTP Worker queue full 有相似表现，但需要使用对应队列的指标与组件日志。"},
+      {"heading":"核对消费故障","text":"检查消费者存活、分区分配、处理时长与毒消息。增加消费者之前确认分区数与下游容量，避免把积压转成数据库过载。"}]},
+    {"id":"clock-skew","project_id":"project-b","title":"inventory-api 时间窗口与时钟偏移","sections":[
+      {"heading":"核对时区与时钟","text":"inventory-api 日志和指标无法对齐时，核对 UTC、北京时间与主机时钟偏移。查询区间采用左闭右开，结束时刻样本不属于本窗口；不要把时间窗外的异常作为当前诊断证据。"},
+      {"heading":"保留原始时间","text":"输出保留带时区的原始时间，记录采集延迟与事件时间的差别。先明确偏移量，再由操作人检查时间同步配置；不要为了匹配结论随意平移事件时间。"}]}
+  ]
+}

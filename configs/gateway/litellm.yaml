@@ -1,0 +1,29 @@
+model_list:
+  - model_name: agentlens-agent
+    litellm_params:
+      model: os.environ/DEEPSEEK_MODEL
+      api_base: os.environ/DEEPSEEK_API_BASE
+      api_key: os.environ/DEEPSEEK_API_KEY
+      extra_body:
+        thinking:
+          type: disabled
+      timeout: 60
+      max_retries: 0
+
+  - model_name: agentlens-candidate
+    litellm_params:
+      model: openai/deepseek-v4-pro
+      api_base: os.environ/DEEPSEEK_API_BASE
+      api_key: os.environ/DEEPSEEK_API_KEY
+      extra_body:
+        thinking:
+          type: disabled
+      timeout: 60
+      max_retries: 0
+
+general_settings:
+  master_key: os.environ/LITELLM_MASTER_KEY
+
+litellm_settings:
+  num_retries: 0
+

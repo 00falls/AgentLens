@@ -1,0 +1,14 @@
+{
+  "passed": true,
+  "provider_requests": 0,
+  "checks": {
+    "missing_key_denied": true,
+    "forged_project_denied": true,
+    "analysis_tool_discovered": true,
+    "authorized_query_succeeds": true,
+    "unretrieved_input_denied": true,
+    "missing_sandbox_explicit_tool_error": true,
+    "foreign_run_tool_denied": true
+  },
+  "sandbox_runtime_executed": false
+}

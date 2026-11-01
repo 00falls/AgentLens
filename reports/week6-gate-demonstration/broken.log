@@ -1,0 +1,3 @@
+{"passed": false, "failures": [{"case_id": "pool-exhaustion-01", "reason": "failed", "checks": ["valid_citations"]}, {"case_id": "pool-exhaustion-01", "reason": "regressed", "checks": ["valid_citations"]}]}
+C:\Users\lenovo\Desktop\所有项目\AgentLens\src\agentlens\graph.py:8: LangChainBetaWarning: `langchain.mcp` is in beta. It is actively being worked on, so the API may change.
+  from langchain.mcp import MCPAdapter

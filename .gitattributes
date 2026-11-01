@@ -1,0 +1,2 @@
+# Experiment manifests hash raw bytes; preserve them across Windows and Linux checkouts.
+* -text

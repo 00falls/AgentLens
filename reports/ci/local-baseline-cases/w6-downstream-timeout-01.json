@@ -1,0 +1,1225 @@
+{
+  "schema_version": 2,
+  "name": "dev10",
+  "started_at": "2026-11-01T10:17:25.659941+00:00",
+  "finished_at": "2026-11-01T10:17:32.342428+00:00",
+  "dataset_sha256": "913c65c6994772b7060f31ae1f1ef446eedec0c3838a532119b3f8b897a5f3c3",
+  "evaluator_sha256": "bc0b366ec248ee3f2ebf38498959647aa55b5170fa2e60174e8560c9096139e3",
+  "agentevals_version": "0.0.9",
+  "dataset_name": "dev.jsonl",
+  "judge_config": null,
+  "recorded_run": false,
+  "summary": {
+    "selected": 1,
+    "passed": 1,
+    "failed": 0,
+    "errors": 0,
+    "judge_errors": 0,
+    "complete": true,
+    "pass_rate": 1.0
+  },
+  "cases": [
+    {
+      "case_id": "w6-downstream-timeout-01",
+      "critical": false,
+      "scenario_group": "downstream-timeout",
+      "split": "dev",
+      "outcome": "passed",
+      "evaluation": {
+        "passed": true,
+        "checks": {
+          "project_scope": true,
+          "status": true,
+          "required_tools": true,
+          "query_scope": true,
+          "cause_terms": true,
+          "required_evidence": true,
+          "valid_citations": true,
+          "outside_window_excluded": true,
+          "token_usage_recorded": true,
+          "runbook_retrieved": true,
+          "runbook_cited": true,
+          "knowledge_project_scope": true,
+          "trajectory_required_tools": true,
+          "trajectory_forbidden_tools": true,
+          "trajectory_parameters": true,
+          "trajectory_order": true
+        },
+        "failure_reasons": [],
+        "dimensions": {
+          "trajectory": true,
+          "retrieval": true,
+          "root_cause": true,
+          "citations": true,
+          "task_completion": true
+        },
+        "trajectory": {
+          "checks": {
+            "trajectory_required_tools": true,
+            "trajectory_forbidden_tools": true,
+            "trajectory_parameters": true,
+            "trajectory_order": true
+          },
+          "matcher": "agentevals.trajectory.match",
+          "required_tool_match": {
+            "key": "trajectory_superset_match",
+            "score": true,
+            "comment": null,
+            "metadata": null
+          },
+          "parameter_match": {
+            "key": "trajectory_unordered_match",
+            "score": true,
+            "comment": null,
+            "metadata": null
+          },
+          "precedence": {
+            "search_logs -> search_runbooks": true,
+            "query_metrics -> search_runbooks": true
+          }
+        }
+      },
+      "error": null,
+      "run": {
+        "run_id": "8c2c34de-d366-40d7-b51f-b9863b257d7a",
+        "thread_id": "9a1baa42-2af7-423c-a042-4d64dd6a35c0",
+        "source_run_id": null,
+        "execution_mode": "live",
+        "recording_id": null,
+        "scenario_id": null,
+        "failure_detail": null,
+        "checkpoint_id": "1f1d5dd7-340f-6810-8006-2a113ba8d750",
+        "trace_id": "91ad923651722531685cd32a38370d72",
+        "span_id": "64325d294924a012",
+        "request_span_id": null,
+        "interrupt": null,
+        "project_id": "project-a",
+        "status": "diagnosed",
+        "input": "请调查 order-api 在 2026-11-03T08:00:00+08:00 至 2026-11-03T08:15:00+08:00（结束时间不包含）的异常，结合日志与指标，检索并引用支持建议的手册。",
+        "output": {
+          "status": "diagnosed",
+          "cause_summary": "在 2026-11-03 08:00–08:15（+08:00）窗口内，order-api 的异常表现为下游 payment-api 调用延迟超时：08:02 出现 ERROR 日志，显示 replica-1 对 payment-api 的 HTTP 请求在 5000ms 后超时，上游返回 504；08:03 指标 payment_api_p95_ms=6200ms（超过 5000ms 超时阈值），同时 http_5xx_ratio=0.27，说明 order-api 的 5xx 主要由下游 payment-api 延迟导致，而不是 order-api 自身数据库或连接池问题。手册 downstream-timeout--s01 与本次现场证据一致：504、payment-api timed out 与 payment_api_p95_ms 同时上升，支持下游延迟影响上游；手册建议对齐请求时间、超时阈值和调用链，避免把上游错误率直接解释为数据库故障。",
+          "evidence_ids": [
+            "w6-downstream-timeout-01-log-1",
+            "w6-downstream-timeout-01-metric-1",
+            "w6-downstream-timeout-01-metric-2",
+            "downstream-timeout--s01",
+            "downstream-timeout--s02"
+          ],
+          "unknowns": [
+            "payment-api 侧延迟的具体原因尚未证实：是排队、线程池饱和、依赖缓慢还是限流，当前没有 payment-api 的日志与指标",
+            "未确认 payment-api 是否返回 429 限流（本次日志仅见 504 超时，无 429 证据）",
+            "order-api 的重试次数、请求幂等性与总体超时预算未核实",
+            "异常影响范围（受影响接口、订单量、是否仅 replica-1）未量化",
+            "未查询 order-api 数据库连接池指标，因此数据库连接池耗尽仅为待排除项，无现场证据支持"
+          ],
+          "next_steps": [
+            "按手册 downstream-timeout--s02 获取 payment-api 同窗口（2026-11-03T08:00:00+08:00 至 08:15:00+08:00）日志、线程池与依赖指标，区分排队与处理缓慢",
+            "核对 payment-api 是否出现 HTTP 429 / rate limit exceeded 及 Retry-After，与 504 分开统计（参考 rate-limit--s01）",
+            "对齐 order-api 请求时间、5000ms 超时阈值与调用链，确认 5xx 是否集中在调用 payment-api 的接口",
+            "确认现有重试次数、请求幂等性和总体超时预算后再考虑调整重试或超时，避免重试放大下游负载",
+            "如需排除 order-api 自身资源问题，补充查询 db_pool_active、db_pool_max、db_pool_waiters 等连接池指标"
+          ]
+        },
+        "versions": {
+          "prompt_sha256": "b607124299c8683f22704cd8a32a2dd92c06469887a1aa89d10676128091bdbb",
+          "dataset_sha256": "46a32fe8ba9ef987f67732c38001ecd09abab8350f7bbd960a528beb704dc4c0",
+          "requested_model": "agentlens-agent",
+          "configured_upstream_model": "openai/deepseek-flash",
+          "tool_transport": "mcp/streamable-http",
+          "checkpointer": "AsyncPostgresSaver",
+          "graph_version": "week8-v1",
+          "actor": "local-cli",
+          "recording_sha256": null,
+          "scenario_manifest": null,
+          "tool_catalog": [
+            {
+              "name": "search_logs",
+              "description": "Query logs in the current project. Times include timezone; interval is [start, end).\n\n    Returns citeable evidence_id values. Limit is 1-200.\n    ",
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "service": {
+                    "title": "Service",
+                    "type": "string"
+                  },
+                  "start_time": {
+                    "format": "date-time",
+                    "title": "Start Time",
+                    "type": "string"
+                  },
+                  "end_time": {
+                    "format": "date-time",
+                    "title": "End Time",
+                    "type": "string"
+                  },
+                  "level": {
+                    "anyOf": [
+                      {
+                        "enum": [
+                          "INFO",
+                          "WARN",
+                          "ERROR"
+                        ],
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null,
+                    "title": "Level"
+                  },
+                  "limit": {
+                    "default": 50,
+                    "title": "Limit",
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "service",
+                  "start_time",
+                  "end_time"
+                ],
+                "title": "logsArguments"
+              }
+            },
+            {
+              "name": "query_metrics",
+              "description": "Query metrics in the current project and [start_time, end_time).\n\n    Leave metric_name unset to inspect available metrics. Returns citeable evidence. Limit is 1-300.\n    ",
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "service": {
+                    "title": "Service",
+                    "type": "string"
+                  },
+                  "start_time": {
+                    "format": "date-time",
+                    "title": "Start Time",
+                    "type": "string"
+                  },
+                  "end_time": {
+                    "format": "date-time",
+                    "title": "End Time",
+                    "type": "string"
+                  },
+                  "metric_name": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null,
+                    "title": "Metric Name"
+                  },
+                  "limit": {
+                    "default": 100,
+                    "title": "Limit",
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "service",
+                  "start_time",
+                  "end_time"
+                ],
+                "title": "metricsArguments"
+              }
+            },
+            {
+              "name": "search_runbooks",
+              "description": "Search the current project's troubleshooting handbooks using symptoms and error terms.\n\n    Use observed service/component names and error messages in query. Returns citeable chunk\n    evidence_id, source, revision and content. Handbooks guide checks; they are not live telemetry.\n    top_k is 1-10. Query is 1-2000 characters. Uses fixed BGE embeddings and pgvector cosine search.\n    ",
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "query": {
+                    "title": "Query",
+                    "type": "string"
+                  },
+                  "top_k": {
+                    "default": 3,
+                    "title": "Top K",
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "query"
+                ],
+                "title": "runbooksArguments"
+              }
+            },
+            {
+              "name": "search_experiences",
+              "description": "Find human-confirmed incident experience for a service in the current project.\n\n    Use for related past incidents and applicable investigation steps. Results are historical\n    knowledge, not live evidence for a new incident. Returns citeable IDs and original run/time.\n    Exact service match, latest confirmations first. Limit is 1-20.\n    ",
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "service": {
+                    "title": "Service",
+                    "type": "string"
+                  },
+                  "limit": {
+                    "default": 5,
+                    "title": "Limit",
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "service"
+                ],
+                "title": "experiencesArguments"
+              }
+            },
+            {
+              "name": "analyze_logs",
+              "description": "Run Python statistics on logs already retrieved in THIS run, using OpenShell only.\n\n    Use only when the user requests statistical analysis. logs is a list of authorized rows.\n    Print exactly one JSON value. No network, credentials, package installs or host files.\n    Maximum 100 log IDs, code 6000 chars, 8 seconds, 256MiB, output 64KiB.\n    Runtime absence is a tool error; never claim analysis succeeded without its result.\n    ",
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "evidence_ids": {
+                    "items": {
+                      "type": "string"
+                    },
+                    "title": "Evidence Ids",
+                    "type": "array"
+                  },
+                  "python_code": {
+                    "title": "Python Code",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "evidence_ids",
+                  "python_code"
+                ],
+                "title": "analyze_logsArguments"
+              }
+            }
+          ],
+          "tool_schemas_sha256": "d50be48bfae9c71d5645337a9cd10ff9580fc6da8f8e518898dc1ab5a0d5079b",
+          "retrieval": {
+            "corpus_sha256": "023114864f127896cfc77ae214368e69d1dcfb883b0395c7c363db162c1a03ca",
+            "chunks_sha256": "b6a49d5e1a286048cf707277fb38f796b74ab0a6bd946245fa74ee64ea24fdd7",
+            "chunking": "authored-h2-v1",
+            "embedding_model": "BAAI/bge-small-zh-v1.5",
+            "embedding_revision": "7999e1d3359715c523056ef9478215996d62a620",
+            "dimensions": 512,
+            "normalize": true,
+            "query_prefix": "为这个句子生成表示以用于检索相关文章：",
+            "max_seq_length": 512,
+            "artifacts_sha256": "9e8d41feee144813910c7db23ca5505bcf66139811f6f1521db1265e1bed016d",
+            "strategy": "vector",
+            "top_k": 5,
+            "candidate_k": 10,
+            "rrf_offset": 60
+          }
+        },
+        "usage": {
+          "input_tokens": 8315,
+          "output_tokens": 1005
+        },
+        "error": null,
+        "started_at": "2026-11-01T18:17:25.698350+08:00",
+        "finished_at": "2026-11-01T18:17:32.334794+08:00",
+        "steps": [
+          {
+            "sequence": 1,
+            "kind": "model",
+            "name": "agentlens-agent",
+            "input": {
+              "messages": [
+                {
+                  "content": "请调查 order-api 在 2026-11-03T08:00:00+08:00 至 2026-11-03T08:15:00+08:00（结束时间不包含）的异常，结合日志与指标，检索并引用支持建议的手册。",
+                  "additional_kwargs": {},
+                  "response_metadata": {},
+                  "type": "human",
+                  "name": null,
+                  "id": "30687d15-7655-4256-980f-c4e77b543d56"
+                }
+              ]
+            },
+            "output": {
+              "content": "我先查询 order-api 在该时间窗内的日志和指标。",
+              "tool_calls": [
+                {
+                  "name": "search_logs",
+                  "args": {
+                    "service": "order-api",
+                    "start_time": "2026-11-03T08:00:00+08:00",
+                    "end_time": "2026-11-03T08:15:00+08:00",
+                    "level": "ERROR",
+                    "limit": 100
+                  },
+                  "id": "call_00_xUe2FNAldbMeUBs49tEm9355",
+                  "type": "tool_call"
+                },
+                {
+                  "name": "query_metrics",
+                  "args": {
+                    "service": "order-api",
+                    "start_time": "2026-11-03T08:00:00+08:00",
+                    "end_time": "2026-11-03T08:15:00+08:00",
+                    "limit": 100
+                  },
+                  "id": "call_01_htsze24o4HkPkUb4kFP49218",
+                  "type": "tool_call"
+                }
+              ],
+              "usage": {
+                "input_tokens": 1533,
+                "output_tokens": 257,
+                "total_tokens": 1790,
+                "input_token_details": {
+                  "cache_read": 1280
+                },
+                "output_token_details": {}
+              },
+              "response_model": "agentlens-agent",
+              "billing": {
+                "currency": "USD",
+                "pricing_version": "deepseek-2026-11-01",
+                "pricing_sha256": "6a41970e9ba6f1c65aadd1eab8483e562cfa3abb7eecfe9dc78e264dc22f301d",
+                "source": "https://api-docs.deepseek.com/quick_start/pricing/",
+                "cost": "0.00019599",
+                "cache_read_tokens": 1280,
+                "reason": null,
+                "model_source": "local_gateway_configuration; response_contains_alias",
+                "gateway_config_sha256": "7defcb62e9bf9f418561063d1b4ccb9ed038bffc5c3921858278e02ec5c600de",
+                "priced_model": "deepseek-flash",
+                "rates_per_million": {
+                  "cache_hit": 0.003,
+                  "cache_miss": 0.15,
+                  "output": 0.6
+                }
+              }
+            },
+            "error": null,
+            "duration_ms": 1321.81,
+            "span_id": "fe33dd3ed9dcd234",
+            "source_step_sequence": null
+          },
+          {
+            "sequence": 2,
+            "kind": "tool",
+            "name": "search_logs",
+            "input": {
+              "service": "order-api",
+              "start_time": "2026-11-03T08:00:00+08:00",
+              "end_time": "2026-11-03T08:15:00+08:00",
+              "level": "ERROR",
+              "limit": 100
+            },
+            "output": {
+              "logs": [
+                {
+                  "evidence_id": "w6-downstream-timeout-01-log-1",
+                  "timestamp": "2026-11-03T08:02:00+08:00",
+                  "service": "order-api",
+                  "level": "ERROR",
+                  "message": "instance=replica-1; HTTP request to payment-api timed out after 5000ms; upstream returned 504"
+                }
+              ]
+            },
+            "error": null,
+            "duration_ms": 17.17,
+            "span_id": "c0cdb15ac7d06ccd",
+            "source_step_sequence": null
+          },
+          {
+            "sequence": 3,
+            "kind": "tool",
+            "name": "query_metrics",
+            "input": {
+              "service": "order-api",
+              "start_time": "2026-11-03T08:00:00+08:00",
+              "end_time": "2026-11-03T08:15:00+08:00",
+              "limit": 100
+            },
+            "output": {
+              "metrics": [
+                {
+                  "evidence_id": "w6-downstream-timeout-01-metric-1",
+                  "timestamp": "2026-11-03T08:03:00+08:00",
+                  "service": "order-api",
+                  "name": "payment_api_p95_ms",
+                  "value": 6200.0,
+                  "unit": "ms"
+                },
+                {
+                  "evidence_id": "w6-downstream-timeout-01-metric-2",
+                  "timestamp": "2026-11-03T08:03:00+08:00",
+                  "service": "order-api",
+                  "name": "http_5xx_ratio",
+                  "value": 0.27,
+                  "unit": "ratio"
+                }
+              ]
+            },
+            "error": null,
+            "duration_ms": 15.21,
+            "span_id": "f070228a61d42264",
+            "source_step_sequence": null
+          },
+          {
+            "sequence": 4,
+            "kind": "model",
+            "name": "agentlens-agent",
+            "input": {
+              "messages": [
+                {
+                  "content": "请调查 order-api 在 2026-11-03T08:00:00+08:00 至 2026-11-03T08:15:00+08:00（结束时间不包含）的异常，结合日志与指标，检索并引用支持建议的手册。",
+                  "additional_kwargs": {},
+                  "response_metadata": {},
+                  "type": "human",
+                  "name": null,
+                  "id": "30687d15-7655-4256-980f-c4e77b543d56"
+                },
+                {
+                  "content": "我先查询 order-api 在该时间窗内的日志和指标。",
+                  "additional_kwargs": {},
+                  "response_metadata": {
+                    "model_provider": "openai",
+                    "finish_reason": "tool_calls",
+                    "model_name": "agentlens-agent",
+                    "system_fingerprint": "bc19ba97cbe016479903222bb1578db6"
+                  },
+                  "type": "ai",
+                  "name": null,
+                  "id": "lc_run--01a1969d-2dee-71be-bcf0-700d4687a841",
+                  "tool_calls": [
+                    {
+                      "name": "search_logs",
+                      "args": {
+                        "service": "order-api",
+                        "start_time": "2026-11-03T08:00:00+08:00",
+                        "end_time": "2026-11-03T08:15:00+08:00",
+                        "level": "ERROR",
+                        "limit": 100
+                      },
+                      "id": "call_00_xUe2FNAldbMeUBs49tEm9355",
+                      "type": "tool_call"
+                    },
+                    {
+                      "name": "query_metrics",
+                      "args": {
+                        "service": "order-api",
+                        "start_time": "2026-11-03T08:00:00+08:00",
+                        "end_time": "2026-11-03T08:15:00+08:00",
+                        "limit": 100
+                      },
+                      "id": "call_01_htsze24o4HkPkUb4kFP49218",
+                      "type": "tool_call"
+                    }
+                  ],
+                  "invalid_tool_calls": [],
+                  "usage_metadata": {
+                    "input_tokens": 1533,
+                    "output_tokens": 257,
+                    "total_tokens": 1790,
+                    "input_token_details": {
+                      "cache_read": 1280
+                    },
+                    "output_token_details": {}
+                  }
+                },
+                {
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "{\n  \"logs\": [\n    {\n      \"evidence_id\": \"w6-downstream-timeout-01-log-1\",\n      \"timestamp\": \"2026-11-03T08:02:00+08:00\",\n      \"service\": \"order-api\",\n      \"level\": \"ERROR\",\n      \"message\": \"instance=replica-1; HTTP request to payment-api timed out after 5000ms; upstream returned 504\"\n    }\n  ]\n}",
+                      "id": "lc_dc66b235-5604-4944-84fb-3a0407229d90"
+                    }
+                  ],
+                  "additional_kwargs": {},
+                  "response_metadata": {},
+                  "type": "tool",
+                  "name": "search_logs",
+                  "id": "43611b81-d75b-475c-a6e5-bd03844e6b2a",
+                  "tool_call_id": "call_00_xUe2FNAldbMeUBs49tEm9355",
+                  "artifact": {
+                    "structured_content": {
+                      "logs": [
+                        {
+                          "evidence_id": "w6-downstream-timeout-01-log-1",
+                          "timestamp": "2026-11-03T08:02:00+08:00",
+                          "service": "order-api",
+                          "level": "ERROR",
+                          "message": "instance=replica-1; HTTP request to payment-api timed out after 5000ms; upstream returned 504"
+                        }
+                      ]
+                    }
+                  },
+                  "status": "success"
+                },
+                {
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "{\n  \"metrics\": [\n    {\n      \"evidence_id\": \"w6-downstream-timeout-01-metric-1\",\n      \"timestamp\": \"2026-11-03T08:03:00+08:00\",\n      \"service\": \"order-api\",\n      \"name\": \"payment_api_p95_ms\",\n      \"value\": 6200.0,\n      \"unit\": \"ms\"\n    },\n    {\n      \"evidence_id\": \"w6-downstream-timeout-01-metric-2\",\n      \"timestamp\": \"2026-11-03T08:03:00+08:00\",\n      \"service\": \"order-api\",\n      \"name\": \"http_5xx_ratio\",\n      \"value\": 0.27,\n      \"unit\": \"ratio\"\n    }\n  ]\n}",
+                      "id": "lc_448c3a84-ae28-4ff7-9847-f23232308e89"
+                    }
+                  ],
+                  "additional_kwargs": {},
+                  "response_metadata": {},
+                  "type": "tool",
+                  "name": "query_metrics",
+                  "id": "00e64d1e-925d-4170-91bf-d8cf51c8e7f7",
+                  "tool_call_id": "call_01_htsze24o4HkPkUb4kFP49218",
+                  "artifact": {
+                    "structured_content": {
+                      "metrics": [
+                        {
+                          "evidence_id": "w6-downstream-timeout-01-metric-1",
+                          "timestamp": "2026-11-03T08:03:00+08:00",
+                          "service": "order-api",
+                          "name": "payment_api_p95_ms",
+                          "value": 6200.0,
+                          "unit": "ms"
+                        },
+                        {
+                          "evidence_id": "w6-downstream-timeout-01-metric-2",
+                          "timestamp": "2026-11-03T08:03:00+08:00",
+                          "service": "order-api",
+                          "name": "http_5xx_ratio",
+                          "value": 0.27,
+                          "unit": "ratio"
+                        }
+                      ]
+                    }
+                  },
+                  "status": "success"
+                }
+              ]
+            },
+            "output": {
+              "content": "日志和指标都指向 payment-api 超时。接下来我会检索手册，并查看历史经验。",
+              "tool_calls": [
+                {
+                  "name": "search_runbooks",
+                  "args": {
+                    "query": "order-api 调用 payment-api 超时 5000ms 504 http_5xx_ratio 升高 payment_api_p95_ms",
+                    "top_k": 5
+                  },
+                  "id": "call_00_QD2ljbjJip1lr0kbIQ7v8361",
+                  "type": "tool_call"
+                },
+                {
+                  "name": "search_experiences",
+                  "args": {
+                    "service": "order-api",
+                    "limit": 5
+                  },
+                  "id": "call_01_141WWnGM13W8UEU4azYH9188",
+                  "type": "tool_call"
+                }
+              ],
+              "usage": {
+                "input_tokens": 2077,
+                "output_tokens": 149,
+                "total_tokens": 2226,
+                "input_token_details": {
+                  "cache_read": 1664
+                },
+                "output_token_details": {}
+              },
+              "response_model": "agentlens-agent",
+              "billing": {
+                "currency": "USD",
+                "pricing_version": "deepseek-2026-11-01",
+                "pricing_sha256": "6a41970e9ba6f1c65aadd1eab8483e562cfa3abb7eecfe9dc78e264dc22f301d",
+                "source": "https://api-docs.deepseek.com/quick_start/pricing/",
+                "cost": "0.000156342",
+                "cache_read_tokens": 1664,
+                "reason": null,
+                "model_source": "local_gateway_configuration; response_contains_alias",
+                "gateway_config_sha256": "7defcb62e9bf9f418561063d1b4ccb9ed038bffc5c3921858278e02ec5c600de",
+                "priced_model": "deepseek-flash",
+                "rates_per_million": {
+                  "cache_hit": 0.003,
+                  "cache_miss": 0.15,
+                  "output": 0.6
+                }
+              }
+            },
+            "error": null,
+            "duration_ms": 1347.46,
+            "span_id": "f2c001870283a77d",
+            "source_step_sequence": null
+          },
+          {
+            "sequence": 5,
+            "kind": "tool",
+            "name": "search_runbooks",
+            "input": {
+              "query": "order-api 调用 payment-api 超时 5000ms 504 http_5xx_ratio 升高 payment_api_p95_ms",
+              "top_k": 5
+            },
+            "output": {
+              "chunks": [
+                {
+                  "evidence_id": "downstream-timeout--s01",
+                  "document_id": "downstream-timeout",
+                  "project_id": "project-a",
+                  "source": "datasets/runbooks/downstream-timeout.md",
+                  "revision": "171fed5ff5047abba1281eb01d2884610bdc737087d6873b9ba1223cafa24a6d",
+                  "content": "order-api 调用 payment-api 超时\n识别依赖延迟\n\norder-api 的 HTTP 504、payment-api timed out 与 payment_api_p95_ms 同时上升，支持下游延迟影响上游。对齐请求时间、超时阈值和调用链，避免把上游错误率直接解释为数据库故障。",
+                  "ranks": {
+                    "vector": 1
+                  },
+                  "rrf_score": 0.01639344262295082,
+                  "retrieval_manifest": {
+                    "corpus_sha256": "023114864f127896cfc77ae214368e69d1dcfb883b0395c7c363db162c1a03ca",
+                    "chunks_sha256": "b6a49d5e1a286048cf707277fb38f796b74ab0a6bd946245fa74ee64ea24fdd7",
+                    "chunking": "authored-h2-v1",
+                    "embedding_model": "BAAI/bge-small-zh-v1.5",
+                    "embedding_revision": "7999e1d3359715c523056ef9478215996d62a620",
+                    "dimensions": 512,
+                    "normalize": true,
+                    "query_prefix": "为这个句子生成表示以用于检索相关文章：",
+                    "max_seq_length": 512,
+                    "artifacts_sha256": "9e8d41feee144813910c7db23ca5505bcf66139811f6f1521db1265e1bed016d",
+                    "strategy": "vector",
+                    "top_k": 5,
+                    "candidate_k": 10,
+                    "rrf_offset": 60
+                  }
+                },
+                {
+                  "evidence_id": "downstream-timeout--s02",
+                  "document_id": "downstream-timeout",
+                  "project_id": "project-a",
+                  "source": "datasets/runbooks/downstream-timeout.md",
+                  "revision": "171fed5ff5047abba1281eb01d2884610bdc737087d6873b9ba1223cafa24a6d",
+                  "content": "order-api 调用 payment-api 超时\n继续查询下游\n\n获取 payment-api 同窗口日志、线程池和依赖指标，区分排队与处理缓慢。重试会放大下游负载；建议前先确认现有重试次数、请求幂等性和总体超时预算。当前工具只有查询能力，建议不代表已经执行。",
+                  "ranks": {
+                    "vector": 2
+                  },
+                  "rrf_score": 0.016129032258064516,
+                  "retrieval_manifest": {
+                    "corpus_sha256": "023114864f127896cfc77ae214368e69d1dcfb883b0395c7c363db162c1a03ca",
+                    "chunks_sha256": "b6a49d5e1a286048cf707277fb38f796b74ab0a6bd946245fa74ee64ea24fdd7",
+                    "chunking": "authored-h2-v1",
+                    "embedding_model": "BAAI/bge-small-zh-v1.5",
+                    "embedding_revision": "7999e1d3359715c523056ef9478215996d62a620",
+                    "dimensions": 512,
+                    "normalize": true,
+                    "query_prefix": "为这个句子生成表示以用于检索相关文章：",
+                    "max_seq_length": 512,
+                    "artifacts_sha256": "9e8d41feee144813910c7db23ca5505bcf66139811f6f1521db1265e1bed016d",
+                    "strategy": "vector",
+                    "top_k": 5,
+                    "candidate_k": 10,
+                    "rrf_offset": 60
+                  }
+                },
+                {
+                  "evidence_id": "rate-limit--s02",
+                  "document_id": "rate-limit",
+                  "project_id": "project-a",
+                  "source": "datasets/runbooks/rate-limit.md",
+                  "revision": "51a1b3ddf65e9cdce71f17e1bc6ca9943a1877e552e8530db9d399820d15c096",
+                  "content": "payment-api 请求限流 HTTP 429\n评估请求节奏\n\n核对请求峰值、批量任务与 SDK 重试。遵守服务返回的重试提示，避免立即重复请求。提高配额前需要容量与业务优先级依据，不假设服务已经宕机。",
+                  "ranks": {
+                    "vector": 3
+                  },
+                  "rrf_score": 0.015873015873015872,
+                  "retrieval_manifest": {
+                    "corpus_sha256": "023114864f127896cfc77ae214368e69d1dcfb883b0395c7c363db162c1a03ca",
+                    "chunks_sha256": "b6a49d5e1a286048cf707277fb38f796b74ab0a6bd946245fa74ee64ea24fdd7",
+                    "chunking": "authored-h2-v1",
+                    "embedding_model": "BAAI/bge-small-zh-v1.5",
+                    "embedding_revision": "7999e1d3359715c523056ef9478215996d62a620",
+                    "dimensions": 512,
+                    "normalize": true,
+                    "query_prefix": "为这个句子生成表示以用于检索相关文章：",
+                    "max_seq_length": 512,
+                    "artifacts_sha256": "9e8d41feee144813910c7db23ca5505bcf66139811f6f1521db1265e1bed016d",
+                    "strategy": "vector",
+                    "top_k": 5,
+                    "candidate_k": 10,
+                    "rrf_offset": 60
+                  }
+                },
+                {
+                  "evidence_id": "rate-limit--s01",
+                  "document_id": "rate-limit",
+                  "project_id": "project-a",
+                  "source": "datasets/runbooks/rate-limit.md",
+                  "revision": "51a1b3ddf65e9cdce71f17e1bc6ca9943a1877e552e8530db9d399820d15c096",
+                  "content": "payment-api 请求限流 HTTP 429\n识别配额限制\n\npayment-api 返回 HTTP 429、rate limit exceeded 时，检查调用方配额、限流窗口和 Retry-After。429 与下游 504、服务过载 503 应分开统计。",
+                  "ranks": {
+                    "vector": 4
+                  },
+                  "rrf_score": 0.015625,
+                  "retrieval_manifest": {
+                    "corpus_sha256": "023114864f127896cfc77ae214368e69d1dcfb883b0395c7c363db162c1a03ca",
+                    "chunks_sha256": "b6a49d5e1a286048cf707277fb38f796b74ab0a6bd946245fa74ee64ea24fdd7",
+                    "chunking": "authored-h2-v1",
+                    "embedding_model": "BAAI/bge-small-zh-v1.5",
+                    "embedding_revision": "7999e1d3359715c523056ef9478215996d62a620",
+                    "dimensions": 512,
+                    "normalize": true,
+                    "query_prefix": "为这个句子生成表示以用于检索相关文章：",
+                    "max_seq_length": 512,
+                    "artifacts_sha256": "9e8d41feee144813910c7db23ca5505bcf66139811f6f1521db1265e1bed016d",
+                    "strategy": "vector",
+                    "top_k": 5,
+                    "candidate_k": 10,
+                    "rrf_offset": 60
+                  }
+                },
+                {
+                  "evidence_id": "pool-exhaustion--s01",
+                  "document_id": "pool-exhaustion",
+                  "project_id": "project-a",
+                  "source": "datasets/runbooks/pool-exhaustion.md",
+                  "revision": "46e4099b81d82494707b05013c4a1f8761e2d117abadbf8f2ce20f9893519313",
+                  "content": "order-api 数据库连接池耗尽\n识别连接获取等待\n\norder-api 使用 HikariPool。connection acquisition timed out 表示等待池内连接超时，不等于 SQL 执行超时。对照 db_pool_active、db_pool_max、db_pool_waiters；active 达到 max、idle=0 且 waiters 持续上升时，可判断连接池饱和。结合相同时间窗的 5xx，确认影响范围。",
+                  "ranks": {
+                    "vector": 5
+                  },
+                  "rrf_score": 0.015384615384615385,
+                  "retrieval_manifest": {
+                    "corpus_sha256": "023114864f127896cfc77ae214368e69d1dcfb883b0395c7c363db162c1a03ca",
+                    "chunks_sha256": "b6a49d5e1a286048cf707277fb38f796b74ab0a6bd946245fa74ee64ea24fdd7",
+                    "chunking": "authored-h2-v1",
+                    "embedding_model": "BAAI/bge-small-zh-v1.5",
+                    "embedding_revision": "7999e1d3359715c523056ef9478215996d62a620",
+                    "dimensions": 512,
+                    "normalize": true,
+                    "query_prefix": "为这个句子生成表示以用于检索相关文章：",
+                    "max_seq_length": 512,
+                    "artifacts_sha256": "9e8d41feee144813910c7db23ca5505bcf66139811f6f1521db1265e1bed016d",
+                    "strategy": "vector",
+                    "top_k": 5,
+                    "candidate_k": 10,
+                    "rrf_offset": 60
+                  }
+                }
+              ]
+            },
+            "error": null,
+            "duration_ms": 48.41,
+            "span_id": "a0d0b1b892873c92",
+            "source_step_sequence": null
+          },
+          {
+            "sequence": 6,
+            "kind": "tool",
+            "name": "search_experiences",
+            "input": {
+              "service": "order-api",
+              "limit": 5
+            },
+            "output": {
+              "experiences": []
+            },
+            "error": null,
+            "duration_ms": 19.5,
+            "span_id": "cd7ca63b1dacbd19",
+            "source_step_sequence": null
+          },
+          {
+            "sequence": 7,
+            "kind": "model",
+            "name": "agentlens-agent",
+            "input": {
+              "messages": [
+                {
+                  "content": "请调查 order-api 在 2026-11-03T08:00:00+08:00 至 2026-11-03T08:15:00+08:00（结束时间不包含）的异常，结合日志与指标，检索并引用支持建议的手册。",
+                  "additional_kwargs": {},
+                  "response_metadata": {},
+                  "type": "human",
+                  "name": null,
+                  "id": "30687d15-7655-4256-980f-c4e77b543d56"
+                },
+                {
+                  "content": "我先查询 order-api 在该时间窗内的日志和指标。",
+                  "additional_kwargs": {},
+                  "response_metadata": {
+                    "model_provider": "openai",
+                    "finish_reason": "tool_calls",
+                    "model_name": "agentlens-agent",
+                    "system_fingerprint": "bc19ba97cbe016479903222bb1578db6"
+                  },
+                  "type": "ai",
+                  "name": null,
+                  "id": "lc_run--01a1969d-2dee-71be-bcf0-700d4687a841",
+                  "tool_calls": [
+                    {
+                      "name": "search_logs",
+                      "args": {
+                        "service": "order-api",
+                        "start_time": "2026-11-03T08:00:00+08:00",
+                        "end_time": "2026-11-03T08:15:00+08:00",
+                        "level": "ERROR",
+                        "limit": 100
+                      },
+                      "id": "call_00_xUe2FNAldbMeUBs49tEm9355",
+                      "type": "tool_call"
+                    },
+                    {
+                      "name": "query_metrics",
+                      "args": {
+                        "service": "order-api",
+                        "start_time": "2026-11-03T08:00:00+08:00",
+                        "end_time": "2026-11-03T08:15:00+08:00",
+                        "limit": 100
+                      },
+                      "id": "call_01_htsze24o4HkPkUb4kFP49218",
+                      "type": "tool_call"
+                    }
+                  ],
+                  "invalid_tool_calls": [],
+                  "usage_metadata": {
+                    "input_tokens": 1533,
+                    "output_tokens": 257,
+                    "total_tokens": 1790,
+                    "input_token_details": {
+                      "cache_read": 1280
+                    },
+                    "output_token_details": {}
+                  }
+                },
+                {
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "{\n  \"logs\": [\n    {\n      \"evidence_id\": \"w6-downstream-timeout-01-log-1\",\n      \"timestamp\": \"2026-11-03T08:02:00+08:00\",\n      \"service\": \"order-api\",\n      \"level\": \"ERROR\",\n      \"message\": \"instance=replica-1; HTTP request to payment-api timed out after 5000ms; upstream returned 504\"\n    }\n  ]\n}",
+                      "id": "lc_dc66b235-5604-4944-84fb-3a0407229d90"
+                    }
+                  ],
+                  "additional_kwargs": {},
+                  "response_metadata": {},
+                  "type": "tool",
+                  "name": "search_logs",
+                  "id": "43611b81-d75b-475c-a6e5-bd03844e6b2a",
+                  "tool_call_id": "call_00_xUe2FNAldbMeUBs49tEm9355",
+                  "artifact": {
+                    "structured_content": {
+                      "logs": [
+                        {
+                          "evidence_id": "w6-downstream-timeout-01-log-1",
+                          "timestamp": "2026-11-03T08:02:00+08:00",
+                          "service": "order-api",
+                          "level": "ERROR",
+                          "message": "instance=replica-1; HTTP request to payment-api timed out after 5000ms; upstream returned 504"
+                        }
+                      ]
+                    }
+                  },
+                  "status": "success"
+                },
+                {
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "{\n  \"metrics\": [\n    {\n      \"evidence_id\": \"w6-downstream-timeout-01-metric-1\",\n      \"timestamp\": \"2026-11-03T08:03:00+08:00\",\n      \"service\": \"order-api\",\n      \"name\": \"payment_api_p95_ms\",\n      \"value\": 6200.0,\n      \"unit\": \"ms\"\n    },\n    {\n      \"evidence_id\": \"w6-downstream-timeout-01-metric-2\",\n      \"timestamp\": \"2026-11-03T08:03:00+08:00\",\n      \"service\": \"order-api\",\n      \"name\": \"http_5xx_ratio\",\n      \"value\": 0.27,\n      \"unit\": \"ratio\"\n    }\n  ]\n}",
+                      "id": "lc_448c3a84-ae28-4ff7-9847-f23232308e89"
+                    }
+                  ],
+                  "additional_kwargs": {},
+                  "response_metadata": {},
+                  "type": "tool",
+                  "name": "query_metrics",
+                  "id": "00e64d1e-925d-4170-91bf-d8cf51c8e7f7",
+                  "tool_call_id": "call_01_htsze24o4HkPkUb4kFP49218",
+                  "artifact": {
+                    "structured_content": {
+                      "metrics": [
+                        {
+                          "evidence_id": "w6-downstream-timeout-01-metric-1",
+                          "timestamp": "2026-11-03T08:03:00+08:00",
+                          "service": "order-api",
+                          "name": "payment_api_p95_ms",
+                          "value": 6200.0,
+                          "unit": "ms"
+                        },
+                        {
+                          "evidence_id": "w6-downstream-timeout-01-metric-2",
+                          "timestamp": "2026-11-03T08:03:00+08:00",
+                          "service": "order-api",
+                          "name": "http_5xx_ratio",
+                          "value": 0.27,
+                          "unit": "ratio"
+                        }
+                      ]
+                    }
+                  },
+                  "status": "success"
+                },
+                {
+                  "content": "日志和指标都指向 payment-api 超时。接下来我会检索手册，并查看历史经验。",
+                  "additional_kwargs": {},
+                  "response_metadata": {
+                    "model_provider": "openai",
+                    "finish_reason": "tool_calls",
+                    "model_name": "agentlens-agent",
+                    "system_fingerprint": "bc19ba97cbe016479903222bb1578db6"
+                  },
+                  "type": "ai",
+                  "name": null,
+                  "id": "lc_run--01a1969d-3348-72de-ad2a-b4fc751aa60a",
+                  "tool_calls": [
+                    {
+                      "name": "search_runbooks",
+                      "args": {
+                        "query": "order-api 调用 payment-api 超时 5000ms 504 http_5xx_ratio 升高 payment_api_p95_ms",
+                        "top_k": 5
+                      },
+                      "id": "call_00_QD2ljbjJip1lr0kbIQ7v8361",
+                      "type": "tool_call"
+                    },
+                    {
+                      "name": "search_experiences",
+                      "args": {
+                        "service": "order-api",
+                        "limit": 5
+                      },
+                      "id": "call_01_141WWnGM13W8UEU4azYH9188",
+                      "type": "tool_call"
+                    }
+                  ],
+                  "invalid_tool_calls": [],
+                  "usage_metadata": {
+                    "input_tokens": 2077,
+                    "output_tokens": 149,
+                    "total_tokens": 2226,
+                    "input_token_details": {
+                      "cache_read": 1664
+                    },
+                    "output_token_details": {}
+                  }
+                },
+                {
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "{\n  \"chunks\": [\n    {\n      \"evidence_id\": \"downstream-timeout--s01\",\n      \"document_id\": \"downstream-timeout\",\n      \"project_id\": \"project-a\",\n      \"source\": \"datasets/runbooks/downstream-timeout.md\",\n      \"revision\": \"171fed5ff5047abba1281eb01d2884610bdc737087d6873b9ba1223cafa24a6d\",\n      \"content\": \"order-api 调用 payment-api 超时\\n识别依赖延迟\\n\\norder-api 的 HTTP 504、payment-api timed out 与 payment_api_p95_ms 同时上升，支持下游延迟影响上游。对齐请求时间、超时阈值和调用链，避免把上游错误率直接解释为数据库故障。\",\n      \"ranks\": {\n        \"vector\": 1\n      },\n      \"rrf_score\": 0.01639344262295082,\n      \"retrieval_manifest\": {\n        \"corpus_sha256\": \"023114864f127896cfc77ae214368e69d1dcfb883b0395c7c363db162c1a03ca\",\n        \"chunks_sha256\": \"b6a49d5e1a286048cf707277fb38f796b74ab0a6bd946245fa74ee64ea24fdd7\",\n        \"chunking\": \"authored-h2-v1\",\n        \"embedding_model\": \"BAAI/bge-small-zh-v1.5\",\n        \"embedding_revision\": \"7999e1d3359715c523056ef9478215996d62a620\",\n        \"dimensions\": 512,\n        \"normalize\": true,\n        \"query_prefix\": \"为这个句子生成表示以用于检索相关文章：\",\n        \"max_seq_length\": 512,\n        \"artifacts_sha256\": \"9e8d41feee144813910c7db23ca5505bcf66139811f6f1521db1265e1bed016d\",\n        \"strategy\": \"vector\",\n        \"top_k\": 5,\n        \"candidate_k\": 10,\n        \"rrf_offset\": 60\n      }\n    },\n    {\n      \"evidence_id\": \"downstream-timeout--s02\",\n      \"document_id\": \"downstream-timeout\",\n      \"project_id\": \"project-a\",\n      \"source\": \"datasets/runbooks/downstream-timeout.md\",\n      \"revision\": \"171fed5ff5047abba1281eb01d2884610bdc737087d6873b9ba1223cafa24a6d\",\n      \"content\": \"order-api 调用 payment-api 超时\\n继续查询下游\\n\\n获取 payment-api 同窗口日志、线程池和依赖指标，区分排队与处理缓慢。重试会放大下游负载；建议前先确认现有重试次数、请求幂等性和总体超时预算。当前工具只有查询能力，建议不代表已经执行。\",\n      \"ranks\": {\n        \"vector\": 2\n      },\n      \"rrf_score\": 0.016129032258064516,\n      \"retrieval_manifest\": {\n        \"corpus_sha256\": \"023114864f127896cfc77ae214368e69d1dcfb883b0395c7c363db162c1a03ca\",\n        \"chunks_sha256\": \"b6a49d5e1a286048cf707277fb38f796b74ab0a6bd946245fa74ee64ea24fdd7\",\n        \"chunking\": \"authored-h2-v1\",\n        \"embedding_model\": \"BAAI/bge-small-zh-v1.5\",\n        \"embedding_revision\": \"7999e1d3359715c523056ef9478215996d62a620\",\n        \"dimensions\": 512,\n        \"normalize\": true,\n        \"query_prefix\": \"为这个句子生成表示以用于检索相关文章：\",\n        \"max_seq_length\": 512,\n        \"artifacts_sha256\": \"9e8d41feee144813910c7db23ca5505bcf66139811f6f1521db1265e1bed016d\",\n        \"strategy\": \"vector\",\n        \"top_k\": 5,\n        \"candidate_k\": 10,\n        \"rrf_offset\": 60\n      }\n    },\n    {\n      \"evidence_id\": \"rate-limit--s02\",\n      \"document_id\": \"rate-limit\",\n      \"project_id\": \"project-a\",\n      \"source\": \"datasets/runbooks/rate-limit.md\",\n      \"revision\": \"51a1b3ddf65e9cdce71f17e1bc6ca9943a1877e552e8530db9d399820d15c096\",\n      \"content\": \"payment-api 请求限流 HTTP 429\\n评估请求节奏\\n\\n核对请求峰值、批量任务与 SDK 重试。遵守服务返回的重试提示，避免立即重复请求。提高配额前需要容量与业务优先级依据，不假设服务已经宕机。\",\n      \"ranks\": {\n        \"vector\": 3\n      },\n      \"rrf_score\": 0.015873015873015872,\n      \"retrieval_manifest\": {\n        \"corpus_sha256\": \"023114864f127896cfc77ae214368e69d1dcfb883b0395c7c363db162c1a03ca\",\n        \"chunks_sha256\": \"b6a49d5e1a286048cf707277fb38f796b74ab0a6bd946245fa74ee64ea24fdd7\",\n        \"chunking\": \"authored-h2-v1\",\n        \"embedding_model\": \"BAAI/bge-small-zh-v1.5\",\n        \"embedding_revision\": \"7999e1d3359715c523056ef9478215996d62a620\",\n        \"dimensions\": 512,\n        \"normalize\": true,\n        \"query_prefix\": \"为这个句子生成表示以用于检索相关文章：\",\n        \"max_seq_length\": 512,\n        \"artifacts_sha256\": \"9e8d41feee144813910c7db23ca5505bcf66139811f6f1521db1265e1bed016d\",\n        \"strategy\": \"vector\",\n        \"top_k\": 5,\n        \"candidate_k\": 10,\n        \"rrf_offset\": 60\n      }\n    },\n    {\n      \"evidence_id\": \"rate-limit--s01\",\n      \"document_id\": \"rate-limit\",\n      \"project_id\": \"project-a\",\n      \"source\": \"datasets/runbooks/rate-limit.md\",\n      \"revision\": \"51a1b3ddf65e9cdce71f17e1bc6ca9943a1877e552e8530db9d399820d15c096\",\n      \"content\": \"payment-api 请求限流 HTTP 429\\n识别配额限制\\n\\npayment-api 返回 HTTP 429、rate limit exceeded 时，检查调用方配额、限流窗口和 Retry-After。429 与下游 504、服务过载 503 应分开统计。\",\n      \"ranks\": {\n        \"vector\": 4\n      },\n      \"rrf_score\": 0.015625,\n      \"retrieval_manifest\": {\n        \"corpus_sha256\": \"023114864f127896cfc77ae214368e69d1dcfb883b0395c7c363db162c1a03ca\",\n        \"chunks_sha256\": \"b6a49d5e1a286048cf707277fb38f796b74ab0a6bd946245fa74ee64ea24fdd7\",\n        \"chunking\": \"authored-h2-v1\",\n        \"embedding_model\": \"BAAI/bge-small-zh-v1.5\",\n        \"embedding_revision\": \"7999e1d3359715c523056ef9478215996d62a620\",\n        \"dimensions\": 512,\n        \"normalize\": true,\n        \"query_prefix\": \"为这个句子生成表示以用于检索相关文章：\",\n        \"max_seq_length\": 512,\n        \"artifacts_sha256\": \"9e8d41feee144813910c7db23ca5505bcf66139811f6f1521db1265e1bed016d\",\n        \"strategy\": \"vector\",\n        \"top_k\": 5,\n        \"candidate_k\": 10,\n        \"rrf_offset\": 60\n      }\n    },\n    {\n      \"evidence_id\": \"pool-exhaustion--s01\",\n      \"document_id\": \"pool-exhaustion\",\n      \"project_id\": \"project-a\",\n      \"source\": \"datasets/runbooks/pool-exhaustion.md\",\n      \"revision\": \"46e4099b81d82494707b05013c4a1f8761e2d117abadbf8f2ce20f9893519313\",\n      \"content\": \"order-api 数据库连接池耗尽\\n识别连接获取等待\\n\\norder-api 使用 HikariPool。connection acquisition timed out 表示等待池内连接超时，不等于 SQL 执行超时。对照 db_pool_active、db_pool_max、db_pool_waiters；active 达到 max、idle=0 且 waiters 持续上升时，可判断连接池饱和。结合相同时间窗的 5xx，确认影响范围。\",\n      \"ranks\": {\n        \"vector\": 5\n      },\n      \"rrf_score\": 0.015384615384615385,\n      \"retrieval_manifest\": {\n        \"corpus_sha256\": \"023114864f127896cfc77ae214368e69d1dcfb883b0395c7c363db162c1a03ca\",\n        \"chunks_sha256\": \"b6a49d5e1a286048cf707277fb38f796b74ab0a6bd946245fa74ee64ea24fdd7\",\n        \"chunking\": \"authored-h2-v1\",\n        \"embedding_model\": \"BAAI/bge-small-zh-v1.5\",\n        \"embedding_revision\": \"7999e1d3359715c523056ef9478215996d62a620\",\n        \"dimensions\": 512,\n        \"normalize\": true,\n        \"query_prefix\": \"为这个句子生成表示以用于检索相关文章：\",\n        \"max_seq_length\": 512,\n        \"artifacts_sha256\": \"9e8d41feee144813910c7db23ca5505bcf66139811f6f1521db1265e1bed016d\",\n        \"strategy\": \"vector\",\n        \"top_k\": 5,\n        \"candidate_k\": 10,\n        \"rrf_offset\": 60\n      }\n    }\n  ]\n}",
+                      "id": "lc_ee19bec5-75e6-4306-aba8-d392a6251cfc"
+                    }
+                  ],
+                  "additional_kwargs": {},
+                  "response_metadata": {},
+                  "type": "tool",
+                  "name": "search_runbooks",
+                  "id": "cf1c9265-f1f8-4dc5-9743-9ed92aa2e14a",
+                  "tool_call_id": "call_00_QD2ljbjJip1lr0kbIQ7v8361",
+                  "artifact": {
+                    "structured_content": {
+                      "chunks": [
+                        {
+                          "evidence_id": "downstream-timeout--s01",
+                          "document_id": "downstream-timeout",
+                          "project_id": "project-a",
+                          "source": "datasets/runbooks/downstream-timeout.md",
+                          "revision": "171fed5ff5047abba1281eb01d2884610bdc737087d6873b9ba1223cafa24a6d",
+                          "content": "order-api 调用 payment-api 超时\n识别依赖延迟\n\norder-api 的 HTTP 504、payment-api timed out 与 payment_api_p95_ms 同时上升，支持下游延迟影响上游。对齐请求时间、超时阈值和调用链，避免把上游错误率直接解释为数据库故障。",
+                          "ranks": {
+                            "vector": 1
+                          },
+                          "rrf_score": 0.01639344262295082,
+                          "retrieval_manifest": {
+                            "corpus_sha256": "023114864f127896cfc77ae214368e69d1dcfb883b0395c7c363db162c1a03ca",
+                            "chunks_sha256": "b6a49d5e1a286048cf707277fb38f796b74ab0a6bd946245fa74ee64ea24fdd7",
+                            "chunking": "authored-h2-v1",
+                            "embedding_model": "BAAI/bge-small-zh-v1.5",
+                            "embedding_revision": "7999e1d3359715c523056ef9478215996d62a620",
+                            "dimensions": 512,
+                            "normalize": true,
+                            "query_prefix": "为这个句子生成表示以用于检索相关文章：",
+                            "max_seq_length": 512,
+                            "artifacts_sha256": "9e8d41feee144813910c7db23ca5505bcf66139811f6f1521db1265e1bed016d",
+                            "strategy": "vector",
+                            "top_k": 5,
+                            "candidate_k": 10,
+                            "rrf_offset": 60
+                          }
+                        },
+                        {
+                          "evidence_id": "downstream-timeout--s02",
+                          "document_id": "downstream-timeout",
+                          "project_id": "project-a",
+                          "source": "datasets/runbooks/downstream-timeout.md",
+                          "revision": "171fed5ff5047abba1281eb01d2884610bdc737087d6873b9ba1223cafa24a6d",
+                          "content": "order-api 调用 payment-api 超时\n继续查询下游\n\n获取 payment-api 同窗口日志、线程池和依赖指标，区分排队与处理缓慢。重试会放大下游负载；建议前先确认现有重试次数、请求幂等性和总体超时预算。当前工具只有查询能力，建议不代表已经执行。",
+                          "ranks": {
+                            "vector": 2
+                          },
+                          "rrf_score": 0.016129032258064516,
+                          "retrieval_manifest": {
+                            "corpus_sha256": "023114864f127896cfc77ae214368e69d1dcfb883b0395c7c363db162c1a03ca",
+                            "chunks_sha256": "b6a49d5e1a286048cf707277fb38f796b74ab0a6bd946245fa74ee64ea24fdd7",
+                            "chunking": "authored-h2-v1",
+                            "embedding_model": "BAAI/bge-small-zh-v1.5",
+                            "embedding_revision": "7999e1d3359715c523056ef9478215996d62a620",
+                            "dimensions": 512,
+                            "normalize": true,
+                            "query_prefix": "为这个句子生成表示以用于检索相关文章：",
+                            "max_seq_length": 512,
+                            "artifacts_sha256": "9e8d41feee144813910c7db23ca5505bcf66139811f6f1521db1265e1bed016d",
+                            "strategy": "vector",
+                            "top_k": 5,
+                            "candidate_k": 10,
+                            "rrf_offset": 60
+                          }
+                        },
+                        {
+                          "evidence_id": "rate-limit--s02",
+                          "document_id": "rate-limit",
+                          "project_id": "project-a",
+                          "source": "datasets/runbooks/rate-limit.md",
+                          "revision": "51a1b3ddf65e9cdce71f17e1bc6ca9943a1877e552e8530db9d399820d15c096",
+                          "content": "payment-api 请求限流 HTTP 429\n评估请求节奏\n\n核对请求峰值、批量任务与 SDK 重试。遵守服务返回的重试提示，避免立即重复请求。提高配额前需要容量与业务优先级依据，不假设服务已经宕机。",
+                          "ranks": {
+                            "vector": 3
+                          },
+                          "rrf_score": 0.015873015873015872,
+                          "retrieval_manifest": {
+                            "corpus_sha256": "023114864f127896cfc77ae214368e69d1dcfb883b0395c7c363db162c1a03ca",
+                            "chunks_sha256": "b6a49d5e1a286048cf707277fb38f796b74ab0a6bd946245fa74ee64ea24fdd7",
+                            "chunking": "authored-h2-v1",
+                            "embedding_model": "BAAI/bge-small-zh-v1.5",
+                            "embedding_revision": "7999e1d3359715c523056ef9478215996d62a620",
+                            "dimensions": 512,
+                            "normalize": true,
+                            "query_prefix": "为这个句子生成表示以用于检索相关文章：",
+                            "max_seq_length": 512,
+                            "artifacts_sha256": "9e8d41feee144813910c7db23ca5505bcf66139811f6f1521db1265e1bed016d",
+                            "strategy": "vector",
+                            "top_k": 5,
+                            "candidate_k": 10,
+                            "rrf_offset": 60
+                          }
+                        },
+                        {
+                          "evidence_id": "rate-limit--s01",
+                          "document_id": "rate-limit",
+                          "project_id": "project-a",
+                          "source": "datasets/runbooks/rate-limit.md",
+                          "revision": "51a1b3ddf65e9cdce71f17e1bc6ca9943a1877e552e8530db9d399820d15c096",
+                          "content": "payment-api 请求限流 HTTP 429\n识别配额限制\n\npayment-api 返回 HTTP 429、rate limit exceeded 时，检查调用方配额、限流窗口和 Retry-After。429 与下游 504、服务过载 503 应分开统计。",
+                          "ranks": {
+                            "vector": 4
+                          },
+                          "rrf_score": 0.015625,
+                          "retrieval_manifest": {
+                            "corpus_sha256": "023114864f127896cfc77ae214368e69d1dcfb883b0395c7c363db162c1a03ca",
+                            "chunks_sha256": "b6a49d5e1a286048cf707277fb38f796b74ab0a6bd946245fa74ee64ea24fdd7",
+                            "chunking": "authored-h2-v1",
+                            "embedding_model": "BAAI/bge-small-zh-v1.5",
+                            "embedding_revision": "7999e1d3359715c523056ef9478215996d62a620",
+                            "dimensions": 512,
+                            "normalize": true,
+                            "query_prefix": "为这个句子生成表示以用于检索相关文章：",
+                            "max_seq_length": 512,
+                            "artifacts_sha256": "9e8d41feee144813910c7db23ca5505bcf66139811f6f1521db1265e1bed016d",
+                            "strategy": "vector",
+                            "top_k": 5,
+                            "candidate_k": 10,
+                            "rrf_offset": 60
+                          }
+                        },
+                        {
+                          "evidence_id": "pool-exhaustion--s01",
+                          "document_id": "pool-exhaustion",
+                          "project_id": "project-a",
+                          "source": "datasets/runbooks/pool-exhaustion.md",
+                          "revision": "46e4099b81d82494707b05013c4a1f8761e2d117abadbf8f2ce20f9893519313",
+                          "content": "order-api 数据库连接池耗尽\n识别连接获取等待\n\norder-api 使用 HikariPool。connection acquisition timed out 表示等待池内连接超时，不等于 SQL 执行超时。对照 db_pool_active、db_pool_max、db_pool_waiters；active 达到 max、idle=0 且 waiters 持续上升时，可判断连接池饱和。结合相同时间窗的 5xx，确认影响范围。",
+                          "ranks": {
+                            "vector": 5
+                          },
+                          "rrf_score": 0.015384615384615385,
+                          "retrieval_manifest": {
+                            "corpus_sha256": "023114864f127896cfc77ae214368e69d1dcfb883b0395c7c363db162c1a03ca",
+                            "chunks_sha256": "b6a49d5e1a286048cf707277fb38f796b74ab0a6bd946245fa74ee64ea24fdd7",
+                            "chunking": "authored-h2-v1",
+                            "embedding_model": "BAAI/bge-small-zh-v1.5",
+                            "embedding_revision": "7999e1d3359715c523056ef9478215996d62a620",
+                            "dimensions": 512,
+                            "normalize": true,
+                            "query_prefix": "为这个句子生成表示以用于检索相关文章：",
+                            "max_seq_length": 512,
+                            "artifacts_sha256": "9e8d41feee144813910c7db23ca5505bcf66139811f6f1521db1265e1bed016d",
+                            "strategy": "vector",
+                            "top_k": 5,
+                            "candidate_k": 10,
+                            "rrf_offset": 60
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  "status": "success"
+                },
+                {
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "{\n  \"experiences\": []\n}",
+                      "id": "lc_f941ddd7-8beb-4828-95f2-3f742cfaff4c"
+                    }
+                  ],
+                  "additional_kwargs": {},
+                  "response_metadata": {},
+                  "type": "tool",
+                  "name": "search_experiences",
+                  "id": "d33f12d6-4390-41b0-bfff-e708d398671b",
+                  "tool_call_id": "call_01_141WWnGM13W8UEU4azYH9188",
+                  "artifact": {
+                    "structured_content": {
+                      "experiences": []
+                    }
+                  },
+                  "status": "success"
+                }
+              ]
+            },
+            "output": {
+              "content": "{\"status\":\"diagnosed\",\"cause_summary\":\"在 2026-11-03 08:00–08:15（+08:00）窗口内，order-api 的异常表现为下游 payment-api 调用延迟超时：08:02 出现 ERROR 日志，显示 replica-1 对 payment-api 的 HTTP 请求在 5000ms 后超时，上游返回 504；08:03 指标 payment_api_p95_ms=6200ms（超过 5000ms 超时阈值），同时 http_5xx_ratio=0.27，说明 order-api 的 5xx 主要由下游 payment-api 延迟导致，而不是 order-api 自身数据库或连接池问题。手册 downstream-timeout--s01 与本次现场证据一致：504、payment-api timed out 与 payment_api_p95_ms 同时上升，支持下游延迟影响上游；手册建议对齐请求时间、超时阈值和调用链，避免把上游错误率直接解释为数据库故障。\",\"evidence_ids\":[\"w6-downstream-timeout-01-log-1\",\"w6-downstream-timeout-01-metric-1\",\"w6-downstream-timeout-01-metric-2\",\"downstream-timeout--s01\",\"downstream-timeout--s02\"],\"unknowns\":[\"payment-api 侧延迟的具体原因尚未证实：是排队、线程池饱和、依赖缓慢还是限流，当前没有 payment-api 的日志与指标\",\"未确认 payment-api 是否返回 429 限流（本次日志仅见 504 超时，无 429 证据）\",\"order-api 的重试次数、请求幂等性与总体超时预算未核实\",\"异常影响范围（受影响接口、订单量、是否仅 replica-1）未量化\",\"未查询 order-api 数据库连接池指标，因此数据库连接池耗尽仅为待排除项，无现场证据支持\"],\"next_steps\":[\"按手册 downstream-timeout--s02 获取 payment-api 同窗口（2026-11-03T08:00:00+08:00 至 08:15:00+08:00）日志、线程池与依赖指标，区分排队与处理缓慢\",\"核对 payment-api 是否出现 HTTP 429 / rate limit exceeded 及 Retry-After，与 504 分开统计（参考 rate-limit--s01）\",\"对齐 order-api 请求时间、5000ms 超时阈值与调用链，确认 5xx 是否集中在调用 payment-api 的接口\",\"确认现有重试次数、请求幂等性和总体超时预算后再考虑调整重试或超时，避免重试放大下游负载\",\"如需排除 order-api 自身资源问题，补充查询 db_pool_active、db_pool_max、db_pool_waiters 等连接池指标\"]}",
+              "tool_calls": [],
+              "usage": {
+                "input_tokens": 4705,
+                "output_tokens": 599,
+                "total_tokens": 5304,
+                "input_token_details": {
+                  "cache_read": 2176
+                },
+                "output_token_details": {
+                  "reasoning": 0
+                }
+              },
+              "response_model": "agentlens-agent",
+              "billing": {
+                "currency": "USD",
+                "pricing_version": "deepseek-2026-11-01",
+                "pricing_sha256": "6a41970e9ba6f1c65aadd1eab8483e562cfa3abb7eecfe9dc78e264dc22f301d",
+                "source": "https://api-docs.deepseek.com/quick_start/pricing/",
+                "cost": "0.000745278",
+                "cache_read_tokens": 2176,
+                "reason": null,
+                "model_source": "local_gateway_configuration; response_contains_alias",
+                "gateway_config_sha256": "7defcb62e9bf9f418561063d1b4ccb9ed038bffc5c3921858278e02ec5c600de",
+                "priced_model": "deepseek-flash",
+                "rates_per_million": {
+                  "cache_hit": 0.003,
+                  "cache_miss": 0.15,
+                  "output": 0.6
+                }
+              }
+            },
+            "error": null,
+            "duration_ms": 3777.89,
+            "span_id": "d7049d1cf31dd2f4",
+            "source_step_sequence": null
+          }
+        ]
+      }
+    }
+  ]
+}

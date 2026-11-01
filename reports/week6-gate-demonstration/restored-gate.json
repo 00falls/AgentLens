@@ -1,0 +1,239 @@
+{
+  "passed": true,
+  "failures": [],
+  "comparison": {
+    "baseline": "week6-candidate",
+    "candidate": "week6-candidate",
+    "cases": [
+      {
+        "case_id": "pool-exhaustion-01",
+        "change": "unchanged",
+        "baseline_outcome": "passed",
+        "candidate_outcome": "passed",
+        "baseline_run_id": "7535debc-676f-4ce7-8ae3-dc31de32d0cf",
+        "candidate_run_id": "7535debc-676f-4ce7-8ae3-dc31de32d0cf",
+        "project_id": "project-a",
+        "baseline_checks": {
+          "project_scope": true,
+          "status": true,
+          "required_tools": true,
+          "query_scope": true,
+          "cause_terms": true,
+          "required_evidence": true,
+          "valid_citations": true,
+          "outside_window_excluded": true,
+          "token_usage_recorded": true,
+          "runbook_retrieved": true,
+          "runbook_cited": true,
+          "knowledge_project_scope": true,
+          "trajectory_required_tools": true,
+          "trajectory_forbidden_tools": true,
+          "trajectory_parameters": true,
+          "trajectory_order": true
+        },
+        "candidate_checks": {
+          "project_scope": true,
+          "status": true,
+          "required_tools": true,
+          "query_scope": true,
+          "cause_terms": true,
+          "required_evidence": true,
+          "valid_citations": true,
+          "outside_window_excluded": true,
+          "token_usage_recorded": true,
+          "runbook_retrieved": true,
+          "runbook_cited": true,
+          "knowledge_project_scope": true,
+          "trajectory_required_tools": true,
+          "trajectory_forbidden_tools": true,
+          "trajectory_parameters": true,
+          "trajectory_order": true
+        },
+        "baseline_dimensions": {
+          "trajectory": true,
+          "retrieval": true,
+          "root_cause": true,
+          "citations": true,
+          "task_completion": true
+        },
+        "candidate_dimensions": {
+          "trajectory": true,
+          "retrieval": true,
+          "root_cause": true,
+          "citations": true,
+          "task_completion": true
+        },
+        "baseline_judge": {
+          "status": "complete",
+          "version": {
+            "rubric_sha256": "8fccb90ef2234d403e5c0a12e8609cb8d6da4f09333db776427ef3c91707e0c6",
+            "judge_code_sha256": "a14b137bab3432a4752c0f4425524773828dffee70bb61765ebf8932f61325ab",
+            "requested_model": "agentlens-agent",
+            "configured_upstream_model": "openai/deepseek-flash",
+            "temperature": 0,
+            "langchain_openai": "1.7.3",
+            "human_calibrated": false,
+            "role": "advisory"
+          },
+          "scores": {
+            "root_cause": {
+              "score": 2,
+              "reason": "结论由现场日志和指标直接支持：14:02 日志显示 HikariPool 获取连接超时 30000ms、active=20、idle=0、max=20；14:03 指标显示 db_pool_active=20 等于 db_pool_max=20、db_pool_waiters=48、http_5xx_ratio=0.38。答案明确将根因限定为连接池饱和，并拒绝推断慢 SQL、长事务、泄漏或数据库变慢等深层原因，符合证据边界。",
+              "evidence_ids": [
+                "pool-exhaustion-log-1",
+                "pool-exhaustion-metric-1",
+                "pool-exhaustion-metric-2",
+                "pool-exhaustion-metric-3",
+                "pool-exhaustion-metric-4"
+              ]
+            },
+            "citations": {
+              "score": 2,
+              "reason": "引用的现场证据 ID 均真实存在且支持对应主张；pool-exhaustion--s01 支持 active 达 max、idle=0、waiters 上升判定池饱和并结合 5xx 确认影响；pool-exhaustion--s02 与 db-lock-wait--s01 支持不能仅凭池满认定泄漏或锁为根因；http-client-pool--s01 支持区分 HikariPool 与 HTTP 客户端池。手册用于建议、现场证据用于诊断，引用关系正确。",
+              "evidence_ids": [
+                "pool-exhaustion-log-1",
+                "pool-exhaustion-metric-1",
+                "pool-exhaustion-metric-2",
+                "pool-exhaustion-metric-3",
+                "pool-exhaustion-metric-4",
+                "pool-exhaustion--s01",
+                "pool-exhaustion--s02",
+                "db-lock-wait--s01",
+                "http-client-pool--s01"
+              ]
+            },
+            "task_completion": {
+              "score": 2,
+              "reason": "回答了用户要求的异常调查，给出结论与证据，并明确列出未知事项（深层原因、连接泄漏、数据库性能、QPS/线程池、错误持续性等），区分了事实与建议，未把未执行的生产修复说成已完成。",
+              "evidence_ids": [
+                "pool-exhaustion-log-1",
+                "pool-exhaustion-metric-1",
+                "pool-exhaustion-metric-2",
+                "pool-exhaustion-metric-3",
+                "pool-exhaustion-metric-4",
+                "pool-exhaustion--s01",
+                "pool-exhaustion--s02",
+                "db-lock-wait--s01",
+                "http-client-pool--s01"
+              ]
+            },
+            "grounded_actions": {
+              "score": 2,
+              "reason": "后续建议均有依据：查询 pg_stat_activity、锁等待与慢查询依据 db-lock-wait--s01 和 pool-exhaustion--s02；检查连接借出/归还与线程栈依据 pool-exhaustion--s02；对比 QPS 与响应时间、检查 HikariCP 配置、确认日志组件名、记录数据库剩余容量后再评估变更等均与手册一致。未虚构已执行的生产修复，也未把未证实深层原因写成事实。",
+              "evidence_ids": [
+                "pool-exhaustion--s01",
+                "pool-exhaustion--s02",
+                "db-lock-wait--s01",
+                "http-client-pool--s01"
+              ]
+            }
+          },
+          "usage": {
+            "input_tokens": 4930,
+            "output_tokens": 684,
+            "total_tokens": 5614,
+            "input_token_details": {
+              "cache_read": 4736
+            },
+            "output_token_details": {}
+          },
+          "input_sha256": "684061008577a02f4f4a99aab7b3a629341fce185185ecd9c3f6055d37305e13"
+        },
+        "candidate_judge": {
+          "status": "complete",
+          "version": {
+            "rubric_sha256": "8fccb90ef2234d403e5c0a12e8609cb8d6da4f09333db776427ef3c91707e0c6",
+            "judge_code_sha256": "a14b137bab3432a4752c0f4425524773828dffee70bb61765ebf8932f61325ab",
+            "requested_model": "agentlens-agent",
+            "configured_upstream_model": "openai/deepseek-flash",
+            "temperature": 0,
+            "langchain_openai": "1.7.3",
+            "human_calibrated": false,
+            "role": "advisory"
+          },
+          "scores": {
+            "root_cause": {
+              "score": 2,
+              "reason": "结论由现场日志和指标直接支持：14:02 日志显示 HikariPool 获取连接超时 30000ms、active=20、idle=0、max=20；14:03 指标显示 db_pool_active=20 等于 db_pool_max=20、db_pool_waiters=48、http_5xx_ratio=0.38。答案明确将根因限定为连接池饱和，并拒绝推断慢 SQL、长事务、泄漏或数据库变慢等深层原因，符合证据边界。",
+              "evidence_ids": [
+                "pool-exhaustion-log-1",
+                "pool-exhaustion-metric-1",
+                "pool-exhaustion-metric-2",
+                "pool-exhaustion-metric-3",
+                "pool-exhaustion-metric-4"
+              ]
+            },
+            "citations": {
+              "score": 2,
+              "reason": "引用的现场证据 ID 均真实存在且支持对应主张；pool-exhaustion--s01 支持 active 达 max、idle=0、waiters 上升判定池饱和并结合 5xx 确认影响；pool-exhaustion--s02 与 db-lock-wait--s01 支持不能仅凭池满认定泄漏或锁为根因；http-client-pool--s01 支持区分 HikariPool 与 HTTP 客户端池。手册用于建议、现场证据用于诊断，引用关系正确。",
+              "evidence_ids": [
+                "pool-exhaustion-log-1",
+                "pool-exhaustion-metric-1",
+                "pool-exhaustion-metric-2",
+                "pool-exhaustion-metric-3",
+                "pool-exhaustion-metric-4",
+                "pool-exhaustion--s01",
+                "pool-exhaustion--s02",
+                "db-lock-wait--s01",
+                "http-client-pool--s01"
+              ]
+            },
+            "task_completion": {
+              "score": 2,
+              "reason": "回答了用户要求的异常调查，给出结论与证据，并明确列出未知事项（深层原因、连接泄漏、数据库性能、QPS/线程池、错误持续性等），区分了事实与建议，未把未执行的生产修复说成已完成。",
+              "evidence_ids": [
+                "pool-exhaustion-log-1",
+                "pool-exhaustion-metric-1",
+                "pool-exhaustion-metric-2",
+                "pool-exhaustion-metric-3",
+                "pool-exhaustion-metric-4",
+                "pool-exhaustion--s01",
+                "pool-exhaustion--s02",
+                "db-lock-wait--s01",
+                "http-client-pool--s01"
+              ]
+            },
+            "grounded_actions": {
+              "score": 2,
+              "reason": "后续建议均有依据：查询 pg_stat_activity、锁等待与慢查询依据 db-lock-wait--s01 和 pool-exhaustion--s02；检查连接借出/归还与线程栈依据 pool-exhaustion--s02；对比 QPS 与响应时间、检查 HikariCP 配置、确认日志组件名、记录数据库剩余容量后再评估变更等均与手册一致。未虚构已执行的生产修复，也未把未证实深层原因写成事实。",
+              "evidence_ids": [
+                "pool-exhaustion--s01",
+                "pool-exhaustion--s02",
+                "db-lock-wait--s01",
+                "http-client-pool--s01"
+              ]
+            }
+          },
+          "usage": {
+            "input_tokens": 4930,
+            "output_tokens": 684,
+            "total_tokens": 5614,
+            "input_token_details": {
+              "cache_read": 4736
+            },
+            "output_token_details": {}
+          },
+          "input_sha256": "684061008577a02f4f4a99aab7b3a629341fce185185ecd9c3f6055d37305e13"
+        },
+        "baseline_cause": "在 2026-10-30 14:00–14:15（+08:00）窗口内，order-api 出现数据库连接池饱和：14:02 日志报 HikariPool 获取连接超时 30000ms，active=20、idle=0、max=20；14:03 指标显示 db_pool_active=20 已达 db_pool_max=20，db_pool_waiters=48 个请求排队，http_5xx_ratio 升至 0.38。日志与指标相互印证，说明连接池容量被占满、请求排队等待连接超时，进而导致 5xx 比例升高。手册 pool-exhaustion--s01 也指出，active 达到 max、idle=0 且 waiters 上升即可判断连接池饱和，并需结合同一时间窗的 5xx 确认影响范围，这与现场证据一致。至于连接被长期占用的具体原因（慢 SQL、长事务、连接泄漏或数据库变慢），本次证据尚不能确定；手册 pool-exhaustion--s02 与 db-lock-wait--s01 均明确说明，仅凭池满日志不能认定泄漏或锁为根因。",
+        "candidate_cause": "在 2026-10-30 14:00–14:15（+08:00）窗口内，order-api 出现数据库连接池饱和：14:02 日志报 HikariPool 获取连接超时 30000ms，active=20、idle=0、max=20；14:03 指标显示 db_pool_active=20 已达 db_pool_max=20，db_pool_waiters=48 个请求排队，http_5xx_ratio 升至 0.38。日志与指标相互印证，说明连接池容量被占满、请求排队等待连接超时，进而导致 5xx 比例升高。手册 pool-exhaustion--s01 也指出，active 达到 max、idle=0 且 waiters 上升即可判断连接池饱和，并需结合同一时间窗的 5xx 确认影响范围，这与现场证据一致。至于连接被长期占用的具体原因（慢 SQL、长事务、连接泄漏或数据库变慢），本次证据尚不能确定；手册 pool-exhaustion--s02 与 db-lock-wait--s01 均明确说明，仅凭池满日志不能认定泄漏或锁为根因。",
+        "input_token_delta": 0,
+        "output_token_delta": 0,
+        "improved_checks": [],
+        "regressed_checks": []
+      }
+    ]
+  },
+  "policy": {
+    "required_case_ids": [
+      "pool-exhaustion-01"
+    ],
+    "require_judge": true,
+    "judge_is_advisory_until_human_calibration": true,
+    "aggregate_pass_rate_threshold": null
+  },
+  "policy_sha256": "ebc28be7a32b91dbcac1071f4ddfadc09fc73603277d6fe57e5ea4e779880807",
+  "execution_kind": "controlled_restoration_of_recorded_snapshot",
+  "judge_score_gate_enabled": false,
+  "note": "Judge scores are advisory pending genuine human calibration; no aggregate threshold"
+}

@@ -1,0 +1,31 @@
+{
+  "synthetic": true,
+  "cases": 60,
+  "dev": 40,
+  "holdout": 20,
+  "split_unit": "fault_family_including_all_data_variants",
+  "groups": {
+    "dev": [
+      "config-regression",
+      "db-lock-wait",
+      "downstream-timeout",
+      "healthy",
+      "insufficient",
+      "memory-pressure",
+      "pool-exhaustion",
+      "traffic-spike"
+    ],
+    "holdout": [
+      "cpu-throttling",
+      "disk-full",
+      "queue-backlog",
+      "tls-expired"
+    ]
+  },
+  "sha256": {
+    "dev.jsonl": "913c65c6994772b7060f31ae1f1ef446eedec0c3838a532119b3f8b897a5f3c3",
+    "holdout.jsonl": "8cba42ba15c3cf7eb2e21eb9abdb28d062c2b701e7959b52948d7ca28e920fb4"
+  },
+  "telemetry_sha256": "4c7dc6815270a0d2001f7e63d2459ca3dd2e70e36afe77c6dafa8912b84b6e27",
+  "holdout_usage": "Generated and schema-checked only; not used for prompt tuning or model acceptance"
+}

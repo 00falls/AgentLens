@@ -1,0 +1,12 @@
+{
+  "model_calls": 0,
+  "checks": {
+    "catalog": true,
+    "project_not_model_argument": true,
+    "structured_result": true,
+    "invalid_window_rejected": true,
+    "project_filter": true,
+    "missing_scope_rejected": true
+  },
+  "passed": true
+}

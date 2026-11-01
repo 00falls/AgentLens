@@ -1,0 +1,8 @@
+{
+  "required_case_ids": ["pool-exhaustion-01"],
+  "require_judge": false,
+  "baseline_passed_cases_must_remain_passed": true,
+  "aggregate_pass_rate_must_not_decrease": true,
+  "batch_budget_usd": "0.20",
+  "initial_campaign_budget_usd": "1.00"
+}

@@ -1,0 +1,19 @@
+{
+  "passed": true,
+  "checks": {
+    "real_case_comparison_visible": true,
+    "original_failure_and_repaired_checks_visible": true,
+    "judge_reason_and_evidence_expand": true,
+    "failure_filter_hides_passing_candidate": true,
+    "failure_filter_shows_failed_record": true,
+    "opens_real_run_evidence": true,
+    "project_change_clears_previous_comparison": true,
+    "cross_project_artifact_returns_404": true,
+    "mobile_no_page_overflow": true,
+    "no_browser_runtime_errors": true
+  },
+  "errors": [],
+  "model_calls": 0,
+  "browser": "Microsoft Edge / Playwright",
+  "run_id": "7535debc-676f-4ce7-8ae3-dc31de32d0cf"
+}

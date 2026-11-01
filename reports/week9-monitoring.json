@@ -1,0 +1,37 @@
+{
+  "passed": true,
+  "checks": {
+    "two_authenticated_targets_up": true,
+    "two_production_rules_loaded": true,
+    "known_cost_query_returns_data": true,
+    "grafana_database_ok": true,
+    "six_provisioned_panels": true,
+    "grafana_datasource_connected": true
+  },
+  "grafana_version": "13.3.0",
+  "prometheus_jobs": [
+    "agentlens-a",
+    "agentlens-b"
+  ],
+  "rules": [
+    {
+      "name": "AgentLensToolErrorRate",
+      "state": "inactive"
+    },
+    {
+      "name": "AgentLensSustainedRunFailures",
+      "state": "inactive"
+    }
+  ],
+  "known_cost_query": [
+    {
+      "metric": {},
+      "value": [
+        1793507394.813,
+        "0.008244442"
+      ]
+    }
+  ],
+  "provider_requests": 0,
+  "remote_notifications_sent": false
+}

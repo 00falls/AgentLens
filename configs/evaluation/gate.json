@@ -1,0 +1,6 @@
+{
+  "required_case_ids": ["pool-exhaustion-01"],
+  "require_judge": true,
+  "judge_is_advisory_until_human_calibration": true,
+  "aggregate_pass_rate_threshold": null
+}

@@ -1,0 +1,6 @@
+apiVersion: 1
+providers:
+  - name: AgentLens
+    type: file
+    options:
+      path: ${AGENTLENS_DASHBOARDS}

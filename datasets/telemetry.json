@@ -1,0 +1,256 @@
+{
+  "synthetic": true,
+  "logs": [
+    {
+      "id": "pool-exhaustion-outside",
+      "project_id": "project-a",
+      "service": "order-api",
+      "timestamp": "2026-10-30T13:59:00+08:00",
+      "level": "INFO",
+      "message": "Pre-window observation; not evidence for this interval"
+    },
+    {
+      "id": "pool-exhaustion-log-1",
+      "project_id": "project-a",
+      "service": "order-api",
+      "timestamp": "2026-10-30T14:02:00+08:00",
+      "level": "ERROR",
+      "message": "HikariPool connection acquisition timed out after 30000ms; active=20, idle=0, max=20"
+    },
+    {
+      "id": "downstream-timeout-outside",
+      "project_id": "project-a",
+      "service": "order-api",
+      "timestamp": "2026-10-30T14:59:00+08:00",
+      "level": "INFO",
+      "message": "Pre-window observation; not evidence for this interval"
+    },
+    {
+      "id": "downstream-timeout-log-1",
+      "project_id": "project-a",
+      "service": "order-api",
+      "timestamp": "2026-10-30T15:02:00+08:00",
+      "level": "ERROR",
+      "message": "HTTP request to payment-api timed out after 5000ms; upstream returned 504"
+    },
+    {
+      "id": "config-regression-outside",
+      "project_id": "project-a",
+      "service": "payment-api",
+      "timestamp": "2026-10-30T15:59:00+08:00",
+      "level": "INFO",
+      "message": "Pre-window observation; not evidence for this interval"
+    },
+    {
+      "id": "config-regression-log-1",
+      "project_id": "project-a",
+      "service": "payment-api",
+      "timestamp": "2026-10-30T16:02:00+08:00",
+      "level": "ERROR",
+      "message": "After deploy v2.4.1: database host pg-paymnt.internal cannot be resolved; NXDOMAIN"
+    },
+    {
+      "id": "memory-pressure-outside",
+      "project_id": "project-b",
+      "service": "inventory-api",
+      "timestamp": "2026-10-30T13:59:00+08:00",
+      "level": "INFO",
+      "message": "Pre-window observation; not evidence for this interval"
+    },
+    {
+      "id": "memory-pressure-log-1",
+      "project_id": "project-b",
+      "service": "inventory-api",
+      "timestamp": "2026-10-30T14:02:00+08:00",
+      "level": "ERROR",
+      "message": "Container terminated: OOMKilled, exitCode=137, memory limit=512MiB"
+    },
+    {
+      "id": "traffic-spike-outside",
+      "project_id": "project-b",
+      "service": "inventory-api",
+      "timestamp": "2026-10-30T14:59:00+08:00",
+      "level": "INFO",
+      "message": "Pre-window observation; not evidence for this interval"
+    },
+    {
+      "id": "traffic-spike-log-1",
+      "project_id": "project-b",
+      "service": "inventory-api",
+      "timestamp": "2026-10-30T15:02:00+08:00",
+      "level": "ERROR",
+      "message": "Worker queue full: pending=2400; requests rejected with HTTP 503"
+    },
+    {
+      "id": "healthy-outside",
+      "project_id": "project-a",
+      "service": "order-api",
+      "timestamp": "2026-10-30T16:59:00+08:00",
+      "level": "INFO",
+      "message": "Pre-window observation; not evidence for this interval"
+    },
+    {
+      "id": "healthy-log-1",
+      "project_id": "project-a",
+      "service": "order-api",
+      "timestamp": "2026-10-30T17:02:00+08:00",
+      "level": "INFO",
+      "message": "Request completed successfully: status=200 duration_ms=42"
+    }
+  ],
+  "metrics": [
+    {
+      "id": "pool-exhaustion-metric-1",
+      "project_id": "project-a",
+      "service": "order-api",
+      "timestamp": "2026-10-30T14:03:00+08:00",
+      "name": "db_pool_active",
+      "value": 20,
+      "unit": "connections"
+    },
+    {
+      "id": "pool-exhaustion-metric-2",
+      "project_id": "project-a",
+      "service": "order-api",
+      "timestamp": "2026-10-30T14:03:00+08:00",
+      "name": "db_pool_max",
+      "value": 20,
+      "unit": "connections"
+    },
+    {
+      "id": "pool-exhaustion-metric-3",
+      "project_id": "project-a",
+      "service": "order-api",
+      "timestamp": "2026-10-30T14:03:00+08:00",
+      "name": "db_pool_waiters",
+      "value": 48,
+      "unit": "requests"
+    },
+    {
+      "id": "pool-exhaustion-metric-4",
+      "project_id": "project-a",
+      "service": "order-api",
+      "timestamp": "2026-10-30T14:03:00+08:00",
+      "name": "http_5xx_ratio",
+      "value": 0.38,
+      "unit": "ratio"
+    },
+    {
+      "id": "downstream-timeout-metric-1",
+      "project_id": "project-a",
+      "service": "order-api",
+      "timestamp": "2026-10-30T15:03:00+08:00",
+      "name": "payment_api_p95_ms",
+      "value": 6200,
+      "unit": "ms"
+    },
+    {
+      "id": "downstream-timeout-metric-2",
+      "project_id": "project-a",
+      "service": "order-api",
+      "timestamp": "2026-10-30T15:03:00+08:00",
+      "name": "http_5xx_ratio",
+      "value": 0.27,
+      "unit": "ratio"
+    },
+    {
+      "id": "config-regression-metric-1",
+      "project_id": "project-a",
+      "service": "payment-api",
+      "timestamp": "2026-10-30T16:03:00+08:00",
+      "name": "dns_failures",
+      "value": 190,
+      "unit": "requests"
+    },
+    {
+      "id": "config-regression-metric-2",
+      "project_id": "project-a",
+      "service": "payment-api",
+      "timestamp": "2026-10-30T16:03:00+08:00",
+      "name": "http_5xx_ratio",
+      "value": 0.91,
+      "unit": "ratio"
+    },
+    {
+      "id": "memory-pressure-metric-1",
+      "project_id": "project-b",
+      "service": "inventory-api",
+      "timestamp": "2026-10-30T14:03:00+08:00",
+      "name": "memory_working_set_mb",
+      "value": 511,
+      "unit": "MB"
+    },
+    {
+      "id": "memory-pressure-metric-2",
+      "project_id": "project-b",
+      "service": "inventory-api",
+      "timestamp": "2026-10-30T14:03:00+08:00",
+      "name": "memory_limit_mb",
+      "value": 512,
+      "unit": "MB"
+    },
+    {
+      "id": "memory-pressure-metric-3",
+      "project_id": "project-b",
+      "service": "inventory-api",
+      "timestamp": "2026-10-30T14:03:00+08:00",
+      "name": "container_restarts",
+      "value": 4,
+      "unit": "restarts"
+    },
+    {
+      "id": "traffic-spike-metric-1",
+      "project_id": "project-b",
+      "service": "inventory-api",
+      "timestamp": "2026-10-30T15:03:00+08:00",
+      "name": "request_rate",
+      "value": 1900,
+      "unit": "requests/s"
+    },
+    {
+      "id": "traffic-spike-metric-2",
+      "project_id": "project-b",
+      "service": "inventory-api",
+      "timestamp": "2026-10-30T15:03:00+08:00",
+      "name": "baseline_request_rate",
+      "value": 120,
+      "unit": "requests/s"
+    },
+    {
+      "id": "traffic-spike-metric-3",
+      "project_id": "project-b",
+      "service": "inventory-api",
+      "timestamp": "2026-10-30T15:03:00+08:00",
+      "name": "worker_cpu_percent",
+      "value": 99,
+      "unit": "percent"
+    },
+    {
+      "id": "traffic-spike-metric-4",
+      "project_id": "project-b",
+      "service": "inventory-api",
+      "timestamp": "2026-10-30T15:03:00+08:00",
+      "name": "queue_length",
+      "value": 2400,
+      "unit": "requests"
+    },
+    {
+      "id": "healthy-metric-1",
+      "project_id": "project-a",
+      "service": "order-api",
+      "timestamp": "2026-10-30T17:03:00+08:00",
+      "name": "http_5xx_ratio",
+      "value": 0,
+      "unit": "ratio"
+    },
+    {
+      "id": "healthy-metric-2",
+      "project_id": "project-a",
+      "service": "order-api",
+      "timestamp": "2026-10-30T17:03:00+08:00",
+      "name": "p95_latency_ms",
+      "value": 72,
+      "unit": "ms"
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "passed": true,
+  "checks": {
+    "business_completed_with_export_held": true,
+    "root_absent_before_export": true,
+    "partial_children_visible_without_root": true,
+    "late_root_appends_to_existing_trace": true,
+    "metadata_policy_excludes_sensitive_content": true,
+    "mcp_server_joins_trace": true,
+    "duplicate_delivery_deduplicates": true,
+    "shared_trace_id_does_not_leak_other_project": true,
+    "cross_project_trace_read_404": true,
+    "other_project_only_sees_own_subtree": true,
+    "run_list_filters_thread": true,
+    "invalid_list_limit_422": true,
+    "ingest_separate_from_public_api": true,
+    "ingest_key_required": true,
+    "malformed_protobuf_400": true,
+    "unsupported_otlp_format_415": true,
+    "workbench_served": true
+  },
+  "paid_model_calls": 0,
+  "business_quality_result": false,
+  "probe_run_ids": [
+    "eda7243e-c05a-4876-9530-04af299252c4",
+    "94f4adb3-0433-403b-a92f-17ede00eb681"
+  ],
+  "trace_id": "f7bcf1b9f63969b1af0164c989cbd141",
+  "captured_sdk_spans": 10,
+  "partial_spans": 13,
+  "final_spans": 14
+}

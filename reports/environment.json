@@ -1,0 +1,21 @@
+{
+  "python": "3.12.14",
+  "platform": "Windows-11-10.0.22621-SP0",
+  "dependencies": {
+    "langgraph": "1.2.19",
+    "langchain-openai": "1.7.3",
+    "litellm": "1.106.6",
+    "sqlalchemy": "2.1.6",
+    "mcp": "2.3.0"
+  },
+  "deepseek_key_configured": true,
+  "docker_cli": null,
+  "openshell_cli": null,
+  "postgresql": "PostgreSQL 17.11 on x86_64-windows, compiled by msvc-19.44.35228, 64-bit",
+  "pgvector_available": false,
+  "telemetry_counts": {
+    "logs": 12,
+    "metrics": 17
+  },
+  "wsl_list_exit_code": 1
+}

@@ -1,0 +1,9 @@
+{
+  "version": "week9-single-case-observation-v1",
+  "scope": "pool-exhaustion-01 only; advisory until repeated representative measurements",
+  "based_on": "reports/week89-acceptance.json",
+  "max_duration_seconds": 30,
+  "max_cost_usd": "0.01",
+  "hard_gate": false,
+  "note": "Rounded headroom above the observed 15.23s and $0.00691; not a production SLO. Unknown cost cannot pass a cost budget."
+}
