@@ -1,0 +1,255 @@
+{
+  "generated_at": "2026-11-01T10:51:05.306660+00:00",
+  "scope": "10 distinct development cases, 8 families; other 50 cases not executed; Flash only; no Judge",
+  "repository": "https://github.com/00falls/AgentLens",
+  "demonstration_pr": "https://github.com/00falls/AgentLens/pull/1",
+  "original_green_red_green_achieved": false,
+  "regression_rejected_and_exact_prompt_restoration_passed": true,
+  "note": "Normal remote run was 8/10 and failed. Actual remote sequence is red -> red -> green, not green -> red -> green.",
+  "local_baseline": {
+    "report": "reports/ci/local-baseline.json",
+    "summary": {
+      "selected": 10,
+      "attempted": 10,
+      "passed": 9,
+      "failed": 1,
+      "errors": 0,
+      "judge_errors": 0,
+      "not_executed": 0,
+      "complete": true,
+      "coverage": 1.0,
+      "pass_rate": 0.9,
+      "confirmed_passed_of_planned": "9/10"
+    },
+    "budget": {
+      "limit_usd": "0.20",
+      "known_spent_usd": "0.011233566",
+      "model_calls": 35,
+      "unknown_usage": false,
+      "note": "Conservative application-side reserve; not a provider billing cap."
+    }
+  },
+  "remote_runs": [
+    {
+      "label": "initial_interrupted",
+      "workflow": "https://github.com/00falls/AgentLens/actions/runs/41297327366",
+      "commit": "1c94aae0cc01c94e6584ae94034b54c2f7406144",
+      "workflow_conclusion": "cancelled",
+      "gate_passed": false,
+      "gate_origin": "offline_recheck_after_cancellation",
+      "report": "reports/ci/initial-setup-evidence/ci/candidate.json",
+      "summary": {
+        "selected": 10,
+        "attempted": 9,
+        "passed": 7,
+        "failed": 1,
+        "errors": 1,
+        "judge_errors": 0,
+        "not_executed": 1,
+        "complete": false,
+        "coverage": 0.9,
+        "pass_rate": null,
+        "confirmed_passed_of_planned": "7/10"
+      },
+      "budget": {
+        "limit_usd": "0.20",
+        "known_spent_usd": "0.010199082",
+        "model_calls": 33,
+        "unknown_usage": false,
+        "note": "Conservative application-side reserve; not a provider billing cap."
+      },
+      "prompt_sha256": "b607124299c8683f22704cd8a32a2dd92c06469887a1aa89d10676128091bdbb",
+      "failure_categories": {
+        "arguments_or_scope": 1,
+        "execution_error": 1
+      },
+      "artifact_links": [
+        {
+          "name": "real-dev10-evidence",
+          "url": "https://github.com/00falls/AgentLens/actions/runs/41297327366/artifacts/13079533644",
+          "expires_at": "2027-01-30T10:24:10Z"
+        },
+        {
+          "name": "trusted-baseline",
+          "url": "https://github.com/00falls/AgentLens/actions/runs/41297327366/artifacts/13079342420",
+          "expires_at": "2027-01-30T10:24:10Z"
+        },
+        {
+          "name": "deterministic-checks",
+          "url": "https://github.com/00falls/AgentLens/actions/runs/41297327366/artifacts/13079139981",
+          "expires_at": "2027-01-30T10:24:10Z"
+        }
+      ]
+    },
+    {
+      "label": "normal",
+      "workflow": "https://github.com/00falls/AgentLens/actions/runs/41298033467",
+      "commit": "d3d94c04f51a600a0d75b9fd8c75595ff29bf95d",
+      "workflow_conclusion": "failure",
+      "gate_passed": false,
+      "gate_origin": "workflow",
+      "report": "reports/ci/remote-normal/ci/candidate.json",
+      "summary": {
+        "selected": 10,
+        "attempted": 10,
+        "passed": 8,
+        "failed": 2,
+        "errors": 0,
+        "judge_errors": 0,
+        "not_executed": 0,
+        "complete": true,
+        "coverage": 1.0,
+        "pass_rate": 0.8,
+        "confirmed_passed_of_planned": "8/10"
+      },
+      "budget": {
+        "limit_usd": "0.20",
+        "known_spent_usd": "0.010976052",
+        "model_calls": 34,
+        "unknown_usage": false,
+        "note": "Conservative application-side reserve; not a provider billing cap."
+      },
+      "prompt_sha256": "6a2ed524c13ae7580e8ea2f263a849042938b6dc8243414948269645ed2f8502",
+      "failure_categories": {
+        "root_cause_rules_unmet": 2
+      },
+      "artifact_links": [
+        {
+          "name": "real-dev10-evidence",
+          "url": "https://github.com/00falls/AgentLens/actions/runs/41298033467/artifacts/13080430963",
+          "expires_at": "2027-01-30T10:33:47Z"
+        },
+        {
+          "name": "trusted-baseline",
+          "url": "https://github.com/00falls/AgentLens/actions/runs/41298033467/artifacts/13080133011",
+          "expires_at": "2027-01-30T10:33:47Z"
+        },
+        {
+          "name": "deterministic-checks",
+          "url": "https://github.com/00falls/AgentLens/actions/runs/41298033467/artifacts/13079737724",
+          "expires_at": "2027-01-30T10:33:47Z"
+        }
+      ]
+    },
+    {
+      "label": "controlled_regression",
+      "workflow": "https://github.com/00falls/AgentLens/actions/runs/41298426106",
+      "commit": "4f6f082e147a585a7dff20545bea634263badc4b",
+      "workflow_conclusion": "failure",
+      "gate_passed": false,
+      "gate_origin": "workflow",
+      "report": "reports/ci/remote-regression/ci/candidate.json",
+      "summary": {
+        "selected": 10,
+        "attempted": 10,
+        "passed": 0,
+        "failed": 10,
+        "errors": 0,
+        "judge_errors": 0,
+        "not_executed": 0,
+        "complete": true,
+        "coverage": 1.0,
+        "pass_rate": 0.0,
+        "confirmed_passed_of_planned": "0/10"
+      },
+      "budget": {
+        "limit_usd": "0.20",
+        "known_spent_usd": "0.000925392",
+        "model_calls": 10,
+        "unknown_usage": false,
+        "note": "Conservative application-side reserve; not a provider billing cap."
+      },
+      "prompt_sha256": "22cf5f8ee462cee365944395055479e4f121c166d2d1dea78a790d40eb6789f5",
+      "failure_categories": {
+        "tool_selection_or_order": 10,
+        "citation_missing_or_invalid": 8,
+        "root_cause_rules_unmet": 9,
+        "runbook_not_queried": 8
+      },
+      "artifact_links": [
+        {
+          "name": "trusted-baseline",
+          "url": "https://github.com/00falls/AgentLens/actions/runs/41298426106/artifacts/13080700365",
+          "expires_at": "2027-01-30T10:39:10Z"
+        },
+        {
+          "name": "deterministic-checks",
+          "url": "https://github.com/00falls/AgentLens/actions/runs/41298426106/artifacts/13080297130",
+          "expires_at": "2027-01-30T10:39:10Z"
+        },
+        {
+          "name": "real-dev10-evidence",
+          "url": "https://github.com/00falls/AgentLens/actions/runs/41298426106/artifacts/13079658489",
+          "expires_at": "2027-01-30T10:39:10Z"
+        }
+      ]
+    },
+    {
+      "label": "restored",
+      "workflow": "https://github.com/00falls/AgentLens/actions/runs/41298677005",
+      "commit": "f651719f205ff978acd26671d359a14a0f943635",
+      "workflow_conclusion": "success",
+      "gate_passed": true,
+      "gate_origin": "workflow",
+      "report": "reports/ci/remote-restored/ci/candidate.json",
+      "summary": {
+        "selected": 10,
+        "attempted": 10,
+        "passed": 9,
+        "failed": 1,
+        "errors": 0,
+        "judge_errors": 0,
+        "not_executed": 0,
+        "complete": true,
+        "coverage": 1.0,
+        "pass_rate": 0.9,
+        "confirmed_passed_of_planned": "9/10"
+      },
+      "budget": {
+        "limit_usd": "0.20",
+        "known_spent_usd": "0.009911268",
+        "model_calls": 35,
+        "unknown_usage": false,
+        "note": "Conservative application-side reserve; not a provider billing cap."
+      },
+      "prompt_sha256": "6a2ed524c13ae7580e8ea2f263a849042938b6dc8243414948269645ed2f8502",
+      "failure_categories": {
+        "root_cause_rules_unmet": 1
+      },
+      "artifact_links": [
+        {
+          "name": "deterministic-checks",
+          "url": "https://github.com/00falls/AgentLens/actions/runs/41298677005/artifacts/13080641174",
+          "expires_at": "2027-01-30T10:42:43Z"
+        },
+        {
+          "name": "trusted-baseline",
+          "url": "https://github.com/00falls/AgentLens/actions/runs/41298677005/artifacts/13080486497",
+          "expires_at": "2027-01-30T10:42:43Z"
+        },
+        {
+          "name": "real-dev10-evidence",
+          "url": "https://github.com/00falls/AgentLens/actions/runs/41298677005/artifacts/13080417274",
+          "expires_at": "2027-01-30T10:42:43Z"
+        }
+      ]
+    }
+  ],
+  "budget": {
+    "authorized_usd": "1.00",
+    "fully_saved_business_runs": 49,
+    "possibly_started_additional_business_runs": 1,
+    "observed_model_calls": 147,
+    "known_spent_usd": "0.043245360",
+    "unobserved_inflight_usage": true,
+    "additional_interruption_reserve_usd": "0.189800918",
+    "conservative_campaign_reservation_usd": "0.233046278",
+    "provider_bill_hard_cap": false,
+    "note": "Initial interrupted batch conservatively occupies $0.20 including its known usage. Reservation is not an invoice or guaranteed maximum."
+  },
+  "software_validation": {
+    "contract_tests": 44,
+    "frontend_build": "passed in remote deterministic jobs"
+  },
+  "unchanged_application_database_runs": 49
+}

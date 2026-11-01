@@ -1,0 +1,45 @@
+{
+  "passed": false,
+  "failures": [
+    {
+      "reason": "missing_or_duplicate_cases",
+      "report": "candidate"
+    },
+    {
+      "reason": "experiment_incomplete",
+      "report": "candidate"
+    },
+    {
+      "reason": "execution_error",
+      "report": "candidate"
+    },
+    {
+      "reason": "incomparable",
+      "detail": "Comparison requires the same selected case IDs"
+    },
+    {
+      "reason": "previously_passed_case_regressed",
+      "case_id": "w6-downstream-timeout-01"
+    },
+    {
+      "reason": "previously_passed_case_regressed",
+      "case_id": "w6-db-lock-wait-02"
+    },
+    {
+      "reason": "aggregate_pass_rate_decreased"
+    }
+  ],
+  "comparison": null,
+  "policy": {
+    "required_case_ids": [
+      "pool-exhaustion-01"
+    ],
+    "require_judge": false,
+    "baseline_passed_cases_must_remain_passed": true,
+    "aggregate_pass_rate_must_not_decrease": true,
+    "batch_budget_usd": "0.20",
+    "initial_campaign_budget_usd": "1.00"
+  },
+  "policy_sha256": "e13e51475e4e0c4307e53f635899de0ddf740914d0409518689f6cfff84bcce7",
+  "judge_used": false
+}

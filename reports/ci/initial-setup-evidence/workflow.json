@@ -1,0 +1,369 @@
+{
+  "conclusion": "cancelled",
+  "createdAt": "2026-11-01T10:24:09Z",
+  "databaseId": 41297327366,
+  "event": "push",
+  "headBranch": "main",
+  "headSha": "1c94aae0cc01c94e6584ae94034b54c2f7406144",
+  "jobs": [
+    {
+      "completedAt": "2026-11-01T10:24:54Z",
+      "conclusion": "success",
+      "databaseId": 124820805935,
+      "name": "deterministic",
+      "startedAt": "2026-11-01T10:24:12Z",
+      "status": "completed",
+      "steps": [
+        {
+          "completedAt": "2026-11-01T10:24:14Z",
+          "conclusion": "success",
+          "name": "Set up job",
+          "number": 1,
+          "startedAt": "2026-11-01T10:24:13Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-01T10:24:15Z",
+          "conclusion": "success",
+          "name": "Run actions/checkout@v7",
+          "number": 2,
+          "startedAt": "2026-11-01T10:24:14Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-01T10:24:16Z",
+          "conclusion": "success",
+          "name": "Run astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2",
+          "number": 3,
+          "startedAt": "2026-11-01T10:24:15Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-01T10:24:21Z",
+          "conclusion": "success",
+          "name": "Run uv sync --frozen",
+          "number": 4,
+          "startedAt": "2026-11-01T10:24:16Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-01T10:24:21Z",
+          "conclusion": "success",
+          "name": "Run uv run ruff check src scripts migrations tests",
+          "number": 5,
+          "startedAt": "2026-11-01T10:24:21Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-01T10:24:30Z",
+          "conclusion": "success",
+          "name": "Run uv run pytest tests/test_week6_contracts.py tests/test_week7_contracts.py tests/test_ci_evaluation.py -q --junitxml=reports/local/contracts.xml",
+          "number": 6,
+          "startedAt": "2026-11-01T10:24:21Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-01T10:24:37Z",
+          "conclusion": "success",
+          "name": "Run uv run python scripts/check_week6_gate.py",
+          "number": 7,
+          "startedAt": "2026-11-01T10:24:30Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-01T10:24:38Z",
+          "conclusion": "success",
+          "name": "Run actions/setup-node@v7",
+          "number": 8,
+          "startedAt": "2026-11-01T10:24:37Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-01T10:24:39Z",
+          "conclusion": "success",
+          "name": "Run npm install --global pnpm@10.28.2",
+          "number": 9,
+          "startedAt": "2026-11-01T10:24:38Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-01T10:24:40Z",
+          "conclusion": "success",
+          "name": "Run pnpm --dir web install --frozen-lockfile",
+          "number": 10,
+          "startedAt": "2026-11-01T10:24:39Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-01T10:24:44Z",
+          "conclusion": "success",
+          "name": "Run pnpm --dir web build",
+          "number": 11,
+          "startedAt": "2026-11-01T10:24:40Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-01T10:24:45Z",
+          "conclusion": "success",
+          "name": "Run actions/upload-artifact@v4",
+          "number": 12,
+          "startedAt": "2026-11-01T10:24:44Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-01T10:24:45Z",
+          "conclusion": "success",
+          "name": "Post Run actions/setup-node@v7",
+          "number": 22,
+          "startedAt": "2026-11-01T10:24:45Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-01T10:24:52Z",
+          "conclusion": "success",
+          "name": "Post Run astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2",
+          "number": 23,
+          "startedAt": "2026-11-01T10:24:45Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-01T10:24:52Z",
+          "conclusion": "success",
+          "name": "Post Run actions/checkout@v7",
+          "number": 24,
+          "startedAt": "2026-11-01T10:24:52Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-01T10:24:52Z",
+          "conclusion": "success",
+          "name": "Complete job",
+          "number": 25,
+          "startedAt": "2026-11-01T10:24:52Z",
+          "status": "completed"
+        }
+      ],
+      "url": "https://github.com/00falls/AgentLens/actions/runs/41297327366/job/124820805935"
+    },
+    {
+      "completedAt": "2026-11-01T10:24:20Z",
+      "conclusion": "success",
+      "databaseId": 124820806122,
+      "name": "prepare",
+      "startedAt": "2026-11-01T10:24:12Z",
+      "status": "completed",
+      "steps": [
+        {
+          "completedAt": "2026-11-01T10:24:14Z",
+          "conclusion": "success",
+          "name": "Set up job",
+          "number": 1,
+          "startedAt": "2026-11-01T10:24:13Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-01T10:24:15Z",
+          "conclusion": "success",
+          "name": "Run actions/checkout@v7",
+          "number": 2,
+          "startedAt": "2026-11-01T10:24:14Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-01T10:24:15Z",
+          "conclusion": "success",
+          "name": "Run python scripts/prepare_ci_gate.py",
+          "number": 3,
+          "startedAt": "2026-11-01T10:24:15Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-01T10:24:17Z",
+          "conclusion": "success",
+          "name": "Run actions/upload-artifact@v4",
+          "number": 4,
+          "startedAt": "2026-11-01T10:24:15Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-01T10:24:18Z",
+          "conclusion": "success",
+          "name": "Post Run actions/checkout@v7",
+          "number": 8,
+          "startedAt": "2026-11-01T10:24:17Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-01T10:24:18Z",
+          "conclusion": "success",
+          "name": "Complete job",
+          "number": 9,
+          "startedAt": "2026-11-01T10:24:18Z",
+          "status": "completed"
+        }
+      ],
+      "url": "https://github.com/00falls/AgentLens/actions/runs/41297327366/job/124820806122"
+    },
+    {
+      "completedAt": "2026-11-01T10:27:44Z",
+      "conclusion": "cancelled",
+      "databaseId": 124820965558,
+      "name": "real-evaluation",
+      "startedAt": "2026-11-01T10:24:56Z",
+      "status": "completed",
+      "steps": [
+        {
+          "completedAt": "2026-11-01T10:24:59Z",
+          "conclusion": "success",
+          "name": "Set up job",
+          "number": 1,
+          "startedAt": "2026-11-01T10:24:57Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-01T10:25:14Z",
+          "conclusion": "success",
+          "name": "Initialize containers",
+          "number": 2,
+          "startedAt": "2026-11-01T10:24:59Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-01T10:25:15Z",
+          "conclusion": "success",
+          "name": "Run actions/checkout@v7",
+          "number": 3,
+          "startedAt": "2026-11-01T10:25:14Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-01T10:25:22Z",
+          "conclusion": "success",
+          "name": "Run astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2",
+          "number": 4,
+          "startedAt": "2026-11-01T10:25:15Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-01T10:25:24Z",
+          "conclusion": "success",
+          "name": "Run uv sync --frozen",
+          "number": 5,
+          "startedAt": "2026-11-01T10:25:22Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-01T10:25:25Z",
+          "conclusion": "success",
+          "name": "Run actions/download-artifact@v4",
+          "number": 6,
+          "startedAt": "2026-11-01T10:25:24Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-01T10:25:56Z",
+          "conclusion": "success",
+          "name": "Prepare isolated data and pinned embedding",
+          "number": 7,
+          "startedAt": "2026-11-01T10:25:25Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-01T10:25:58Z",
+          "conclusion": "success",
+          "name": "Download official Linux Collector",
+          "number": 8,
+          "startedAt": "2026-11-01T10:25:56Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-01T10:27:39Z",
+          "conclusion": "cancelled",
+          "name": "Evaluate ten cases using candidate Prompt",
+          "number": 9,
+          "startedAt": "2026-11-01T10:25:58Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-01T10:27:41Z",
+          "conclusion": "success",
+          "name": "Run actions/upload-artifact@v4",
+          "number": 10,
+          "startedAt": "2026-11-01T10:27:39Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-01T10:27:41Z",
+          "conclusion": "skipped",
+          "name": "Post Run astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2",
+          "number": 18,
+          "startedAt": "2026-11-01T10:27:41Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-01T10:27:41Z",
+          "conclusion": "success",
+          "name": "Post Run actions/checkout@v7",
+          "number": 19,
+          "startedAt": "2026-11-01T10:27:41Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-01T10:27:41Z",
+          "conclusion": "success",
+          "name": "Stop containers",
+          "number": 20,
+          "startedAt": "2026-11-01T10:27:41Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-01T10:27:41Z",
+          "conclusion": "success",
+          "name": "Complete job",
+          "number": 21,
+          "startedAt": "2026-11-01T10:27:41Z",
+          "status": "completed"
+        }
+      ],
+      "url": "https://github.com/00falls/AgentLens/actions/runs/41297327366/job/124820965558"
+    },
+    {
+      "completedAt": "2026-11-01T10:27:49Z",
+      "conclusion": "failure",
+      "databaseId": 124821584311,
+      "name": "Agent quality gate",
+      "startedAt": "2026-11-01T10:27:46Z",
+      "status": "completed",
+      "steps": [
+        {
+          "completedAt": "2026-11-01T10:27:47Z",
+          "conclusion": "success",
+          "name": "Set up job",
+          "number": 1,
+          "startedAt": "2026-11-01T10:27:47Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-01T10:27:47Z",
+          "conclusion": "failure",
+          "name": "Run test \"$PREPARE\" = success",
+          "number": 2,
+          "startedAt": "2026-11-01T10:27:47Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-01T10:27:47Z",
+          "conclusion": "success",
+          "name": "Complete job",
+          "number": 3,
+          "startedAt": "2026-11-01T10:27:47Z",
+          "status": "completed"
+        }
+      ],
+      "url": "https://github.com/00falls/AgentLens/actions/runs/41297327366/job/124821584311"
+    }
+  ],
+  "status": "completed",
+  "updatedAt": "2026-11-01T10:27:50Z",
+  "url": "https://github.com/00falls/AgentLens/actions/runs/41297327366"
+}

@@ -1,0 +1,1168 @@
+{
+  "schema_version": 2,
+  "name": "dev10",
+  "started_at": "2026-11-01T10:36:37.377257+00:00",
+  "finished_at": "2026-11-01T10:36:45.002478+00:00",
+  "dataset_sha256": "913c65c6994772b7060f31ae1f1ef446eedec0c3838a532119b3f8b897a5f3c3",
+  "evaluator_sha256": "bc0b366ec248ee3f2ebf38498959647aa55b5170fa2e60174e8560c9096139e3",
+  "agentevals_version": "0.0.9",
+  "dataset_name": "dev.jsonl",
+  "judge_config": null,
+  "recorded_run": false,
+  "summary": {
+    "selected": 1,
+    "passed": 0,
+    "failed": 1,
+    "errors": 0,
+    "judge_errors": 0,
+    "complete": true,
+    "pass_rate": 0.0
+  },
+  "cases": [
+    {
+      "case_id": "w6-insufficient-01",
+      "critical": false,
+      "scenario_group": "insufficient",
+      "split": "dev",
+      "outcome": "failed",
+      "evaluation": {
+        "passed": false,
+        "checks": {
+          "project_scope": true,
+          "status": true,
+          "required_tools": true,
+          "query_scope": true,
+          "cause_terms": false,
+          "required_evidence": true,
+          "valid_citations": true,
+          "outside_window_excluded": true,
+          "token_usage_recorded": true,
+          "trajectory_required_tools": true,
+          "trajectory_forbidden_tools": true,
+          "trajectory_parameters": true,
+          "trajectory_order": true
+        },
+        "failure_reasons": [
+          "cause_terms"
+        ],
+        "dimensions": {
+          "trajectory": true,
+          "retrieval": null,
+          "root_cause": false,
+          "citations": true,
+          "task_completion": true
+        },
+        "trajectory": {
+          "checks": {
+            "trajectory_required_tools": true,
+            "trajectory_forbidden_tools": true,
+            "trajectory_parameters": true,
+            "trajectory_order": true
+          },
+          "matcher": "agentevals.trajectory.match",
+          "required_tool_match": {
+            "key": "trajectory_superset_match",
+            "score": true,
+            "comment": null,
+            "metadata": null
+          },
+          "parameter_match": {
+            "key": "trajectory_unordered_match",
+            "score": true,
+            "comment": null,
+            "metadata": null
+          },
+          "precedence": {}
+        }
+      },
+      "error": null,
+      "run": {
+        "run_id": "88f9a283-46bf-4a69-83e6-f0a20bd5aea4",
+        "thread_id": "4c0dc359-182a-41fa-8bd5-63205af91d56",
+        "source_run_id": null,
+        "execution_mode": "live",
+        "recording_id": null,
+        "scenario_id": null,
+        "failure_detail": null,
+        "checkpoint_id": "1f1d5e02-24b2-6dff-8008-68da7178eba8",
+        "trace_id": "99a880fc2a49f5cfe3d8823bbc5acf14",
+        "span_id": "fe55843186f9ea38",
+        "request_span_id": null,
+        "interrupt": null,
+        "project_id": "project-b",
+        "status": "insufficient_evidence",
+        "input": "请调查 payment-api 在 2026-11-08T08:00:00+08:00 至 2026-11-08T08:15:00+08:00（结束时间不包含）的异常，结合日志与指标，检索并引用支持建议的手册。",
+        "output": {
+          "status": "insufficient_evidence",
+          "cause_summary": "在指定时间窗 2026-11-08T08:00:00+08:00 至 2026-11-08T08:15:00+08:00（左闭右开）内，对 payment-api 的现场查询均未返回任何数据：全量日志为空、ERROR 级别日志为空、指标查询（含未指定指标名与 error_rate）为空，且该服务无人工确认的历史故障经验。因此当前没有任何现场证据表明该服务在该时间窗内发生异常，也无法判断根因；不预设故障类型。",
+          "evidence_ids": [],
+          "unknowns": [
+            "payment-api 在该时间窗内是否真的产生过日志与指标（可能是服务名不匹配、无流量、或遥测未接入/未上报）",
+            "是否存在异常但仅体现在下游依赖服务或网关侧，而非 payment-api 自身",
+            "用户所指“异常”的具体症状（错误码、延迟、成功率下降等）尚未明确",
+            "该时间窗是否与用户实际观察时间存在时区或区间偏差"
+          ],
+          "next_steps": [
+            "确认服务名与 project 内实际注册名一致（如 payment-api 与 payment_api、payment-service 等别名差异）",
+            "确认该时间窗内 payment-api 是否有流量；可先放宽到更大时间范围或查询可用指标列表，验证遥测是否上报",
+            "请用户提供具体异常症状（错误码、接口、成功率/延迟变化）与首次发现时间，以便精确检索",
+            "若怀疑为下游依赖问题，请授权对相关下游服务（如支付渠道、数据库、缓存）单独查询其日志与指标",
+            "待取得任一现场日志或指标证据后，再检索对应错误原文/指标名的排查手册作为方法参考"
+          ]
+        },
+        "versions": {
+          "prompt_sha256": "6a2ed524c13ae7580e8ea2f263a849042938b6dc8243414948269645ed2f8502",
+          "dataset_sha256": "46a32fe8ba9ef987f67732c38001ecd09abab8350f7bbd960a528beb704dc4c0",
+          "requested_model": "agentlens-agent",
+          "configured_upstream_model": "openai/deepseek-flash",
+          "tool_transport": "mcp/streamable-http",
+          "checkpointer": "AsyncPostgresSaver",
+          "graph_version": "week8-v1",
+          "actor": "local-cli",
+          "recording_sha256": null,
+          "scenario_manifest": null,
+          "tool_catalog": [
+            {
+              "name": "search_logs",
+              "description": "Query logs in the current project. Times include timezone; interval is [start, end).\n\n    Returns citeable evidence_id values. Limit is 1-200.\n    ",
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "service": {
+                    "title": "Service",
+                    "type": "string"
+                  },
+                  "start_time": {
+                    "format": "date-time",
+                    "title": "Start Time",
+                    "type": "string"
+                  },
+                  "end_time": {
+                    "format": "date-time",
+                    "title": "End Time",
+                    "type": "string"
+                  },
+                  "level": {
+                    "anyOf": [
+                      {
+                        "enum": [
+                          "INFO",
+                          "WARN",
+                          "ERROR"
+                        ],
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null,
+                    "title": "Level"
+                  },
+                  "limit": {
+                    "default": 50,
+                    "title": "Limit",
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "service",
+                  "start_time",
+                  "end_time"
+                ],
+                "title": "logsArguments"
+              }
+            },
+            {
+              "name": "query_metrics",
+              "description": "Query metrics in the current project and [start_time, end_time).\n\n    Leave metric_name unset to inspect available metrics. Returns citeable evidence. Limit is 1-300.\n    ",
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "service": {
+                    "title": "Service",
+                    "type": "string"
+                  },
+                  "start_time": {
+                    "format": "date-time",
+                    "title": "Start Time",
+                    "type": "string"
+                  },
+                  "end_time": {
+                    "format": "date-time",
+                    "title": "End Time",
+                    "type": "string"
+                  },
+                  "metric_name": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null,
+                    "title": "Metric Name"
+                  },
+                  "limit": {
+                    "default": 100,
+                    "title": "Limit",
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "service",
+                  "start_time",
+                  "end_time"
+                ],
+                "title": "metricsArguments"
+              }
+            },
+            {
+              "name": "search_runbooks",
+              "description": "Search the current project's troubleshooting handbooks using symptoms and error terms.\n\n    Use observed service/component names and error messages in query. Returns citeable chunk\n    evidence_id, source, revision and content. Handbooks guide checks; they are not live telemetry.\n    top_k is 1-10. Query is 1-2000 characters. Uses fixed BGE embeddings and pgvector cosine search.\n    ",
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "query": {
+                    "title": "Query",
+                    "type": "string"
+                  },
+                  "top_k": {
+                    "default": 3,
+                    "title": "Top K",
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "query"
+                ],
+                "title": "runbooksArguments"
+              }
+            },
+            {
+              "name": "search_experiences",
+              "description": "Find human-confirmed incident experience for a service in the current project.\n\n    Use for related past incidents and applicable investigation steps. Results are historical\n    knowledge, not live evidence for a new incident. Returns citeable IDs and original run/time.\n    Exact service match, latest confirmations first. Limit is 1-20.\n    ",
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "service": {
+                    "title": "Service",
+                    "type": "string"
+                  },
+                  "limit": {
+                    "default": 5,
+                    "title": "Limit",
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "service"
+                ],
+                "title": "experiencesArguments"
+              }
+            },
+            {
+              "name": "analyze_logs",
+              "description": "Run Python statistics on logs already retrieved in THIS run, using OpenShell only.\n\n    Use only when the user requests statistical analysis. logs is a list of authorized rows.\n    Print exactly one JSON value. No network, credentials, package installs or host files.\n    Maximum 100 log IDs, code 6000 chars, 8 seconds, 256MiB, output 64KiB.\n    Runtime absence is a tool error; never claim analysis succeeded without its result.\n    ",
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "evidence_ids": {
+                    "items": {
+                      "type": "string"
+                    },
+                    "title": "Evidence Ids",
+                    "type": "array"
+                  },
+                  "python_code": {
+                    "title": "Python Code",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "evidence_ids",
+                  "python_code"
+                ],
+                "title": "analyze_logsArguments"
+              }
+            }
+          ],
+          "tool_schemas_sha256": "d50be48bfae9c71d5645337a9cd10ff9580fc6da8f8e518898dc1ab5a0d5079b"
+        },
+        "usage": {
+          "input_tokens": 7946,
+          "output_tokens": 933
+        },
+        "error": null,
+        "started_at": "2026-11-01T10:36:37.385647+00:00",
+        "finished_at": "2026-11-01T10:36:44.996449+00:00",
+        "steps": [
+          {
+            "sequence": 1,
+            "kind": "model",
+            "name": "agentlens-agent",
+            "input": {
+              "messages": [
+                {
+                  "content": "请调查 payment-api 在 2026-11-08T08:00:00+08:00 至 2026-11-08T08:15:00+08:00（结束时间不包含）的异常，结合日志与指标，检索并引用支持建议的手册。",
+                  "additional_kwargs": {},
+                  "response_metadata": {},
+                  "type": "human",
+                  "name": null,
+                  "id": "a55a2af8-ede4-4527-8b92-be36d1173c31"
+                }
+              ]
+            },
+            "output": {
+              "content": "我会同时查询该时间窗内的日志和指标。",
+              "tool_calls": [
+                {
+                  "name": "search_logs",
+                  "args": {
+                    "service": "payment-api",
+                    "start_time": "2026-11-08T08:00:00+08:00",
+                    "end_time": "2026-11-08T08:15:00+08:00",
+                    "limit": 100
+                  },
+                  "id": "call_00_Bz1yqWUZ98UCNUt1Htm56187",
+                  "type": "tool_call"
+                },
+                {
+                  "name": "query_metrics",
+                  "args": {
+                    "service": "payment-api",
+                    "start_time": "2026-11-08T08:00:00+08:00",
+                    "end_time": "2026-11-08T08:15:00+08:00",
+                    "limit": 100
+                  },
+                  "id": "call_01_6oFM8GaRNjqwn6H32AJW6814",
+                  "type": "tool_call"
+                }
+              ],
+              "usage": {
+                "input_tokens": 1617,
+                "output_tokens": 239,
+                "total_tokens": 1856,
+                "input_token_details": {
+                  "cache_read": 1408
+                },
+                "output_token_details": {}
+              },
+              "response_model": "agentlens-agent",
+              "billing": {
+                "currency": "USD",
+                "pricing_version": "deepseek-2026-11-01",
+                "pricing_sha256": "6a41970e9ba6f1c65aadd1eab8483e562cfa3abb7eecfe9dc78e264dc22f301d",
+                "source": "https://api-docs.deepseek.com/quick_start/pricing/",
+                "cost": "0.000178974",
+                "cache_read_tokens": 1408,
+                "reason": null,
+                "model_source": "local_gateway_configuration; response_contains_alias",
+                "gateway_config_sha256": "7defcb62e9bf9f418561063d1b4ccb9ed038bffc5c3921858278e02ec5c600de",
+                "priced_model": "deepseek-flash",
+                "rates_per_million": {
+                  "cache_hit": 0.003,
+                  "cache_miss": 0.15,
+                  "output": 0.6
+                }
+              }
+            },
+            "error": null,
+            "duration_ms": 1540.0,
+            "span_id": "fadb63d26c8cfe46",
+            "source_step_sequence": null
+          },
+          {
+            "sequence": 2,
+            "kind": "tool",
+            "name": "search_logs",
+            "input": {
+              "service": "payment-api",
+              "start_time": "2026-11-08T08:00:00+08:00",
+              "end_time": "2026-11-08T08:15:00+08:00",
+              "limit": 100
+            },
+            "output": {
+              "logs": []
+            },
+            "error": null,
+            "duration_ms": 10.81,
+            "span_id": "df0a1c955db3f9c6",
+            "source_step_sequence": null
+          },
+          {
+            "sequence": 3,
+            "kind": "tool",
+            "name": "query_metrics",
+            "input": {
+              "service": "payment-api",
+              "start_time": "2026-11-08T08:00:00+08:00",
+              "end_time": "2026-11-08T08:15:00+08:00",
+              "limit": 100
+            },
+            "output": {
+              "metrics": []
+            },
+            "error": null,
+            "duration_ms": 9.45,
+            "span_id": "d2d192c396987cb1",
+            "source_step_sequence": null
+          },
+          {
+            "sequence": 4,
+            "kind": "model",
+            "name": "agentlens-agent",
+            "input": {
+              "messages": [
+                {
+                  "content": "请调查 payment-api 在 2026-11-08T08:00:00+08:00 至 2026-11-08T08:15:00+08:00（结束时间不包含）的异常，结合日志与指标，检索并引用支持建议的手册。",
+                  "additional_kwargs": {},
+                  "response_metadata": {},
+                  "type": "human",
+                  "name": null,
+                  "id": "a55a2af8-ede4-4527-8b92-be36d1173c31"
+                },
+                {
+                  "content": "我会同时查询该时间窗内的日志和指标。",
+                  "additional_kwargs": {},
+                  "response_metadata": {
+                    "model_provider": "openai",
+                    "finish_reason": "tool_calls",
+                    "model_name": "agentlens-agent",
+                    "system_fingerprint": "bc19ba97cbe016479903222bb1578db6"
+                  },
+                  "type": "ai",
+                  "name": null,
+                  "id": "lc_run--01a196ae-c0a6-72cd-bcfc-da8192a2e7c6",
+                  "tool_calls": [
+                    {
+                      "name": "search_logs",
+                      "args": {
+                        "service": "payment-api",
+                        "start_time": "2026-11-08T08:00:00+08:00",
+                        "end_time": "2026-11-08T08:15:00+08:00",
+                        "limit": 100
+                      },
+                      "id": "call_00_Bz1yqWUZ98UCNUt1Htm56187",
+                      "type": "tool_call"
+                    },
+                    {
+                      "name": "query_metrics",
+                      "args": {
+                        "service": "payment-api",
+                        "start_time": "2026-11-08T08:00:00+08:00",
+                        "end_time": "2026-11-08T08:15:00+08:00",
+                        "limit": 100
+                      },
+                      "id": "call_01_6oFM8GaRNjqwn6H32AJW6814",
+                      "type": "tool_call"
+                    }
+                  ],
+                  "invalid_tool_calls": [],
+                  "usage_metadata": {
+                    "input_tokens": 1617,
+                    "output_tokens": 239,
+                    "total_tokens": 1856,
+                    "input_token_details": {
+                      "cache_read": 1408
+                    },
+                    "output_token_details": {}
+                  }
+                },
+                {
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "{\n  \"logs\": []\n}",
+                      "id": "lc_4bd54dbb-77d4-4d5b-a3f0-7ead5e55aa49"
+                    }
+                  ],
+                  "additional_kwargs": {},
+                  "response_metadata": {},
+                  "type": "tool",
+                  "name": "search_logs",
+                  "id": "151220ef-ac71-4855-bb80-d66db16ee9c4",
+                  "tool_call_id": "call_00_Bz1yqWUZ98UCNUt1Htm56187",
+                  "artifact": {
+                    "structured_content": {
+                      "logs": []
+                    }
+                  },
+                  "status": "success"
+                },
+                {
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "{\n  \"metrics\": []\n}",
+                      "id": "lc_ff18e8e5-79e7-4012-89ed-5492ab9334ff"
+                    }
+                  ],
+                  "additional_kwargs": {},
+                  "response_metadata": {},
+                  "type": "tool",
+                  "name": "query_metrics",
+                  "id": "7b69506a-fc3c-41cb-8c7e-c5fb752a0fb1",
+                  "tool_call_id": "call_01_6oFM8GaRNjqwn6H32AJW6814",
+                  "artifact": {
+                    "structured_content": {
+                      "metrics": []
+                    }
+                  },
+                  "status": "success"
+                }
+              ]
+            },
+            "output": {
+              "content": "",
+              "tool_calls": [
+                {
+                  "name": "search_logs",
+                  "args": {
+                    "end_time": "2026-11-08T08:15:00+08:00",
+                    "limit": 100,
+                    "service": "payment-api",
+                    "start_time": "2026-11-08T08:00:00+08:00",
+                    "level": "ERROR"
+                  },
+                  "id": "call_00_ZyHSbmIqehbN6mMglgiv5164",
+                  "type": "tool_call"
+                },
+                {
+                  "name": "query_metrics",
+                  "args": {
+                    "end_time": "2026-11-08T08:15:00+08:00",
+                    "limit": 100,
+                    "service": "payment-api",
+                    "start_time": "2026-11-08T08:00:00+08:00",
+                    "metric_name": "error_rate"
+                  },
+                  "id": "call_01_eYlYRNBXngWFa19c1nuo9420",
+                  "type": "tool_call"
+                }
+              ],
+              "usage": {
+                "input_tokens": 1888,
+                "output_tokens": 263,
+                "total_tokens": 2151,
+                "input_token_details": {
+                  "cache_read": 1664
+                },
+                "output_token_details": {}
+              },
+              "response_model": "agentlens-agent",
+              "billing": {
+                "currency": "USD",
+                "pricing_version": "deepseek-2026-11-01",
+                "pricing_sha256": "6a41970e9ba6f1c65aadd1eab8483e562cfa3abb7eecfe9dc78e264dc22f301d",
+                "source": "https://api-docs.deepseek.com/quick_start/pricing/",
+                "cost": "0.000196392",
+                "cache_read_tokens": 1664,
+                "reason": null,
+                "model_source": "local_gateway_configuration; response_contains_alias",
+                "gateway_config_sha256": "7defcb62e9bf9f418561063d1b4ccb9ed038bffc5c3921858278e02ec5c600de",
+                "priced_model": "deepseek-flash",
+                "rates_per_million": {
+                  "cache_hit": 0.003,
+                  "cache_miss": 0.15,
+                  "output": 0.6
+                }
+              }
+            },
+            "error": null,
+            "duration_ms": 1370.9,
+            "span_id": "bfbebc14c2a17b17",
+            "source_step_sequence": null
+          },
+          {
+            "sequence": 5,
+            "kind": "tool",
+            "name": "search_logs",
+            "input": {
+              "end_time": "2026-11-08T08:15:00+08:00",
+              "limit": 100,
+              "service": "payment-api",
+              "start_time": "2026-11-08T08:00:00+08:00",
+              "level": "ERROR"
+            },
+            "output": {
+              "logs": []
+            },
+            "error": null,
+            "duration_ms": 9.78,
+            "span_id": "43376097114b80ed",
+            "source_step_sequence": null
+          },
+          {
+            "sequence": 6,
+            "kind": "tool",
+            "name": "query_metrics",
+            "input": {
+              "end_time": "2026-11-08T08:15:00+08:00",
+              "limit": 100,
+              "service": "payment-api",
+              "start_time": "2026-11-08T08:00:00+08:00",
+              "metric_name": "error_rate"
+            },
+            "output": {
+              "metrics": []
+            },
+            "error": null,
+            "duration_ms": 8.92,
+            "span_id": "1182b4ea09adbac4",
+            "source_step_sequence": null
+          },
+          {
+            "sequence": 7,
+            "kind": "model",
+            "name": "agentlens-agent",
+            "input": {
+              "messages": [
+                {
+                  "content": "请调查 payment-api 在 2026-11-08T08:00:00+08:00 至 2026-11-08T08:15:00+08:00（结束时间不包含）的异常，结合日志与指标，检索并引用支持建议的手册。",
+                  "additional_kwargs": {},
+                  "response_metadata": {},
+                  "type": "human",
+                  "name": null,
+                  "id": "a55a2af8-ede4-4527-8b92-be36d1173c31"
+                },
+                {
+                  "content": "我会同时查询该时间窗内的日志和指标。",
+                  "additional_kwargs": {},
+                  "response_metadata": {
+                    "model_provider": "openai",
+                    "finish_reason": "tool_calls",
+                    "model_name": "agentlens-agent",
+                    "system_fingerprint": "bc19ba97cbe016479903222bb1578db6"
+                  },
+                  "type": "ai",
+                  "name": null,
+                  "id": "lc_run--01a196ae-c0a6-72cd-bcfc-da8192a2e7c6",
+                  "tool_calls": [
+                    {
+                      "name": "search_logs",
+                      "args": {
+                        "service": "payment-api",
+                        "start_time": "2026-11-08T08:00:00+08:00",
+                        "end_time": "2026-11-08T08:15:00+08:00",
+                        "limit": 100
+                      },
+                      "id": "call_00_Bz1yqWUZ98UCNUt1Htm56187",
+                      "type": "tool_call"
+                    },
+                    {
+                      "name": "query_metrics",
+                      "args": {
+                        "service": "payment-api",
+                        "start_time": "2026-11-08T08:00:00+08:00",
+                        "end_time": "2026-11-08T08:15:00+08:00",
+                        "limit": 100
+                      },
+                      "id": "call_01_6oFM8GaRNjqwn6H32AJW6814",
+                      "type": "tool_call"
+                    }
+                  ],
+                  "invalid_tool_calls": [],
+                  "usage_metadata": {
+                    "input_tokens": 1617,
+                    "output_tokens": 239,
+                    "total_tokens": 1856,
+                    "input_token_details": {
+                      "cache_read": 1408
+                    },
+                    "output_token_details": {}
+                  }
+                },
+                {
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "{\n  \"logs\": []\n}",
+                      "id": "lc_4bd54dbb-77d4-4d5b-a3f0-7ead5e55aa49"
+                    }
+                  ],
+                  "additional_kwargs": {},
+                  "response_metadata": {},
+                  "type": "tool",
+                  "name": "search_logs",
+                  "id": "151220ef-ac71-4855-bb80-d66db16ee9c4",
+                  "tool_call_id": "call_00_Bz1yqWUZ98UCNUt1Htm56187",
+                  "artifact": {
+                    "structured_content": {
+                      "logs": []
+                    }
+                  },
+                  "status": "success"
+                },
+                {
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "{\n  \"metrics\": []\n}",
+                      "id": "lc_ff18e8e5-79e7-4012-89ed-5492ab9334ff"
+                    }
+                  ],
+                  "additional_kwargs": {},
+                  "response_metadata": {},
+                  "type": "tool",
+                  "name": "query_metrics",
+                  "id": "7b69506a-fc3c-41cb-8c7e-c5fb752a0fb1",
+                  "tool_call_id": "call_01_6oFM8GaRNjqwn6H32AJW6814",
+                  "artifact": {
+                    "structured_content": {
+                      "metrics": []
+                    }
+                  },
+                  "status": "success"
+                },
+                {
+                  "content": "",
+                  "additional_kwargs": {},
+                  "response_metadata": {
+                    "model_provider": "openai",
+                    "finish_reason": "tool_calls",
+                    "model_name": "agentlens-agent",
+                    "system_fingerprint": "bc19ba97cbe016479903222bb1578db6"
+                  },
+                  "type": "ai",
+                  "name": null,
+                  "id": "lc_run--01a196ae-c6c9-726a-a26d-b34e66a7c379",
+                  "tool_calls": [
+                    {
+                      "name": "search_logs",
+                      "args": {
+                        "end_time": "2026-11-08T08:15:00+08:00",
+                        "limit": 100,
+                        "service": "payment-api",
+                        "start_time": "2026-11-08T08:00:00+08:00",
+                        "level": "ERROR"
+                      },
+                      "id": "call_00_ZyHSbmIqehbN6mMglgiv5164",
+                      "type": "tool_call"
+                    },
+                    {
+                      "name": "query_metrics",
+                      "args": {
+                        "end_time": "2026-11-08T08:15:00+08:00",
+                        "limit": 100,
+                        "service": "payment-api",
+                        "start_time": "2026-11-08T08:00:00+08:00",
+                        "metric_name": "error_rate"
+                      },
+                      "id": "call_01_eYlYRNBXngWFa19c1nuo9420",
+                      "type": "tool_call"
+                    }
+                  ],
+                  "invalid_tool_calls": [],
+                  "usage_metadata": {
+                    "input_tokens": 1888,
+                    "output_tokens": 263,
+                    "total_tokens": 2151,
+                    "input_token_details": {
+                      "cache_read": 1664
+                    },
+                    "output_token_details": {}
+                  }
+                },
+                {
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "{\n  \"logs\": []\n}",
+                      "id": "lc_cfe91bee-188a-44f4-84d2-de639f4e721d"
+                    }
+                  ],
+                  "additional_kwargs": {},
+                  "response_metadata": {},
+                  "type": "tool",
+                  "name": "search_logs",
+                  "id": "1192be0c-5889-46e3-9c40-f0cb9f94b006",
+                  "tool_call_id": "call_00_ZyHSbmIqehbN6mMglgiv5164",
+                  "artifact": {
+                    "structured_content": {
+                      "logs": []
+                    }
+                  },
+                  "status": "success"
+                },
+                {
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "{\n  \"metrics\": []\n}",
+                      "id": "lc_10f5153f-2d70-47f2-b908-a9c6b6485006"
+                    }
+                  ],
+                  "additional_kwargs": {},
+                  "response_metadata": {},
+                  "type": "tool",
+                  "name": "query_metrics",
+                  "id": "52b76ce0-641b-412b-aa02-8740da36dbc8",
+                  "tool_call_id": "call_01_eYlYRNBXngWFa19c1nuo9420",
+                  "artifact": {
+                    "structured_content": {
+                      "metrics": []
+                    }
+                  },
+                  "status": "success"
+                }
+              ]
+            },
+            "output": {
+              "content": "",
+              "tool_calls": [
+                {
+                  "name": "search_experiences",
+                  "args": {
+                    "service": "payment-api",
+                    "limit": 5
+                  },
+                  "id": "call_00_72k6nFp7Je8QCKQ4pJYM0480",
+                  "type": "tool_call"
+                }
+              ],
+              "usage": {
+                "input_tokens": 2183,
+                "output_tokens": 56,
+                "total_tokens": 2239,
+                "input_token_details": {
+                  "cache_read": 2048
+                },
+                "output_token_details": {}
+              },
+              "response_model": "agentlens-agent",
+              "billing": {
+                "currency": "USD",
+                "pricing_version": "deepseek-2026-11-01",
+                "pricing_sha256": "6a41970e9ba6f1c65aadd1eab8483e562cfa3abb7eecfe9dc78e264dc22f301d",
+                "source": "https://api-docs.deepseek.com/quick_start/pricing/",
+                "cost": "0.000059994",
+                "cache_read_tokens": 2048,
+                "reason": null,
+                "model_source": "local_gateway_configuration; response_contains_alias",
+                "gateway_config_sha256": "7defcb62e9bf9f418561063d1b4ccb9ed038bffc5c3921858278e02ec5c600de",
+                "priced_model": "deepseek-flash",
+                "rates_per_million": {
+                  "cache_hit": 0.003,
+                  "cache_miss": 0.15,
+                  "output": 0.6
+                }
+              }
+            },
+            "error": null,
+            "duration_ms": 1196.31,
+            "span_id": "cd350fa40b7b3073",
+            "source_step_sequence": null
+          },
+          {
+            "sequence": 8,
+            "kind": "tool",
+            "name": "search_experiences",
+            "input": {
+              "service": "payment-api",
+              "limit": 5
+            },
+            "output": {
+              "experiences": []
+            },
+            "error": null,
+            "duration_ms": 10.3,
+            "span_id": "6a9dae67713e6048",
+            "source_step_sequence": null
+          },
+          {
+            "sequence": 9,
+            "kind": "model",
+            "name": "agentlens-agent",
+            "input": {
+              "messages": [
+                {
+                  "content": "请调查 payment-api 在 2026-11-08T08:00:00+08:00 至 2026-11-08T08:15:00+08:00（结束时间不包含）的异常，结合日志与指标，检索并引用支持建议的手册。",
+                  "additional_kwargs": {},
+                  "response_metadata": {},
+                  "type": "human",
+                  "name": null,
+                  "id": "a55a2af8-ede4-4527-8b92-be36d1173c31"
+                },
+                {
+                  "content": "我会同时查询该时间窗内的日志和指标。",
+                  "additional_kwargs": {},
+                  "response_metadata": {
+                    "model_provider": "openai",
+                    "finish_reason": "tool_calls",
+                    "model_name": "agentlens-agent",
+                    "system_fingerprint": "bc19ba97cbe016479903222bb1578db6"
+                  },
+                  "type": "ai",
+                  "name": null,
+                  "id": "lc_run--01a196ae-c0a6-72cd-bcfc-da8192a2e7c6",
+                  "tool_calls": [
+                    {
+                      "name": "search_logs",
+                      "args": {
+                        "service": "payment-api",
+                        "start_time": "2026-11-08T08:00:00+08:00",
+                        "end_time": "2026-11-08T08:15:00+08:00",
+                        "limit": 100
+                      },
+                      "id": "call_00_Bz1yqWUZ98UCNUt1Htm56187",
+                      "type": "tool_call"
+                    },
+                    {
+                      "name": "query_metrics",
+                      "args": {
+                        "service": "payment-api",
+                        "start_time": "2026-11-08T08:00:00+08:00",
+                        "end_time": "2026-11-08T08:15:00+08:00",
+                        "limit": 100
+                      },
+                      "id": "call_01_6oFM8GaRNjqwn6H32AJW6814",
+                      "type": "tool_call"
+                    }
+                  ],
+                  "invalid_tool_calls": [],
+                  "usage_metadata": {
+                    "input_tokens": 1617,
+                    "output_tokens": 239,
+                    "total_tokens": 1856,
+                    "input_token_details": {
+                      "cache_read": 1408
+                    },
+                    "output_token_details": {}
+                  }
+                },
+                {
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "{\n  \"logs\": []\n}",
+                      "id": "lc_4bd54dbb-77d4-4d5b-a3f0-7ead5e55aa49"
+                    }
+                  ],
+                  "additional_kwargs": {},
+                  "response_metadata": {},
+                  "type": "tool",
+                  "name": "search_logs",
+                  "id": "151220ef-ac71-4855-bb80-d66db16ee9c4",
+                  "tool_call_id": "call_00_Bz1yqWUZ98UCNUt1Htm56187",
+                  "artifact": {
+                    "structured_content": {
+                      "logs": []
+                    }
+                  },
+                  "status": "success"
+                },
+                {
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "{\n  \"metrics\": []\n}",
+                      "id": "lc_ff18e8e5-79e7-4012-89ed-5492ab9334ff"
+                    }
+                  ],
+                  "additional_kwargs": {},
+                  "response_metadata": {},
+                  "type": "tool",
+                  "name": "query_metrics",
+                  "id": "7b69506a-fc3c-41cb-8c7e-c5fb752a0fb1",
+                  "tool_call_id": "call_01_6oFM8GaRNjqwn6H32AJW6814",
+                  "artifact": {
+                    "structured_content": {
+                      "metrics": []
+                    }
+                  },
+                  "status": "success"
+                },
+                {
+                  "content": "",
+                  "additional_kwargs": {},
+                  "response_metadata": {
+                    "model_provider": "openai",
+                    "finish_reason": "tool_calls",
+                    "model_name": "agentlens-agent",
+                    "system_fingerprint": "bc19ba97cbe016479903222bb1578db6"
+                  },
+                  "type": "ai",
+                  "name": null,
+                  "id": "lc_run--01a196ae-c6c9-726a-a26d-b34e66a7c379",
+                  "tool_calls": [
+                    {
+                      "name": "search_logs",
+                      "args": {
+                        "end_time": "2026-11-08T08:15:00+08:00",
+                        "limit": 100,
+                        "service": "payment-api",
+                        "start_time": "2026-11-08T08:00:00+08:00",
+                        "level": "ERROR"
+                      },
+                      "id": "call_00_ZyHSbmIqehbN6mMglgiv5164",
+                      "type": "tool_call"
+                    },
+                    {
+                      "name": "query_metrics",
+                      "args": {
+                        "end_time": "2026-11-08T08:15:00+08:00",
+                        "limit": 100,
+                        "service": "payment-api",
+                        "start_time": "2026-11-08T08:00:00+08:00",
+                        "metric_name": "error_rate"
+                      },
+                      "id": "call_01_eYlYRNBXngWFa19c1nuo9420",
+                      "type": "tool_call"
+                    }
+                  ],
+                  "invalid_tool_calls": [],
+                  "usage_metadata": {
+                    "input_tokens": 1888,
+                    "output_tokens": 263,
+                    "total_tokens": 2151,
+                    "input_token_details": {
+                      "cache_read": 1664
+                    },
+                    "output_token_details": {}
+                  }
+                },
+                {
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "{\n  \"logs\": []\n}",
+                      "id": "lc_cfe91bee-188a-44f4-84d2-de639f4e721d"
+                    }
+                  ],
+                  "additional_kwargs": {},
+                  "response_metadata": {},
+                  "type": "tool",
+                  "name": "search_logs",
+                  "id": "1192be0c-5889-46e3-9c40-f0cb9f94b006",
+                  "tool_call_id": "call_00_ZyHSbmIqehbN6mMglgiv5164",
+                  "artifact": {
+                    "structured_content": {
+                      "logs": []
+                    }
+                  },
+                  "status": "success"
+                },
+                {
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "{\n  \"metrics\": []\n}",
+                      "id": "lc_10f5153f-2d70-47f2-b908-a9c6b6485006"
+                    }
+                  ],
+                  "additional_kwargs": {},
+                  "response_metadata": {},
+                  "type": "tool",
+                  "name": "query_metrics",
+                  "id": "52b76ce0-641b-412b-aa02-8740da36dbc8",
+                  "tool_call_id": "call_01_eYlYRNBXngWFa19c1nuo9420",
+                  "artifact": {
+                    "structured_content": {
+                      "metrics": []
+                    }
+                  },
+                  "status": "success"
+                },
+                {
+                  "content": "",
+                  "additional_kwargs": {},
+                  "response_metadata": {
+                    "model_provider": "openai",
+                    "finish_reason": "tool_calls",
+                    "model_name": "agentlens-agent",
+                    "system_fingerprint": "bc19ba97cbe016479903222bb1578db6"
+                  },
+                  "type": "ai",
+                  "name": null,
+                  "id": "lc_run--01a196ae-cc43-75d7-b6bc-2d9cbf424489",
+                  "tool_calls": [
+                    {
+                      "name": "search_experiences",
+                      "args": {
+                        "service": "payment-api",
+                        "limit": 5
+                      },
+                      "id": "call_00_72k6nFp7Je8QCKQ4pJYM0480",
+                      "type": "tool_call"
+                    }
+                  ],
+                  "invalid_tool_calls": [],
+                  "usage_metadata": {
+                    "input_tokens": 2183,
+                    "output_tokens": 56,
+                    "total_tokens": 2239,
+                    "input_token_details": {
+                      "cache_read": 2048
+                    },
+                    "output_token_details": {}
+                  }
+                },
+                {
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "{\n  \"experiences\": []\n}",
+                      "id": "lc_1e9c2a81-ff4a-4504-8571-90061052f9d9"
+                    }
+                  ],
+                  "additional_kwargs": {},
+                  "response_metadata": {},
+                  "type": "tool",
+                  "name": "search_experiences",
+                  "id": "d6576dd1-69b7-42a5-b0d6-487b867da81f",
+                  "tool_call_id": "call_00_72k6nFp7Je8QCKQ4pJYM0480",
+                  "artifact": {
+                    "structured_content": {
+                      "experiences": []
+                    }
+                  },
+                  "status": "success"
+                }
+              ]
+            },
+            "output": {
+              "content": "{\"status\":\"insufficient_evidence\",\"cause_summary\":\"在指定时间窗 2026-11-08T08:00:00+08:00 至 2026-11-08T08:15:00+08:00（左闭右开）内，对 payment-api 的现场查询均未返回任何数据：全量日志为空、ERROR 级别日志为空、指标查询（含未指定指标名与 error_rate）为空，且该服务无人工确认的历史故障经验。因此当前没有任何现场证据表明该服务在该时间窗内发生异常，也无法判断根因；不预设故障类型。\",\"evidence_ids\":[],\"unknowns\":[\"payment-api 在该时间窗内是否真的产生过日志与指标（可能是服务名不匹配、无流量、或遥测未接入/未上报）\",\"是否存在异常但仅体现在下游依赖服务或网关侧，而非 payment-api 自身\",\"用户所指“异常”的具体症状（错误码、延迟、成功率下降等）尚未明确\",\"该时间窗是否与用户实际观察时间存在时区或区间偏差\"],\"next_steps\":[\"确认服务名与 project 内实际注册名一致（如 payment-api 与 payment_api、payment-service 等别名差异）\",\"确认该时间窗内 payment-api 是否有流量；可先放宽到更大时间范围或查询可用指标列表，验证遥测是否上报\",\"请用户提供具体异常症状（错误码、接口、成功率/延迟变化）与首次发现时间，以便精确检索\",\"若怀疑为下游依赖问题，请授权对相关下游服务（如支付渠道、数据库、缓存）单独查询其日志与指标\",\"待取得任一现场日志或指标证据后，再检索对应错误原文/指标名的排查手册作为方法参考\"]}",
+              "tool_calls": [],
+              "usage": {
+                "input_tokens": 2258,
+                "output_tokens": 375,
+                "total_tokens": 2633,
+                "input_token_details": {
+                  "cache_read": 2048
+                },
+                "output_token_details": {
+                  "reasoning": 0
+                }
+              },
+              "response_model": "agentlens-agent",
+              "billing": {
+                "currency": "USD",
+                "pricing_version": "deepseek-2026-11-01",
+                "pricing_sha256": "6a41970e9ba6f1c65aadd1eab8483e562cfa3abb7eecfe9dc78e264dc22f301d",
+                "source": "https://api-docs.deepseek.com/quick_start/pricing/",
+                "cost": "0.000262644",
+                "cache_read_tokens": 2048,
+                "reason": null,
+                "model_source": "local_gateway_configuration; response_contains_alias",
+                "gateway_config_sha256": "7defcb62e9bf9f418561063d1b4ccb9ed038bffc5c3921858278e02ec5c600de",
+                "priced_model": "deepseek-flash",
+                "rates_per_million": {
+                  "cache_hit": 0.003,
+                  "cache_miss": 0.15,
+                  "output": 0.6
+                }
+              }
+            },
+            "error": null,
+            "duration_ms": 3383.9,
+            "span_id": "7e1641f154fce85a",
+            "source_step_sequence": null
+          }
+        ]
+      }
+    }
+  ]
+}
